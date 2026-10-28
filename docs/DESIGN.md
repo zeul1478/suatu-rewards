@@ -19,12 +19,24 @@ Calm, uncluttered, fast. It's a tool people use at a counter or a pump for 5 sec
 
 ## Typography
 
-- **Barlow Condensed** (500/600/700): headings, labels in caps with wide tracking, every number.
-- **Barlow** (400/500/600): body text.
+- **Space Grotesk** (variable): headings, labels in caps with wide tracking, every number. The SUATU wordmark is drawn in it, so the app and the logo match.
+- **Inter** (variable): body text.
 
-Why not Space Grotesk + Inter (the spec's example)? Inter is the default font of AI-generated templates, which is exactly the look §9 rules out. Barlow is based on California highway signage, so it's on-theme for a gas station, and its condensed cut fits big numbers on a 320 px screen. Both self-hosted through `next/font`, `latin-ext` included for Romanian diacritics later.
+Chosen to match the brand kit (DECISIONS D32; replaced Barlow from M1). Self-hosted through `next/font`, `latin-ext` included for Romanian diacritics. Fonts are picked per brand in `src/brands/<slug>.ts` from the registry in `src/app/fonts.ts`.
 
 Sizes: base 16 px; inputs never below 16 px (stops iOS zoom). Headings scale 20 → 36–48 px.
+
+## Brand system (reuse for other stores and apps)
+
+| What                                                        | Where                                                                  |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Original logo, icons, badges (owner's files, never edited)  | `brand/suatu/`, `brand/suatu/icons/`, `brand/behappy/`                 |
+| Copies the app serves                                       | `public/stores/suatu/`, `public/platform/behappy/` (`pnpm brand:sync`) |
+| Store look: names, two palettes, fonts, which file is which | `src/brands/suatu.ts`                                                  |
+| Icons as a component                                        | `<Icon name="gauge" />` (`pnpm icons` regenerates from the kit)        |
+| Logo                                                        | `<BrandLogo kind="wordmark"                                            | "lockup" | "mark" />`, dark/light picked by theme |
+
+Logo use (brand/suatu/README.md): **lockup** on sign-up, login and password screens; **wordmark** in every other header (light version on the staff screen); never redrawn. Icons per the icons README: gauge on the points card, coffee for the reward, timer on the countdown, user/phone/mail/lock on Account, add-visit/ticket/user/logout at the counter, eye/eye-off in password fields.
 
 ## Colour
 
@@ -61,6 +73,8 @@ Measured when the tokens were written:
 | **Dark theme: spec error red `#e5604d` on raised / sunken panels** | **3.6 / 4.3 ✗** | 4.5    |
 | Dark theme: error red `#f2836f` (used) on page / sunken / raised   | 6.5 / 5.8 / 4.9 | 4.5    |
 | Light theme: warning `#8a5a00`                                     | 5.3             | 4.5    |
+
+Light theme surfaces since M4 come from `src/brands/suatu.ts`; the light "sunken" shade is `#E4F0E9` (DECISIONS D36) so Suatu green text passes 4.5:1 on it.
 
 Changes from §9 because of these: secondary glass border 0.18 → 0.40; dark-theme error red `#e5604d` → `#f2836f` (axe caught it on the error banner in M2); light theme uses darker red and amber, and a solid green-600 primary border. axe runs on every screen in every device project to keep it that way.
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brandFor } from "@/brands";
 import { LegalPage } from "@/components/ui/LegalPage";
 import { getLegalDocument } from "@/server/legal/documents";
 import { getStoreOr404 } from "@/server/stores/getStore";
@@ -13,6 +14,8 @@ export default async function ProgramTermsPage({
   params,
 }: PageProps<"/legal/[storeSlug]/program-terms">) {
   const { storeSlug } = await params;
-  await getStoreOr404(storeSlug);
-  return <LegalPage document={await getLegalDocument("program_terms")} />;
+  const store = await getStoreOr404(storeSlug);
+  return (
+    <LegalPage brand={brandFor(store.slug)} document={await getLegalDocument("program_terms")} />
+  );
 }

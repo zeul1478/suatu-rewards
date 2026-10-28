@@ -74,6 +74,17 @@ Customer phone ── every 3 s ─► GET /api/s/suatu/status → balance, prog
 - Progress maths lives once in `src/lib/progress.ts` and serves both screens.
 - Codes: unique per store while pending; throttled per staff member.
 
+## Branding (M4)
+
+```
+brand/<slug>/ (owner's originals) ──pnpm brand:sync──► public/stores/<slug>/   (served files)
+brand/<slug>/icons/svg ──pnpm icons──► src/components/ui/icons/iconPaths.ts (typed <Icon>)
+src/brands/<slug>.ts ──brandThemeStyle()──► --brand-dark-* / --brand-light-* / --brand-font-*
+                                             └► src/styles/tokens.css semantic tokens ► components
+```
+
+Store layouts set `data-theme` (customer `system`, staff `light`) and the brand variables; `brandMetadata()` sets favicon, apple-touch icon and OG image; `/s/<slug>/manifest.webmanifest` lists the app icons.
+
 ## Local ports
 
 | Service                       | URL                                                                         |

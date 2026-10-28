@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
+import { brandFor } from "@/brands";
 import { RedeemCode } from "@/components/customer/RedeemCode";
+import { ScreenHeader } from "@/components/customer/ScreenHeader";
 import { storeUrl } from "@/lib/storeUrl";
 import { requireCustomer } from "@/server/customers/currentCustomer";
 import { getPendingRedemption } from "@/server/rewards/redemptions";
@@ -24,8 +26,8 @@ export default async function RedeemPage({ params }: PageProps<"/s/[storeSlug]/r
   const t = await getTranslations("redeem");
 
   return (
-    <main className="screen-gutter mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center gap-6 pt-[max(var(--space-8),env(safe-area-inset-top))] pb-[max(var(--space-12),env(safe-area-inset-bottom))]">
-      <h1 className="font-display text-4xl font-bold text-ink">{t("title")}</h1>
+    <main className="screen-gutter mx-auto flex w-full max-w-md flex-col gap-6 pt-[max(var(--space-8),env(safe-area-inset-top))] pb-[var(--space-8)]">
+      <ScreenHeader brand={brandFor(store.slug)} title={t("title")} />
       <RedeemCode
         redemption={redemption}
         statusUrl={`/api${storeUrl(store.slug, "/status")}`}

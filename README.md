@@ -63,6 +63,10 @@ Open that address on a phone on the same Wi-Fi, or scan the QR code on the dev h
 - Mailpit (test emails — password resets, email confirmations): http://127.0.0.1:55324
 - Supabase Studio (database): http://127.0.0.1:55323
 
+## Branding
+
+The store's look is `src/brands/suatu.ts` (names, colours, fonts, which logo/icon file is which). Original files stay in `brand/`; run `pnpm brand:sync` after changing them, then `pnpm test` (checks files exist and colours stay readable). See `docs/DESIGN.md` → Brand system.
+
 ## Docs
 
 [Architecture](docs/ARCHITECTURE.md) · [Decisions](docs/DECISIONS.md) · [Design](docs/DESIGN.md) · [Testing](docs/TESTING.md)

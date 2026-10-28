@@ -10,6 +10,10 @@ import { expect, signUp, staffLogIn, test } from "../e2e/support/fixtures";
  */
 
 async function checkScreen(page: Page) {
+  // Measure the settled screen, not a fade-in halfway through.
+  await page.evaluate(() =>
+    Promise.all(document.getAnimations().map((animation) => animation.finished)),
+  );
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
   );
@@ -45,6 +49,21 @@ test.describe("accessibility and layout", () => {
       await checkScreen(page);
     });
   }
+
+  // The customer app follows the phone's appearance; the runs above use light mode.
+  for (const path of ["/s/suatu/signup", "/s/suatu/login", "/legal/privacy"]) {
+    test(`dark mode ${path}`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme: "dark" });
+      await page.goto(path);
+      await checkScreen(page);
+    });
+  }
+
+  test("customer home in dark mode", async ({ page }) => {
+    await page.emulateMedia({ colorScheme: "dark" });
+    await signUp(page, testCustomer());
+    await checkScreen(page);
+  });
 
   test("sign-up with every error showing", async ({ page }) => {
     await page.goto("/s/suatu/signup");

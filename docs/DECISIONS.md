@@ -148,3 +148,32 @@ With `after()`, so slow email delivery never delays reaching the home screen.
 ### Open question — brand kit fonts
 
 `brand/suatu/README.md` (added during M3) says Space Grotesk + Inter; D6 chose Barlow + Barlow Condensed. To settle before Milestone 4.
+
+## 2026-10-28 — Milestone 4, part 1: brand kit
+
+### D32. Fonts: Space Grotesk + Inter (replaces D6)
+
+Chosen by the owner to match the brand kit: the SUATU wordmark is drawn in Space Grotesk. Space Grotesk for headings and numbers, Inter for body. Both self-hosted with `next/font`.
+
+### D33. Brand settings live in the app; brand/ keeps the originals
+
+- `brand/` is the owner's folder of original files. The app never moves or edits it.
+- `pnpm brand:sync` copies what's served into `public/stores/<slug>/` (logo, icons, OG image) and `public/platform/behappy/` (badges). The copies are committed so a deploy needs no extra step.
+- Each store's look is one typed file, `src/brands/<slug>.ts`: names, both colour palettes, fonts, logo and icon paths. Colours reach the screens only through CSS variables (`brandThemeStyle` → `src/styles/tokens.css`), so a new store, or another app built from this code, is a new brand file, not new components.
+- `tests/unit/brands.test.ts` fails if a brand points at a missing file or a colour pair drops below WCAG AA.
+
+### D34. Custom icons only: `<Icon name="…">`
+
+Built from `brand/suatu/icons/svg/` by `pnpm icons` into a typed list (45 names). Inline SVG: main lines `currentColor`, detail `--icon-accent` (lime on dark, Suatu green on light), stroke kept at 2 px at every size. lucide was removed; a test fails if any icon library is installed.
+
+### D35. Customer app follows the phone's appearance
+
+Dark green when the phone is in Dark mode, light (mist) when it's in Light mode, as §9 says ("follows system setting"). Staff screen is always light. On a phone in Light mode the customer app is light, so most people will first see the light version.
+
+### D36. Light theme "sunken" colour lightened: #DCEBE2 → #E4F0E9
+
+Suatu green text (`#1E7A4F`, kept per the brand rules) was 4.3:1 on it; now 4.54:1. Found by the new brand contrast test.
+
+### D37. "Powered by behappy" placement (spec §5)
+
+Dark badge in the customer app footer (every customer screen, including Account), light badge at the bottom of the staff screen. behappy is the company that makes the app; it is platform branding, the same in every store's app (`src/lib/platform.ts`).

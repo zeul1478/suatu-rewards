@@ -1,18 +1,22 @@
-import { Barlow, Barlow_Condensed } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 
-// Barlow is modelled on California highway signage — road-side, legible,
-// a little industrial (docs/DESIGN.md). Self-hosted by next/font: no layout shift.
-export const barlow = Barlow({
+/*
+ * Every font a brand can pick (src/brands/<slug>.ts → fonts). Self-hosted by next/font: no
+ * requests to Google from the visitor, no layout shift. To offer another font, add it here with
+ * variable "--font-<key>" and add the key to FontKey in src/brands/types.ts.
+ */
+
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin", "latin-ext"],
-  weight: ["400", "500", "600"],
-  variable: "--font-barlow",
+  variable: "--font-space-grotesk",
   display: "swap",
 });
 
-// Condensed cut for headings and the price-sign points display.
-export const barlowCondensed = Barlow_Condensed({
+const inter = Inter({
   subsets: ["latin", "latin-ext"],
-  weight: ["500", "600", "700"],
-  variable: "--font-barlow-condensed",
+  variable: "--font-inter",
   display: "swap",
 });
+
+/** Class names that define every registered font's CSS variable; put on <html>. */
+export const fontVariables = [spaceGrotesk.variable, inter.variable].join(" ");

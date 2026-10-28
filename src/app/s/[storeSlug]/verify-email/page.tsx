@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+import { brandFor } from "@/brands";
 import { AuthScreen } from "@/components/customer/AuthScreen";
 import { FormAlert } from "@/components/ui/FormAlert";
 import { storeUrl } from "@/lib/storeUrl";
@@ -20,13 +21,10 @@ export default async function VerifyEmailPage({
   const { token } = await searchParams;
   const store = await getStoreOr404(storeSlug);
   const result = typeof token === "string" && token ? await verifyEmail(token) : "invalid";
-  const [t, tCommon] = await Promise.all([
-    getTranslations("verifyEmail"),
-    getTranslations("common"),
-  ]);
+  const t = await getTranslations("verifyEmail");
 
   return (
-    <AuthScreen programName={tCommon("programName", { store: store.name })} title={t("metaTitle")}>
+    <AuthScreen brand={brandFor(store.slug)} title={t("metaTitle")}>
       <FormAlert tone={result === "verified" ? "success" : "error"}>{t(result)}</FormAlert>
       <Link href={storeUrl(store.slug)} className="glass glass-primary">
         {t("continue")}

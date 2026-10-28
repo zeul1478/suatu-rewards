@@ -2,7 +2,8 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { Icon } from "@/components/ui/icons/Icon";
 import { SubmitButton } from "@/components/ui/SubmitButton";
 import type { CustomerStatus } from "@/server/customers/status";
 import { FuelGauge } from "./FuelGauge";
@@ -30,7 +31,14 @@ export function PointsCard({
   const t = useTranslations("home");
   const format = useFormatter();
   const [status, setStatus] = useState(initialStatus);
-  usePolling<CustomerStatus>(statusUrl, 3000, setStatus);
+  // Each rise in the balance replays a short "pump tick" on the number (off with reduced motion).
+  const [bumps, setBumps] = useState(0);
+  const shownBalance = useRef(initialStatus.progress.balance);
+  usePolling<CustomerStatus>(statusUrl, 3000, (next) => {
+    if (next.progress.balance > shownBalance.current) setBumps((count) => count + 1);
+    shownBalance.current = next.progress.balance;
+    setStatus(next);
+  });
 
   const { progress, pendingRedemption, lastVisitAt } = status;
   const target = progress.target;
@@ -42,15 +50,17 @@ export function PointsCard({
     >
       <h2
         id="points-heading"
-        className="font-display text-lg font-semibold tracking-[0.18em] text-ink-muted uppercase"
+        className="flex items-center gap-2 font-display text-lg font-semibold tracking-[0.18em] text-ink-muted uppercase"
       >
+        <Icon name="gauge" />
         {t("yourPoints")}
       </h2>
 
       <p className="flex items-baseline gap-2" aria-live="polite" aria-atomic="true">
         <span
+          key={bumps}
           data-testid="points-balance"
-          className="price-digits min-w-[3ch] text-7xl leading-none text-accent"
+          className={`price-digits text-7xl leading-none text-accent ${bumps ? "points-bump" : ""}`}
         >
           {progress.balance}
         </span>
@@ -70,7 +80,8 @@ export function PointsCard({
       <div className="min-h-[var(--target-min)]">
         {progress.unlocked && target ? (
           <div className="flex flex-col gap-3">
-            <p className="font-display text-2xl font-bold text-accent">
+            <p className="flex items-center gap-2 font-display text-2xl font-bold text-accent">
+              <Icon name="coffee" size={28} />
               {t("unlocked", { reward: target.name })}
             </p>
             {pendingRedemption ? (
@@ -86,7 +97,8 @@ export function PointsCard({
             )}
           </div>
         ) : target ? (
-          <p className="text-lg text-ink">
+          <p className="flex items-center gap-2 text-lg text-ink">
+            <Icon name="coffee" className="text-ink-muted" />
             {t("visitsToGo", { visits: progress.visitsToNext, reward: target.name })}
           </p>
         ) : (

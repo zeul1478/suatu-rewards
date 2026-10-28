@@ -1,23 +1,19 @@
 /*
- * Suatu design tokens (spec §9, rationale in docs/DESIGN.md).
- * Raw palette first, then semantic tokens per theme. Components use the
- * semantic tokens only, so the light staff theme is a token swap.
+ * Design tokens. Brand colours and fonts come from the store's brand (src/brands/<slug>.ts),
+ * set as --brand-dark-* / --brand-light-* / --brand-font-* on the element wrapping its screens
+ * (brandThemeStyle). Components use only the semantic tokens below, so another brand — or
+ * another app built from this code — is a different brand file, not different components.
+ *
+ * The theme blocks below must match the element that carries the brand variables (CSS resolves
+ * var() where a property is declared), so they key off data-theme, which that element sets.
+ *
+ * Themes, set with data-theme on that element:
+ *   dark   — customer app default, dev home
+ *   light  — staff screen (bright shops)
+ *   system — follows the phone: dark unless the phone is in light mode
  */
 
 :root {
-  /* Palette */
-  --forest-950: #07231a;
-  --forest-900: #0a2e22;
-  --forest-800: #0e3b2c;
-  --green-700: #17633f;
-  --green-600: #1e7a4f;
-  --green-400: #3fbf7f;
-  --lime-300: #c6f06a;
-  --mist-100: #eaf4ee;
-  --mist-400: #9db8aa;
-  --signal-amber: #f2b84b;
-  --signal-red: #f2836f; /* §9 had #e5604d: 4.3:1 on raised surfaces, too low */
-
   /* Spacing scale: 4px base */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -41,58 +37,95 @@
   --duration-fill: 300ms;
 }
 
-/* Dark: default for the customer app and dev home */
+/* ── Dark ─────────────────────────────────────────────────────────────── */
 :root,
-[data-theme="dark"] {
+[data-theme="dark"],
+[data-theme="system"] {
   color-scheme: dark;
-  --surface-page: var(--forest-950);
-  --surface-raised: var(--forest-800);
-  --surface-sunken: var(--forest-900);
-  --text-primary: var(--mist-100);
-  --text-secondary: var(--mist-400);
-  --text-accent: var(--lime-300);
-  --brand: var(--green-400);
-  --line: rgba(234, 244, 238, 0.14);
-  --line-strong: rgba(234, 244, 238, 0.4);
-  --stripe: var(--lime-300);
-  --focus-ring: var(--lime-300);
-  --warning: var(--signal-amber);
-  --danger: var(--signal-red);
+  --surface-page: var(--brand-dark-page);
+  --surface-raised: var(--brand-dark-raised);
+  --surface-sunken: var(--brand-dark-sunken);
+  --text-primary: var(--brand-dark-text);
+  --text-secondary: var(--brand-dark-muted);
+  --text-accent: var(--brand-dark-accent);
+  --brand: var(--brand-dark-brand);
+  --icon-accent: var(--brand-dark-accent);
+  --focus-ring: var(--brand-dark-accent);
+  --line: color-mix(in srgb, var(--brand-dark-text) 14%, transparent);
+  --line-strong: color-mix(in srgb, var(--brand-dark-text) 40%, transparent);
+  --stripe: var(--brand-dark-accent);
+  --glow: color-mix(in srgb, var(--brand-dark-brand) 16%, transparent);
 
-  /* Glass buttons (§9). Secondary border raised from 0.18 to 0.40 for 3:1. */
-  --glass-primary-fill: rgba(63, 191, 127, 0.18);
-  --glass-primary-fill-pressed: rgba(63, 191, 127, 0.28);
-  --glass-primary-border: rgba(198, 240, 106, 0.45);
-  --glass-secondary-fill: rgba(234, 244, 238, 0.06);
-  --glass-secondary-fill-pressed: rgba(234, 244, 238, 0.12);
-  --glass-secondary-border: rgba(234, 244, 238, 0.4);
+  /* Not per store: tuned for contrast on any dark green-ish surface (DESIGN.md). */
+  --warning: #f2b84b;
+  --danger: #f2836f;
+
+  /* Glass buttons (§9). Secondary border at 40% for 3:1 against the page. */
+  --glass-primary-fill: color-mix(in srgb, var(--brand-dark-brand) 18%, transparent);
+  --glass-primary-fill-pressed: color-mix(in srgb, var(--brand-dark-brand) 28%, transparent);
+  --glass-primary-border: color-mix(in srgb, var(--brand-dark-accent) 45%, transparent);
+  --glass-secondary-fill: color-mix(in srgb, var(--brand-dark-text) 6%, transparent);
+  --glass-secondary-fill-pressed: color-mix(in srgb, var(--brand-dark-text) 12%, transparent);
+  --glass-secondary-border: color-mix(in srgb, var(--brand-dark-text) 40%, transparent);
   --glass-highlight: rgba(255, 255, 255, 0.12);
-  --glass-text: var(--mist-100);
+  --glass-text: var(--brand-dark-text);
 }
 
-/* Light: staff screen in bright shops; customer app when the phone is light */
+/* ── Light ────────────────────────────────────────────────────────────── */
+/* The same block twice: once for data-theme="light", once for "system" when the phone is in
+   light mode. CSS can't share a block between a selector and a media query. */
 [data-theme="light"] {
   color-scheme: light;
-  --surface-page: var(--mist-100);
-  --surface-raised: #ffffff;
-  --surface-sunken: #dcebe2;
-  --text-primary: var(--forest-950);
-  --text-secondary: #3d5c4e;
-  --text-accent: var(--green-700);
-  --brand: var(--green-600);
-  --line: rgba(7, 35, 26, 0.14);
-  --line-strong: rgba(7, 35, 26, 0.45);
-  --stripe: var(--green-600);
-  --focus-ring: var(--green-700);
+  --surface-page: var(--brand-light-page);
+  --surface-raised: var(--brand-light-raised);
+  --surface-sunken: var(--brand-light-sunken);
+  --text-primary: var(--brand-light-text);
+  --text-secondary: var(--brand-light-muted);
+  --text-accent: var(--brand-light-accent);
+  --brand: var(--brand-light-brand);
+  --icon-accent: var(--brand-light-accent);
+  --focus-ring: var(--brand-light-brand);
+  --line: color-mix(in srgb, var(--brand-light-text) 14%, transparent);
+  --line-strong: color-mix(in srgb, var(--brand-light-text) 45%, transparent);
+  --stripe: var(--brand-light-brand);
+  --glow: color-mix(in srgb, var(--brand-light-brand) 10%, transparent);
   --warning: #8a5a00;
   --danger: #b23a28;
-
-  --glass-primary-fill: rgba(30, 122, 79, 0.14);
-  --glass-primary-fill-pressed: rgba(30, 122, 79, 0.24);
-  --glass-primary-border: var(--green-600);
-  --glass-secondary-fill: rgba(7, 35, 26, 0.04);
-  --glass-secondary-fill-pressed: rgba(7, 35, 26, 0.1);
-  --glass-secondary-border: rgba(7, 35, 26, 0.45);
+  --glass-primary-fill: color-mix(in srgb, var(--brand-light-brand) 14%, transparent);
+  --glass-primary-fill-pressed: color-mix(in srgb, var(--brand-light-brand) 24%, transparent);
+  --glass-primary-border: var(--brand-light-brand);
+  --glass-secondary-fill: color-mix(in srgb, var(--brand-light-text) 4%, transparent);
+  --glass-secondary-fill-pressed: color-mix(in srgb, var(--brand-light-text) 10%, transparent);
+  --glass-secondary-border: color-mix(in srgb, var(--brand-light-text) 45%, transparent);
   --glass-highlight: rgba(255, 255, 255, 0.6);
-  --glass-text: var(--forest-950);
+  --glass-text: var(--brand-light-text);
+}
+
+@media (prefers-color-scheme: light) {
+  [data-theme="system"] {
+    color-scheme: light;
+    --surface-page: var(--brand-light-page);
+    --surface-raised: var(--brand-light-raised);
+    --surface-sunken: var(--brand-light-sunken);
+    --text-primary: var(--brand-light-text);
+    --text-secondary: var(--brand-light-muted);
+    --text-accent: var(--brand-light-accent);
+    --brand: var(--brand-light-brand);
+    --icon-accent: var(--brand-light-accent);
+    --focus-ring: var(--brand-light-brand);
+    --line: color-mix(in srgb, var(--brand-light-text) 14%, transparent);
+    --line-strong: color-mix(in srgb, var(--brand-light-text) 45%, transparent);
+    --stripe: var(--brand-light-brand);
+    --glow: color-mix(in srgb, var(--brand-light-brand) 10%, transparent);
+    --warning: #8a5a00;
+    --danger: #b23a28;
+    --glass-primary-fill: color-mix(in srgb, var(--brand-light-brand) 14%, transparent);
+    --glass-primary-fill-pressed: color-mix(in srgb, var(--brand-light-brand) 24%, transparent);
+    --glass-primary-border: var(--brand-light-brand);
+    --glass-secondary-fill: color-mix(in srgb, var(--brand-light-text) 4%, transparent);
+    --glass-secondary-fill-pressed: color-mix(in srgb, var(--brand-light-text) 10%, transparent);
+    --glass-secondary-border: color-mix(in srgb, var(--brand-light-text) 45%, transparent);
+    --glass-highlight: rgba(255, 255, 255, 0.6);
+    --glass-text: var(--brand-light-text);
+  }
 }

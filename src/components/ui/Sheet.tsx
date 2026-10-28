@@ -1,8 +1,8 @@
 "use client";
 
-import { X } from "lucide-react";
 import { Dialog } from "radix-ui";
 import type { ReactNode } from "react";
+import { Icon } from "./icons/Icon";
 
 type SheetProps = {
   trigger: ReactNode;
@@ -27,7 +27,7 @@ export function Sheet({ trigger, title, closeLabel, children }: SheetProps) {
               {title}
             </Dialog.Title>
             <Dialog.Close className="glass h-11 w-11 shrink-0 px-0" aria-label={closeLabel}>
-              <X aria-hidden="true" size={20} strokeWidth={1.75} />
+              <Icon name="close" size={20} />
             </Dialog.Close>
           </div>
           <div className="sheet-body">{children}</div>

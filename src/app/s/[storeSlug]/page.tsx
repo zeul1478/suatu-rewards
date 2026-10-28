@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+import { brandFor } from "@/brands";
 import { PointsCard } from "@/components/customer/PointsCard";
+import { ScreenHeader } from "@/components/customer/ScreenHeader";
 import { FormAlert } from "@/components/ui/FormAlert";
+import { Icon } from "@/components/ui/icons/Icon";
 import { LogoutButton } from "@/components/ui/LogoutButton";
 import { storeUrl } from "@/lib/storeUrl";
 import { requireCustomer } from "@/server/customers/currentCustomer";
@@ -32,16 +35,11 @@ export default async function CustomerHomePage({
   ]);
 
   return (
-    <main className="screen-gutter mx-auto flex w-full max-w-md flex-col gap-6 pt-[max(var(--space-8),env(safe-area-inset-top))] pb-[max(var(--space-12),env(safe-area-inset-bottom))]">
-      <header className="flex flex-col gap-4">
-        <p className="font-display text-lg font-semibold tracking-[0.2em] text-brand uppercase">
-          {tCommon("programName", { store: store.name })}
-        </p>
-        <div className="lane-stripe" aria-hidden="true" />
-        <h1 className="font-display text-4xl font-bold text-ink">
-          {t("greeting", { name: customer.firstName })}
-        </h1>
-      </header>
+    <main className="screen-gutter mx-auto flex w-full max-w-md flex-col gap-6 pt-[max(var(--space-8),env(safe-area-inset-top))] pb-[var(--space-8)]">
+      <ScreenHeader
+        brand={brandFor(store.slug)}
+        title={t("greeting", { name: customer.firstName })}
+      />
 
       {passwordChanged ? <FormAlert tone="success">{tLogin("passwordChanged")}</FormAlert> : null}
 
@@ -54,8 +52,12 @@ export default async function CustomerHomePage({
       />
 
       <nav className="flex flex-col gap-3">
-        <Link href={storeUrl(store.slug, "/account")} className="glass">
-          {t("account")}
+        <Link href={storeUrl(store.slug, "/account")} className="glass justify-between">
+          <span className="flex items-center gap-2">
+            <Icon name="account" />
+            {t("account")}
+          </span>
+          <Icon name="chevron-right" size={20} />
         </Link>
         <LogoutButton
           action={logoutAction.bind(null, store.slug)}

@@ -2,9 +2,12 @@ import { randomUUID } from "node:crypto";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
+import { brandFor } from "@/brands";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { AddVisitForm } from "@/components/staff/AddVisitForm";
 import { IdleLogout } from "@/components/staff/IdleLogout";
 import { RedeemCodeForm } from "@/components/staff/RedeemCodeForm";
+import { Icon } from "@/components/ui/icons/Icon";
 import { LogoutButton } from "@/components/ui/LogoutButton";
 import { storeUrl } from "@/lib/storeUrl";
 import { getCurrentStaff, STAFF_IDLE_MS } from "@/server/staff/session";
@@ -28,18 +31,25 @@ export default async function StaffPage({ params }: PageProps<"/staff/[storeSlug
   const [t, tCommon] = await Promise.all([getTranslations("staff"), getTranslations("common")]);
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="flex flex-1 flex-col">
       <IdleLogout
         timeoutMs={STAFF_IDLE_MS}
         logout={staffLogoutAction.bind(null, store.slug, "idle")}
       />
 
       <header className="screen-gutter flex flex-wrap items-center justify-between gap-3 border-b border-line bg-raised pt-[max(var(--space-3),env(safe-area-inset-top))] pb-3">
-        <div className="flex flex-col">
-          <p className="font-display text-xl font-semibold tracking-[0.18em] text-brand uppercase">
-            {store.name}
+        <div className="flex flex-col gap-1">
+          <BrandLogo
+            brand={brandFor(store.slug)}
+            kind="wordmark"
+            theme="light"
+            height={26}
+            priority
+          />
+          <p className="flex items-center gap-1.5 text-sm text-ink-muted">
+            <Icon name="user" size={20} />
+            {t("signedInAs", { name: staff.displayName })}
           </p>
-          <p className="text-sm text-ink-muted">{t("signedInAs", { name: staff.displayName })}</p>
         </div>
         <LogoutButton
           action={staffLogoutAction.bind(null, store.slug, undefined)}
@@ -53,7 +63,11 @@ export default async function StaffPage({ params }: PageProps<"/staff/[storeSlug
           aria-labelledby="add-visit-heading"
           className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-line bg-raised p-5"
         >
-          <h1 id="add-visit-heading" className="font-display text-3xl font-bold">
+          <h1
+            id="add-visit-heading"
+            className="flex items-center gap-2 font-display text-3xl font-bold"
+          >
+            <Icon name="add-visit" size={32} />
             {t("addVisitTitle")}
           </h1>
           <AddVisitForm
@@ -68,7 +82,11 @@ export default async function StaffPage({ params }: PageProps<"/staff/[storeSlug
             aria-labelledby="redeem-heading"
             className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-line bg-raised p-5"
           >
-            <h2 id="redeem-heading" className="font-display text-2xl font-bold">
+            <h2
+              id="redeem-heading"
+              className="flex items-center gap-2 font-display text-2xl font-bold"
+            >
+              <Icon name="ticket" size={28} />
               {t("redeemTitle")}
             </h2>
             <RedeemCodeForm action={redeemCodeAction.bind(null, store.slug)} />

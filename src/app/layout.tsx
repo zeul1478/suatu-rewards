@@ -1,18 +1,23 @@
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
-import { barlow, barlowCondensed } from "./fonts";
+import { brandThemeStyle, DEFAULT_BRAND } from "@/brands";
+import { brandMetadata } from "@/brands/metadata";
+import { fontVariables } from "./fonts";
 import "./globals.css";
 
+// Outside a store (dev home, platform legal pages) the default brand applies; store layouts
+// set their own brand and theme on top.
 export const metadata: Metadata = {
-  title: { default: "Suatu Rewards", template: "%s · Suatu Rewards" },
-  description: "Earn points on every visit to Suatu.",
+  ...brandMetadata(DEFAULT_BRAND),
+  description: "Earn points on every visit.",
+  metadataBase: new URL(process.env.APP_URL ?? "http://localhost:3000"),
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#07231a",
+  themeColor: DEFAULT_BRAND.colors.dark.page,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -21,7 +26,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     // before React loads. Only this element's own attributes are exempt, not its children.
     <html
       lang="en"
-      className={`${barlow.variable} ${barlowCondensed.variable} antialiased`}
+      data-theme="dark"
+      style={brandThemeStyle(DEFAULT_BRAND)}
+      className={`${fontVariables} antialiased`}
       suppressHydrationWarning
     >
       <body>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { brandFor } from "@/brands";
 import { AuthScreen } from "@/components/customer/AuthScreen";
 import { ForgotPasswordForm } from "@/components/customer/ForgotPasswordForm";
 import { storeUrl } from "@/lib/storeUrl";
@@ -16,14 +17,10 @@ export default async function ForgotPasswordPage({
 }: PageProps<"/s/[storeSlug]/forgot-password">) {
   const { storeSlug } = await params;
   const store = await getStoreOr404(storeSlug);
-  const [t, tCommon] = await Promise.all([getTranslations("forgot"), getTranslations("common")]);
+  const t = await getTranslations("forgot");
 
   return (
-    <AuthScreen
-      programName={tCommon("programName", { store: store.name })}
-      title={t("title")}
-      intro={t("intro")}
-    >
+    <AuthScreen brand={brandFor(store.slug)} title={t("title")} intro={t("intro")}>
       <ForgotPasswordForm
         action={forgotPasswordAction.bind(null, store.slug)}
         loginHref={storeUrl(store.slug, "/login")}

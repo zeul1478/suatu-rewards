@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
+import { brandFor } from "@/brands";
 import { AuthScreen } from "@/components/customer/AuthScreen";
 import { LoginForm } from "@/components/customer/LoginForm";
 import { storeUrl } from "@/lib/storeUrl";
@@ -18,10 +19,10 @@ export default async function LoginPage({ params }: PageProps<"/s/[storeSlug]/lo
   const store = await getStoreOr404(storeSlug);
   if (await getCurrentCustomer()) redirect(storeUrl(store.slug));
 
-  const [t, tCommon] = await Promise.all([getTranslations("login"), getTranslations("common")]);
+  const t = await getTranslations("login");
 
   return (
-    <AuthScreen programName={tCommon("programName", { store: store.name })} title={t("title")}>
+    <AuthScreen brand={brandFor(store.slug)} title={t("title")}>
       <LoginForm
         action={loginAction.bind(null, store.slug)}
         forgotHref={storeUrl(store.slug, "/forgot-password")}

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160" role="img" aria-label="Suatu">
+<path d="M34.97 118 A52 52 0 1 1 125.03 118" fill="none" stroke="#EAF4EE" stroke-opacity="0.18" stroke-width="14" stroke-linecap="round"/>
+<path d="M34.97 118 A52 52 0 0 1 106 46.97" fill="none" stroke="#3FBF7F" stroke-width="14" stroke-linecap="round"/>
+<line x1="80" y1="92" x2="99" y2="59.09" stroke="#C6F06A" stroke-width="6" stroke-linecap="round"/>
+<circle cx="80" cy="92" r="8" fill="#C6F06A"/>
+</svg>

@@ -31,7 +31,9 @@ export function RedeemCodeForm({ action }: RedeemCodeFormProps) {
         enterKeyHint="done"
         variant="large"
       />
-      <SubmitButton pendingLabel={t("redeeming")}>{t("redeem")}</SubmitButton>
+      <SubmitButton icon="check" variant="secondary" pendingLabel={t("redeeming")}>
+        {t("redeem")}
+      </SubmitButton>
       <div aria-live="polite">
         {state.status === "success" && state.values ? (
           <FormAlert tone="success">

@@ -17,8 +17,10 @@
   --color-warning: var(--warning);
   --color-danger: var(--danger);
 
-  --font-sans: var(--font-barlow);
-  --font-display: var(--font-barlow-condensed);
+  --color-glow: var(--glow);
+
+  --font-sans: var(--brand-font-body);
+  --font-display: var(--brand-font-display);
 }
 
 @layer base {
@@ -31,7 +33,7 @@
     min-height: 100dvh;
     background: var(--surface-page);
     color: var(--text-primary);
-    font-family: var(--font-barlow), system-ui, sans-serif;
+    font-family: var(--brand-font-body), system-ui, sans-serif;
     font-size: 1rem;
     line-height: 1.5;
     touch-action: manipulation;
@@ -52,12 +54,23 @@
 }
 
 @layer components {
-  /* Fuel-price-sign numerals: condensed, fixed-width digits */
+  /* Fuel-price-sign numerals: the display font with fixed-width digits */
   .price-digits {
-    font-family: var(--font-barlow-condensed), system-ui, sans-serif;
+    font-family: var(--brand-font-display), system-ui, sans-serif;
     font-variant-numeric: tabular-nums lining-nums;
     font-weight: 600;
-    letter-spacing: 0.02em;
+    letter-spacing: -0.01em;
+  }
+
+  /* Brand icons keep a 2px line at every size (icons README). */
+  .icon * {
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* "Station at dusk": a soft brand glow at the top of the screen, so glass has something to blur. */
+  .app-backdrop {
+    background:
+      radial-gradient(120% 55% at 50% -12%, var(--glow), transparent 70%), var(--surface-page);
   }
 
   /* 16px side gutter that also clears notches in landscape */

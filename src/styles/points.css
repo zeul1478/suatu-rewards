@@ -12,7 +12,8 @@
     transition: transform var(--duration-fill) var(--ease-out);
   }
 
-  /* One notch per 5% — a visit's worth at Suatu — like the segments on a pump display. */
+  /* One notch per 5% — a visit's worth at Suatu — like the segments on a pump display.
+     The element is 2px wider than the track so the notch after the last segment is clipped. */
   .fuel-gauge-ticks {
     background: repeating-linear-gradient(
       90deg,
@@ -26,5 +27,43 @@
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
+  }
+}
+
+/* Balance went up: a quick "pump tick" on the number (300 ms, transform only; the global
+   reduced-motion rule turns it off). */
+@keyframes points-bump {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@layer components {
+  .points-bump {
+    display: inline-block;
+    transform-origin: left bottom;
+    animation: points-bump var(--duration-fill) var(--ease-out);
+  }
+
+  /* Staff result banner slides in so a new result is noticeable even when the text is similar. */
+  .banner-in {
+    animation: banner-in 200ms var(--ease-out);
+  }
+}
+
+@keyframes banner-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }

@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState, type ClipboardEvent } from "react";
+import { Icon } from "@/components/ui/icons/Icon";
 import { SubmitButton } from "@/components/ui/SubmitButton";
 import type { PendingRedemption } from "@/server/rewards/redemptions";
 import { usePolling } from "./usePolling";
@@ -47,7 +48,8 @@ export function RedeemCode({ redemption, statusUrl, homeHref, newCodeAction }: R
   if (redeemedBalance !== null) {
     return (
       <div role="status" className="flex flex-col items-start gap-6">
-        <p className="font-display text-5xl font-bold text-accent">
+        <p className="flex items-center gap-3 font-display text-5xl font-bold text-accent">
+          <Icon name="check" size={44} />
           {t("done", { reward: redemption.rewardName })}
         </p>
         <p className="text-lg text-ink">{t("balanceNow", { balance: redeemedBalance })}</p>
@@ -95,6 +97,7 @@ export function RedeemCode({ redemption, statusUrl, homeHref, newCodeAction }: R
         </div>
       ) : (
         <p className="text-ink-muted">
+          <Icon name="timer" size={20} className="mr-1 inline-block align-[-4px]" />
           {t("expiresIn")}{" "}
           <span className="price-digits text-2xl text-ink" aria-hidden="true">
             {minutes}:{seconds}

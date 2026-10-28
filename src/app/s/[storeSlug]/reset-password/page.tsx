@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { brandFor } from "@/brands";
 import { AuthScreen } from "@/components/customer/AuthScreen";
 import { ResetPasswordForm } from "@/components/customer/ResetPasswordForm";
 import { storeUrl } from "@/lib/storeUrl";
@@ -19,10 +20,10 @@ export default async function ResetPasswordPage({
   const { storeSlug } = await params;
   const { token, c } = await searchParams;
   const store = await getStoreOr404(storeSlug);
-  const [t, tCommon] = await Promise.all([getTranslations("reset"), getTranslations("common")]);
+  const t = await getTranslations("reset");
 
   return (
-    <AuthScreen programName={tCommon("programName", { store: store.name })} title={t("title")}>
+    <AuthScreen brand={brandFor(store.slug)} title={t("title")}>
       <ResetPasswordForm
         action={resetPasswordAction.bind(null, store.slug)}
         token={typeof token === "string" ? token : ""}

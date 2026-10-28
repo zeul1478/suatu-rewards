@@ -45,11 +45,16 @@ export function AddVisitForm({ action, initialKey, pointsPerVisit }: AddVisitFor
         required
         defaultValue={state.status === "error" ? state.phone : undefined}
       />
-      <SubmitButton size="large" pendingLabel={t("adding")}>
+      <SubmitButton size="large" icon="plus" pendingLabel={t("adding")}>
         {t("addVisit", { points: pointsPerVisit })}
       </SubmitButton>
       <div aria-live="polite" className="min-h-[5.5rem]">
-        {state.status === "success" && state.banner ? <VisitResult banner={state.banner} /> : null}
+        {state.status === "success" && state.banner ? (
+          // New key per result so the slide-in replays even when two results read alike.
+          <div key={state.nextKey} className="banner-in">
+            <VisitResult banner={state.banner} />
+          </div>
+        ) : null}
       </div>
     </form>
   );

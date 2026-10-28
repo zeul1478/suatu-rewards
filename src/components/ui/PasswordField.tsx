@@ -1,7 +1,7 @@
 "use client";
 
-import { Eye, EyeOff } from "lucide-react";
 import { useRef, useState, type ClipboardEvent, type DragEvent } from "react";
+import { Icon } from "./icons/Icon";
 import { RequiredMark } from "./RequiredMark";
 
 type PasswordFieldProps = {
@@ -97,11 +97,7 @@ export function PasswordField({
           aria-controls={id}
           className="absolute inset-y-0 right-0 grid w-12 place-items-center rounded-r-[var(--radius-md)] text-ink-muted hover:text-ink"
         >
-          {visible ? (
-            <EyeOff aria-hidden="true" size={22} strokeWidth={1.75} />
-          ) : (
-            <Eye aria-hidden="true" size={22} strokeWidth={1.75} />
-          )}
+          <Icon name={visible ? "eye-off" : "eye"} />
           <span className="sr-only">{visible ? hideLabel : showLabel}</span>
         </button>
       </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
+import { brandFor } from "@/brands";
 import { AuthScreen } from "@/components/customer/AuthScreen";
 import { SignupForm } from "@/components/customer/SignupForm";
 import { storeUrl } from "@/lib/storeUrl";
@@ -19,9 +20,8 @@ export default async function SignupPage({ params }: PageProps<"/s/[storeSlug]/s
   const store = await getStoreOr404(storeSlug);
   if (await getCurrentCustomer()) redirect(storeUrl(store.slug));
 
-  const [t, tCommon, program, terms, privacy] = await Promise.all([
+  const [t, program, terms, privacy] = await Promise.all([
     getTranslations("signup"),
-    getTranslations("common"),
     getLegalDocument("program_terms"),
     getLegalDocument("terms_of_use"),
     getLegalDocument("privacy_policy"),
@@ -29,7 +29,7 @@ export default async function SignupPage({ params }: PageProps<"/s/[storeSlug]/s
 
   return (
     <AuthScreen
-      programName={tCommon("programName", { store: store.name })}
+      brand={brandFor(store.slug)}
       title={t("title", { store: store.name })}
       intro={t("intro")}
     >

@@ -26,7 +26,7 @@ export function FuelGauge({ percent, label }: FuelGaugeProps) {
           className="fuel-gauge-fill absolute inset-0"
           style={{ transform: `scaleX(${clamped / 100})` }}
         />
-        <div className="fuel-gauge-ticks absolute inset-0" aria-hidden="true" />
+        <div className="fuel-gauge-ticks absolute inset-y-0 -right-0.5 left-0" aria-hidden="true" />
       </div>
       <span aria-hidden="true" className="price-digits text-lg text-accent">
         F

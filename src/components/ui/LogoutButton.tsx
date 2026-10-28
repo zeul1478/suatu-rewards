@@ -12,7 +12,9 @@ type LogoutButtonProps = {
 export function LogoutButton({ action, label, pendingLabel }: LogoutButtonProps) {
   return (
     <form action={action}>
-      <SubmitButton pendingLabel={pendingLabel}>{label}</SubmitButton>
+      <SubmitButton pendingLabel={pendingLabel} icon="logout" variant="secondary">
+        {label}
+      </SubmitButton>
     </form>
   );
 }
