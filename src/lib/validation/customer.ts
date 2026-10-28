@@ -78,3 +78,13 @@ export const changePasswordSchema = z.object({
   currentPassword: z.string().min(1, "currentPassword.required"),
   newPassword: newPasswordSchema,
 });
+
+export const profileSchema = z.object({
+  firstName: nameSchema("firstName"),
+  lastName: nameSchema("lastName"),
+  email: emailSchema,
+});
+
+export const deleteAccountSchema = z.object({
+  password: z.string().min(1, "password.required"),
+});

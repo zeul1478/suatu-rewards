@@ -14,6 +14,7 @@
 > - **M3 (D24–D31):** points move when the cashier confirms the code; wrong codes throttled per staff member; sign-up's claim of an unclaimed account replaces a separate `link_customer_on_signup`; void/adjust functions ship with their screens (M6/M7).
 > - **M4 (D32–D37):** Space Grotesk + Inter; store look in `src/brands/<slug>.ts` with files copied from `brand/` to `public/` by `pnpm brand:sync`; `<Icon>` from the custom set; customer app follows the phone's light/dark setting; light "sunken" shade `#E4F0E9` for contrast.
 > - **M4 part 2 (D38–D41):** tests run in their own `suatu-test` store and clean up after themselves; visit times formatted on the server; translations precompiled (customer home JS 142 KB); dev home rewritten as a two-part "how to test" guide.
+> - **M5 (D42–D47):** hand-written service worker (offline page only) instead of Serwist; delete account anonymizes and keeps the ledger; tab bar on signed-in screens (Log out moved to Account); HTTPS on phones via `pnpm dev:cert` (mkcert).
 
 ---
 

@@ -35,6 +35,7 @@ Samsung Internet can't be driven by Playwright → manual checklist below.
 | M2        | Unit 28 (incl. 5 from M1) · DB 11 (throttle functions, sign-up function, RLS, append-only consents) · e2e + a11y 45 per device × 8 projects = 360 · production build 2                                                                                                                                |
 | M3        | Unit 39 · DB 26 (points engine: 20 → 100 → redeem → 0, 105 → 5, idempotency, 10 parallel taps, concurrent cashiers, claim keeps points, daily cap, append-only ledger, code expiry/reuse/other store) · e2e + a11y 53 per device × 8 = 424 (full §0 golden path on every device) · production build 2 |
 | M4        | Unit + brand 73 · DB 26 · e2e + a11y 62 per device × 9 = 558 (incl. dark mode, no console errors in another time zone, branding) · visual 54 (12 screens × 6 devices… light and dark) · production 4 (guards + performance)                                                                           |
+| M5        | e2e + a11y 75 per device × 9 (tab bar, rewards, history, edit details, email change, offer-email consent, data export, delete account, offline page, install helper, service worker offline in Chromium) · visual 66 · production 4 (customer home JS 143 KB)                                         |
 
 ### §4.3b coverage (M2)
 

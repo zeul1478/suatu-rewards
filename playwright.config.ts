@@ -1,7 +1,10 @@
+import { existsSync } from "node:fs";
 import { defineConfig, devices } from "@playwright/test";
 
 const port = Number(process.env.PORT ?? 3000);
-const baseURL = `http://localhost:${port}`;
+// `pnpm dev:lan` serves HTTPS once `pnpm dev:cert` has made a certificate; tests use the same server.
+const https = existsSync("certs/dev-cert.pem");
+const baseURL = `${https ? "https" : "http"}://localhost:${port}`;
 
 // Device matrix from spec §10 (iPad both ways: the counter tablet is used portrait and landscape).
 // Samsung Internet can't be automated: see docs/TESTING.md.
@@ -33,12 +36,18 @@ export default defineConfig({
   expect: { timeout: 10_000 },
   use: {
     baseURL,
+    // The dev certificate is trusted on phones, not necessarily by Playwright's browsers.
+    ignoreHTTPSErrors: true,
+    // The service worker is tested on its own (customer-app.spec.ts); elsewhere it would only
+    // add noise, and Playwright's WebKit can't run service workers at all.
+    serviceWorkers: "block",
     trace: "on-first-retry",
   },
   projects: deviceProjects.map((name) => ({ name, use: { ...devices[name] } })),
   webServer: {
-    command: `pnpm dev --port ${port}`,
+    command: `PORT=${port} node scripts/dev-lan.mjs`,
     url: baseURL,
+    ignoreHTTPSErrors: true,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

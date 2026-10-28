@@ -695,6 +695,7 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      anonymize_customer: { Args: { p_customer_id: string }; Returns: undefined };
       auth_throttle_clear: { Args: { p_key: string; p_scope: string }; Returns: undefined };
       auth_throttle_fail: {
         Args: { p_key: string; p_lock: string; p_max: number; p_scope: string; p_window: string };
@@ -733,6 +734,10 @@ export type Database = {
           p_terms_of_use_version: string;
         };
         Returns: string;
+      };
+      set_marketing_consent: {
+        Args: { p_customer_id: string; p_granted: boolean; p_source: string; p_store_id: string };
+        Returns: undefined;
       };
     };
     Enums: {

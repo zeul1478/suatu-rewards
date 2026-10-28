@@ -260,6 +260,6 @@ test.describe("forgot password (§4.2, §4.3b)", () => {
     await page.goto(link);
     await expect(page.getByText("Thanks — your email is confirmed.")).toBeVisible();
     await page.goto(`/s/${STORE}/account`);
-    await expect(page.getByText("Confirmed", { exact: true })).toBeVisible();
+    await expect(page.getByText("Your email is confirmed.")).toBeVisible();
   });
 });

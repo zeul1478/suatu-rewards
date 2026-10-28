@@ -8,7 +8,7 @@ import { storeUrl } from "@/lib/storeUrl";
 import { requireCustomer } from "@/server/customers/currentCustomer";
 import { getPendingRedemption } from "@/server/rewards/redemptions";
 import { getStoreOr404 } from "@/server/stores/getStore";
-import { redeemAction } from "../actions";
+import { redeemAction } from "../../actions";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("redeem");

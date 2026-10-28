@@ -52,3 +52,6 @@ next-env.d.ts
 # supabase local state
 /supabase/.temp/
 /supabase/.branches/
+
+# local HTTPS certificate for the dev server (pnpm dev:cert)
+/certs/

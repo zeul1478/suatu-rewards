@@ -55,7 +55,9 @@ export async function submitLogin(page: Page, phone: string, password: string) {
   await page.getByRole("button", { name: "Log in" }).click();
 }
 
+/** Log out the customer: the button lives on the Account tab (M5). */
 export async function logOut(page: Page) {
+  await page.goto(`/s/${STORE}/account`);
   await page.getByRole("button", { name: "Log out" }).click();
   await expect(page).toHaveURL(at(`/s/${STORE}/login`));
 }

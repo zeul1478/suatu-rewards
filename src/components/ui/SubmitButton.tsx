@@ -9,9 +9,11 @@ type SubmitButtonProps = {
   size?: "regular" | "large";
   disabled?: boolean;
   icon?: IconName;
-  /** Secondary (quieter) glass instead of the primary green. */
-  variant?: "primary" | "secondary";
+  /** primary: brand glass · secondary: quieter glass · danger: destructive, red. */
+  variant?: "primary" | "secondary" | "danger";
 };
+
+const variantClass = { primary: "glass-primary", secondary: "", danger: "glass-danger" } as const;
 
 /** Primary glass button for a form; disabled while the form is submitting (no double submits). */
 export function SubmitButton({
@@ -28,7 +30,7 @@ export function SubmitButton({
       type="submit"
       disabled={pending || disabled}
       aria-disabled={pending || disabled}
-      className={`glass w-full ${variant === "primary" ? "glass-primary" : ""} ${size === "large" ? "glass-large" : ""}`}
+      className={`glass w-full ${variantClass[variant]} ${size === "large" ? "glass-large" : ""}`}
     >
       {icon ? <Icon name={icon} size={size === "large" ? 28 : 24} /> : null}
       {pending ? pendingLabel : children}

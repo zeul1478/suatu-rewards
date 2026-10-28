@@ -1,17 +1,14 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import Link from "next/link";
 import { brandFor } from "@/brands";
 import { PointsCard } from "@/components/customer/PointsCard";
 import { ScreenHeader } from "@/components/customer/ScreenHeader";
 import { FormAlert } from "@/components/ui/FormAlert";
-import { Icon } from "@/components/ui/icons/Icon";
-import { LogoutButton } from "@/components/ui/LogoutButton";
 import { storeUrl } from "@/lib/storeUrl";
 import { requireCustomer } from "@/server/customers/currentCustomer";
 import { getCustomerStatus } from "@/server/customers/status";
 import { getStoreOr404 } from "@/server/stores/getStore";
-import { logoutAction, redeemAction } from "./actions";
+import { redeemAction } from "../actions";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("home");
@@ -27,10 +24,9 @@ export default async function CustomerHomePage({
   const { passwordChanged } = await searchParams;
   const store = await getStoreOr404(storeSlug);
   const customer = await requireCustomer(store.slug);
-  const [status, t, tCommon, tLogin] = await Promise.all([
+  const [status, t, tLogin] = await Promise.all([
     getCustomerStatus(store, customer),
     getTranslations("home"),
-    getTranslations("common"),
     getTranslations("login"),
   ]);
 
@@ -50,21 +46,6 @@ export default async function CustomerHomePage({
         pointsPerVisit={store.pointsPerVisit}
         redeemAction={redeemAction.bind(null, store.slug)}
       />
-
-      <nav className="flex flex-col gap-3">
-        <Link href={storeUrl(store.slug, "/account")} className="glass justify-between">
-          <span className="flex items-center gap-2">
-            <Icon name="account" />
-            {t("account")}
-          </span>
-          <Icon name="chevron-right" size={20} />
-        </Link>
-        <LogoutButton
-          action={logoutAction.bind(null, store.slug)}
-          label={tCommon("logOut")}
-          pendingLabel={tCommon("loggingOut")}
-        />
-      </nav>
     </main>
   );
 }

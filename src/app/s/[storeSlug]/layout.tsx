@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { brandFor, brandThemeStyle } from "@/brands";
 import { brandMetadata } from "@/brands/metadata";
 import { PoweredBy } from "@/components/brand/PoweredBy";
+import { ServiceWorker } from "@/components/customer/ServiceWorker";
 import { storeUrl } from "@/lib/storeUrl";
 import { getStoreOr404 } from "@/server/stores/getStore";
 
@@ -34,8 +35,10 @@ export default async function CustomerLayout({ children, params }: LayoutProps<"
     <div
       data-theme="system"
       style={brandThemeStyle(brandFor(store.slug))}
-      className="app-backdrop flex min-h-dvh flex-col text-ink"
+      // With a tab bar on screen, leave room for it so the last content and footer stay visible.
+      className="app-backdrop flex min-h-dvh flex-col text-ink has-[.bottom-nav]:pb-[calc(3.5rem+env(safe-area-inset-bottom))]"
     >
+      <ServiceWorker storeSlug={store.slug} scope={`${storeUrl(store.slug)}/`} />
       <div className="flex-1">{children}</div>
       <PoweredBy theme="system" />
     </div>

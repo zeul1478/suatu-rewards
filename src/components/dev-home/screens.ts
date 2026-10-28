@@ -1,7 +1,7 @@
 import { storeUrl } from "@/lib/storeUrl";
 
 /** Bump after each milestone ships; screens up to this number become links. */
-export const CURRENT_MILESTONE = 3;
+export const CURRENT_MILESTONE = 5;
 
 export const DEMO_STORE_SLUG = "suatu";
 
@@ -30,6 +30,12 @@ export const devScreens: DevScreen[] = [
     who: "Customer · phone",
     href: storeUrl(DEMO_STORE_SLUG),
     milestone: 3,
+  },
+  {
+    name: "Rewards · History · Account",
+    who: "Customer · phone",
+    href: storeUrl(DEMO_STORE_SLUG, "/account"),
+    milestone: 5,
   },
   {
     name: "Staff screen",

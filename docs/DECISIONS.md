@@ -195,3 +195,29 @@ Found by the new no-console-errors test: Node and Safari word dates differently 
 ### D41. Dev home is a "how to test" page
 
 Rewritten at the owner's request: open on two phones (or two tabs) → pick a part (Cashier with `0000/0000`, Customer with your own details) → try the whole flow. The demo customer Andrei is no longer listed (`pnpm db:seed-demo` still adds him on request).
+
+## 2026-10-28 — Milestone 5
+
+### D42. Hand-written service worker instead of Serwist
+
+Serwist doesn't fit this Next.js version's Turbopack build well, and the job is small: `public/sw.js` (~40 lines) sends every page request to the network and only falls back to a cached, self-contained offline page (`/s/<store>/offline`). Nothing else is cached, so customers never see a stale balance or an old app version. `/sw.js` is served with `no-cache`.
+
+### D43. Delete my account = anonymize, then remove the login
+
+`anonymize_customer()` clears name, phone and email in one transaction (status `deleted`), cancels pending codes and records the event; the points ledger, redemptions and consent records stay, pointing at the anonymous row (spec §4.4). Then the Supabase Auth user is deleted, which ends every session. The phone number is free for a new sign-up.
+
+### D44. Signed-in screens share a tab bar (route group `(app)`)
+
+Home · Rewards · History · Account. Log out moved from Home to Account. Pages still check the session themselves.
+
+### D45. Next.js dev-tools button hidden (`devIndicators: false`)
+
+On phones it sat on top of the tab bar's Home button. Compile and runtime errors still pop up in development.
+
+### D46. Tests block service workers, except the offline test
+
+They'd only add noise elsewhere, and Playwright's WebKit can't run service workers (the iPhone profiles reported it as an error). The offline test runs in Chromium with the worker allowed.
+
+### D47. HTTPS on phones with mkcert (`pnpm dev:cert`)
+
+Replaces D11's plan. `pnpm dev:cert` makes a certificate for localhost and the laptop's Wi-Fi address; `pnpm dev:lan` then serves HTTPS. Each phone installs the laptop's certificate authority once (download link and steps on the dev home; only the public certificate is served, development only). Needed for the service worker, "Install app" on Android and keeping the screen awake on the code screen.

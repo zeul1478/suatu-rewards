@@ -55,6 +55,27 @@ for (const colorScheme of ["light", "dark"] as const) {
       });
     });
 
+    test("rewards, history and account", async ({ page }) => {
+      const customer = await customerWithPoints(page, 7);
+      await page.goto(`/s/${STORE}/rewards`);
+      await settle(page);
+      await expect(page).toHaveScreenshot(`rewards-${colorScheme}.png`, { fullPage: true });
+
+      await page.goto(`/s/${STORE}/history`);
+      await settle(page);
+      await expect(page).toHaveScreenshot(`history-${colorScheme}.png`, {
+        fullPage: true,
+        mask: [page.getByText(/\d{4}, \d{1,2}:\d{2}\s?[AP]M/)],
+      });
+
+      await page.goto(`/s/${STORE}/account`);
+      await settle(page);
+      await expect(page).toHaveScreenshot(`account-${colorScheme}.png`, {
+        fullPage: true,
+        mask: [page.getByText(customer.phone.e164), page.getByLabel("Email", { exact: true })],
+      });
+    });
+
     test("home with a coffee unlocked, and the code screen", async ({ page }) => {
       await customerWithPoints(page, 20);
       await expect(page.getByText("Free coffee unlocked")).toBeVisible();

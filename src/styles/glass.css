@@ -48,3 +48,34 @@
     }
   }
 }
+
+/* Customer tab bar: glass over the page, above the home indicator. */
+@layer components {
+  .bottom-nav {
+    border-top: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface-page) 82%, transparent);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Inactive tabs: one-colour icon at 60% (icons README). */
+  .bottom-nav-idle .icon {
+    --icon-accent: currentColor;
+    opacity: 0.6;
+  }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .bottom-nav {
+      background: var(--surface-page);
+    }
+  }
+}
+
+@layer components {
+  /* Destructive action (delete account): same glass, in the error colour. */
+  .glass-danger {
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+}

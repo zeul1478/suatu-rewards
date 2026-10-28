@@ -83,7 +83,8 @@
     "haveAccount": "Already have an account?",
     "logIn": "Log in",
     "createdButNotSignedIn": "Your account was created. Please log in.",
-    "readTerms": "Read them first:"
+    "readTerms": "Read them first:",
+    "accountDeleted": "Your account was deleted. You can create a new one any time."
   },
   "login": {
     "metaTitle": "Log in",
@@ -150,8 +151,8 @@
     "name": "Name",
     "phone": "Phone",
     "email": "Email",
-    "emailVerified": "Confirmed",
-    "emailUnverified": "Not confirmed yet — check your inbox",
+    "emailVerified": "Your email is confirmed.",
+    "emailUnverified": "Your email isn't confirmed yet. Check your inbox for the link.",
     "changePassword": "Change password",
     "currentPassword": "Current password",
     "newPassword": "New password",
@@ -160,7 +161,27 @@
     "savingPassword": "Saving…",
     "passwordChanged": "Password changed. Other devices have been logged out.",
     "locked": "Too many wrong tries. Changing the password is locked for {minutes, plural, one {# minute} other {# minutes}}.",
-    "back": "Back to home"
+    "back": "Back to home",
+    "phoneFixed": "Your phone number is how the cashier finds you, so it can't be changed here.",
+    "emailHint": "A new email address needs to be confirmed: we'll send a link.",
+    "saveDetails": "Save details",
+    "saving": "Saving…",
+    "saved": "Details saved.",
+    "savedCheckEmail": "Details saved. We've sent a link to confirm your new email.",
+    "offersTitle": "Offer emails",
+    "offersOn": "You get {store} offers by email. You can turn them off any time.",
+    "offersOff": "You don't get offer emails. Turn them on to hear about {store} specials.",
+    "offersTurnOn": "Send me offer emails",
+    "offersTurnOff": "Stop offer emails",
+    "dataTitle": "Your data",
+    "dataExplain": "Download everything we store about you: details, points history, rewards and the terms you accepted.",
+    "dataDownload": "Download my data",
+    "installTitle": "Add to Home Screen",
+    "deleteTitle": "Delete my account",
+    "deleteExplain": "This erases your name, phone number and email, and logs you out everywhere. Your points can't be recovered. Points history stays only as anonymous numbers for the store's accounts.",
+    "deletePassword": "Your password, to confirm",
+    "deleteConfirm": "Delete my account for good",
+    "deleting": "Deleting…"
   },
   "legal": {
     "programTerms": "Program Terms",
@@ -221,5 +242,45 @@
     "done": "Enjoy your {reward}!",
     "balanceNow": "You now have {balance, plural, one {# point} other {# points}}.",
     "back": "Back to home"
+  },
+  "nav": {
+    "label": "Main",
+    "home": "Home",
+    "rewards": "Rewards",
+    "history": "History",
+    "account": "Account"
+  },
+  "rewards": {
+    "title": "Rewards",
+    "balance": "You have {balance, plural, one {# point} other {# points}}.",
+    "cost": "{points} points",
+    "redeem": "Redeem",
+    "redeeming": "Getting your code…",
+    "showCode": "Show my code",
+    "pointsToGo": "{points} more points ({visits, plural, one {# visit} other {# visits}}) to go",
+    "empty": "No rewards are available right now."
+  },
+  "history": {
+    "title": "History",
+    "earn": "Visit",
+    "redeem": "{reward} redeemed",
+    "adjust": "Points adjusted by the store",
+    "reversal": "Visit cancelled by the store",
+    "expire": "Points expired",
+    "empty": "No visits yet. Give your phone number at the counter to earn {points} points per visit."
+  },
+  "install": {
+    "installed": "Suatu is on your home screen.",
+    "iosStep1": "In Safari, tap the Share button (the square with an arrow).",
+    "iosStep2": "Scroll down and tap Add to Home Screen.",
+    "iosStep3": "Tap Add. Suatu now opens like an app.",
+    "installButton": "Install the app",
+    "browserMenu": "Open your browser's menu and choose Install app or Add to Home screen."
+  },
+  "offline": {
+    "metaTitle": "Offline",
+    "title": "You're offline",
+    "body": "Your points are safe. Connect to the internet and try again.",
+    "retry": "Try again"
   }
 }

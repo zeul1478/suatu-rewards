@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { brandFor } from "@/brands";
 import { AuthScreen } from "@/components/customer/AuthScreen";
 import { SignupForm } from "@/components/customer/SignupForm";
+import { FormAlert } from "@/components/ui/FormAlert";
 import { storeUrl } from "@/lib/storeUrl";
 import { getCurrentCustomer } from "@/server/customers/currentCustomer";
 import { getLegalDocument } from "@/server/legal/documents";
@@ -15,8 +16,12 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("metaTitle") };
 }
 
-export default async function SignupPage({ params }: PageProps<"/s/[storeSlug]/signup">) {
+export default async function SignupPage({
+  params,
+  searchParams,
+}: PageProps<"/s/[storeSlug]/signup">) {
   const { storeSlug } = await params;
+  const { deleted } = await searchParams;
   const store = await getStoreOr404(storeSlug);
   if (await getCurrentCustomer()) redirect(storeUrl(store.slug));
 
@@ -33,6 +38,7 @@ export default async function SignupPage({ params }: PageProps<"/s/[storeSlug]/s
       title={t("title", { store: store.name })}
       intro={t("intro")}
     >
+      {deleted ? <FormAlert tone="info">{t("accountDeleted")}</FormAlert> : null}
       <SignupForm
         action={signupAction.bind(null, store.slug)}
         storeName={store.name}
