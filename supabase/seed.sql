@@ -1,0 +1,2 @@
+-- Development seed. Fictional data only (spec §1.6).
+-- The Suatu store, rewards and the 0000 staff account are added in Milestones 2–3.

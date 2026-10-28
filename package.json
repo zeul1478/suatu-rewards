@@ -1,0 +1,63 @@
+{
+  "name": "suatu-rewards",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "dev:lan": "node scripts/dev-lan.mjs",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "e2e": "playwright test",
+    "e2e:install": "playwright install chromium webkit firefox",
+    "db:start": "supabase start && node scripts/write-env.mjs",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset && node scripts/write-env.mjs",
+    "db:env": "node scripts/write-env.mjs",
+    "check": "pnpm lint && pnpm typecheck && pnpm format:check && pnpm test",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "next": "16.4.3",
+    "qrcode": "^1.5.4",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1",
+    "@tailwindcss/turbopack": "^4",
+    "@types/node": "^24.19.2",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.3",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "prettier": "^3.9.10",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "supabase": "^2.122.0",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^5.0.5"
+  },
+  "packageManager": "pnpm@12.16.1",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,mjs,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,json,md,yml,yaml}": "prettier --write"
+  }
+}

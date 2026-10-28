@@ -1,0 +1,79 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+@import "../styles/glass.css";
+
+@theme inline {
+  --color-page: var(--surface-page);
+  --color-raised: var(--surface-raised);
+  --color-sunken: var(--surface-sunken);
+  --color-ink: var(--text-primary);
+  --color-ink-muted: var(--text-secondary);
+  --color-accent: var(--text-accent);
+  --color-brand: var(--brand);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+
+  --font-sans: var(--font-barlow);
+  --font-display: var(--font-barlow-condensed);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--surface-page);
+    color: var(--text-primary);
+    font-family: var(--font-barlow), system-ui, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Inputs at 16px or larger so iOS Safari doesn't zoom on focus */
+  input,
+  select,
+  textarea {
+    font-size: max(1rem, 16px);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Fuel-price-sign numerals: condensed, fixed-width digits */
+  .price-digits {
+    font-family: var(--font-barlow-condensed), system-ui, sans-serif;
+    font-variant-numeric: tabular-nums lining-nums;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  /* Lane-marking divider: dashed stripe like a road's centre line */
+  .lane-stripe {
+    height: 3px;
+    background-image: linear-gradient(90deg, var(--stripe) 0 60%, transparent 60% 100%);
+    background-size: 28px 3px;
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
