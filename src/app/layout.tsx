@@ -16,7 +16,13 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${barlow.variable} ${barlowCondensed.variable} antialiased`}>
+    // suppressHydrationWarning: some browsers (e.g. Chrome on iOS) add attributes to <html>
+    // before React loads. Only this element's own attributes are exempt, not its children.
+    <html
+      lang="en"
+      className={`${barlow.variable} ${barlowCondensed.variable} antialiased`}
+      suppressHydrationWarning
+    >
       <body>{children}</body>
     </html>
   );

@@ -70,3 +70,7 @@ Anyone who knows a customer's number can lock them out for 15 minutes. Kept as s
 ### D14. Staff can add unlimited visits
 
 `daily_earn_cap` and `repeat_entry_warning_seconds` are NULL for Suatu (§0 step 6 needs quick repeats). Every entry is audited with the staff ID; the dashboard (M7) gets a "most points today, per staff / per customer" view.
+
+### D15. `suppressHydrationWarning` on `<html>` only
+
+Chrome on iOS (and some extensions) add attributes such as `__gcrremoteframetoken` to `<html>` before React loads, which shows a hydration error in development. Suppressing it on the `<html>` element covers only that element's own attributes; real mismatches anywhere inside the page are still reported.
