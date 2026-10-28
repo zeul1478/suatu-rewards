@@ -32,10 +32,10 @@ Open that address on a phone on the same Wi-Fi, or scan the QR code on the dev h
 
 ## Demo logins (development only)
 
-| Who                             | Log in with                                             |
-| ------------------------------- | ------------------------------------------------------- |
-| Staff · manager · owner · admin | user name `0000`, password `0000`                       |
-| Customers                       | phone + password (demo customers arrive in Milestone 2) |
+| Who                             | Log in with                                          |
+| ------------------------------- | ---------------------------------------------------- |
+| Staff · manager · owner · admin | user name `0000`, password `0000`                    |
+| Demo customer (Andrei Popescu)  | phone `(954) 555-0142`, password `suatu demo coffee` |
 
 `0000` is refused by production builds.
 
@@ -48,11 +48,13 @@ Open that address on a phone on the same Wi-Fi, or scan the QR code on the dev h
 | `pnpm test`                                         | Unit tests                                                      |
 | `pnpm e2e`                                          | Browser tests on all device profiles (`pnpm e2e:install` first) |
 | `pnpm check`                                        | Lint, types, formatting, unit tests                             |
+| `pnpm e2e:prod`                                     | Production build + its guards (0000 refused, dev home 404)      |
+| `pnpm db:types`                                     | Regenerate `src/types/database.ts` after a migration            |
 | `pnpm build`                                        | Production build                                                |
 
 ## Local tools
 
-- Mailpit (test emails): http://127.0.0.1:55324
+- Mailpit (test emails — password resets, email confirmations): http://127.0.0.1:55324
 - Supabase Studio (database): http://127.0.0.1:55323
 
 ## Docs

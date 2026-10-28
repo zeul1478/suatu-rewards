@@ -10,6 +10,7 @@
 > - **No email on any log-in screen (D3):** email is asked only at sign-up (required `*`); "Forgot password?" asks for the phone number and emails the address on file.
 > - **Manager "release number" action (D4)** and **unclaimed accounts deleted after 12 months idle (D5).**
 > - **Fonts: Barlow + Barlow Condensed (D6)**; **contrast fixes to §9 (D7)**; **local Supabase on ports 55321–55324 (D8)**.
+> - **M2 (D16–D23):** passwords pre-hashed for Supabase's 72-byte limit; login limits in our own table; staff lockout via that table instead of `staff` columns; legal documents as versioned Markdown files instead of a `legal_documents` table; dark-theme error red `#f2836f`; HTTPS on the phone moved to M5.
 
 ---
 

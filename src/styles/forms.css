@@ -1,0 +1,127 @@
+/* Inputs, checkboxes, sheets and legal text. Tokens only — themes switch automatically. */
+
+@layer components {
+  .field-input {
+    width: 100%;
+    min-height: var(--target-min);
+    padding: 0 var(--space-4);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
+    background: var(--surface-sunken);
+    color: var(--text-primary);
+    font-size: max(1rem, 16px);
+    scroll-margin-block: 96px;
+  }
+
+  .field-input-large {
+    min-height: 64px;
+    font-family: var(--font-barlow-condensed), system-ui, sans-serif;
+    font-size: 2rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+  }
+
+  .field-input[aria-invalid="true"] {
+    border-color: var(--danger);
+    border-width: 2px;
+  }
+
+  .checkbox-input {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    accent-color: var(--brand);
+  }
+
+  .glass-large {
+    min-height: 64px;
+    font-size: 1.25rem;
+  }
+
+  .glass:disabled,
+  .glass[aria-disabled="true"] {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .sheet-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: rgba(3, 18, 13, 0.7);
+  }
+
+  .sheet-content {
+    position: fixed;
+    z-index: 50;
+    inset: auto 0 0 0;
+    display: flex;
+    flex-direction: column;
+    max-height: 88dvh;
+    border-top: 1px solid var(--line-strong);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    background: var(--surface-raised);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  @media (min-width: 640px) {
+    .sheet-content {
+      inset: 50% auto auto 50%;
+      width: min(640px, calc(100vw - 2rem));
+      max-height: 80dvh;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-lg);
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .sheet-body {
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    padding: var(--space-4);
+  }
+
+  .legal-prose {
+    max-width: 68ch;
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+
+  .legal-prose h2 {
+    margin: var(--space-8) 0 var(--space-2);
+    font-family: var(--font-barlow-condensed), system-ui, sans-serif;
+    font-size: 1.375rem;
+    font-weight: 600;
+  }
+
+  .legal-prose p,
+  .legal-prose ul {
+    margin: 0 0 var(--space-4);
+  }
+
+  .legal-prose ul {
+    padding-left: var(--space-6);
+    list-style: disc;
+  }
+
+  .legal-prose li {
+    margin-bottom: var(--space-1);
+  }
+
+  .legal-prose a {
+    color: var(--text-accent);
+    text-decoration: underline;
+  }
+
+  .legal-prose blockquote {
+    margin: 0 0 var(--space-6);
+    padding: var(--space-3) var(--space-4);
+    border-left: 4px solid var(--warning);
+    background: var(--surface-sunken);
+  }
+
+  .legal-prose blockquote p {
+    margin: 0;
+  }
+}

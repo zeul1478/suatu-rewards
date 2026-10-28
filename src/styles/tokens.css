@@ -16,7 +16,7 @@
   --mist-100: #eaf4ee;
   --mist-400: #9db8aa;
   --signal-amber: #f2b84b;
-  --signal-red: #e5604d;
+  --signal-red: #f2836f; /* §9 had #e5604d: 4.3:1 on raised surfaces, too low */
 
   /* Spacing scale: 4px base */
   --space-1: 0.25rem;

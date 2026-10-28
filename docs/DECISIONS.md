@@ -56,7 +56,7 @@ Kept the scaffold's `cacheComponents` + `partialPrefetching`: Next.js says both 
 Browsers treat `http://<laptop-ip>` as insecure: no `Secure` cookies, no service worker, no Wake Lock, no `crypto.randomUUID`. Plan:
 
 - `Secure` cookie flag only in production builds.
-- Before M2 phone testing, `pnpm dev:lan` switches to HTTPS with a local certificate from **mkcert**; the phone trusts it once (steps for iPhone and Android in `docs/TESTING.md`).
+- **Updated in M2:** HTTPS via mkcert is postponed to Milestone 5. Nothing in M2–M4 needs a secure page on the phone (login cookies aren't `Secure` in development), and it saves you installing a certificate on two phones now. The PWA, service worker and Wake Lock (M5) do need it.
 - Idempotency keys are generated on the server, never with `crypto.randomUUID` in the browser.
 
 ### D12. Copy/cut blocked on password fields; paste allowed
@@ -74,3 +74,39 @@ Anyone who knows a customer's number can lock them out for 15 minutes. Kept as s
 ### D15. `suppressHydrationWarning` on `<html>` only
 
 Chrome on iOS (and some extensions) add attributes such as `__gcrremoteframetoken` to `<html>` before React loads, which shows a hydration error in development. Suppressing it on the `<html>` element covers only that element's own attributes; real mismatches anywhere inside the page are still reported.
+
+## 2026-10-28 — Milestone 2
+
+### D16. Customer passwords are pre-hashed before Supabase Auth
+
+Supabase Auth uses bcrypt, which refuses passwords over 72 bytes; §4.3 allows 64 characters of anything (64 emoji = 256 bytes). The server sends `base64url(SHA-256(NFC(password)))` (43 characters) instead, and bcrypt salts and hashes that. NFC normalization means "ș" typed on iPhone and Android gives the same password. Code: `src/lib/password/authSecret.ts`.
+
+### D17. Placeholder SMS provider in `supabase/config.toml`
+
+Supabase only turns on phone + password login when an SMS provider is configured. The config names Twilio with fake values. It is never called: accounts are created on the server with the phone pre-confirmed, and nothing asks Auth to send an SMS (TCPA, §8). Production needs the same (or a real provider once SMS is in scope).
+
+### D18. Login throttling lives in our database, not in Supabase Auth
+
+Every login request reaches Supabase from the Next.js server's IP, so Auth's per-IP limit would throttle all customers together. Auth's limits are raised; our own `auth_throttles` table does per-phone (5 → 15 min), per-staff-account (5 → 15 min) and per-IP (30 / 15 min, `LOGIN_MAX_FAILURES_PER_IP`) limits. The IP comes from `x-forwarded-for`, which Vercel sets; locally tests set it to simulate separate devices.
+
+### D19. Staff lockout uses `auth_throttles` instead of columns on `staff`
+
+§7 lists `failed_attempts` / `locked_until` on the staff table. One throttle mechanism for customers, staff and IPs is simpler and is tested once.
+
+### D20. Legal documents are Markdown files in `/legal`, versioned in git
+
+Instead of a `legal_documents` table for now: the files are reviewed as text, and the `version` in each file's front matter is what consent records store. A table (for owner-edited documents) can come with store #2. Program terms are one file while there's one store.
+
+### D21. Reset links carry the customer id; email verification is our own token
+
+- The reset link includes the customer id, so the password rules (not the phone/email) are checked **before** the single-use Supabase token is spent. A rejected password doesn't burn the link.
+- Using a reset link marks the email as confirmed (it proves the inbox is theirs).
+- Email confirmation uses our own 24-hour single-use token, independent of Supabase's email confirmation (which would block phone login flows).
+
+### D22. "Sign out other devices" is immediate
+
+Customer pages check the session with Supabase Auth on every request (`getUser()`, not a local token check), so a session ended by a password change or reset stops working at once, not when its token expires.
+
+### D23. Customer session cookies are httpOnly
+
+The browser never talks to Supabase, so it never needs to read the session cookie. Secure in production, 30-day lifetime (§4.2).

@@ -1,1 +1,7 @@
+# pnpm lives inside the project's Node 24 (nvm + corepack). GUI git clients and plain shells
+# don't load nvm, so load it here when pnpm isn't on the PATH.
+if ! command -v pnpm >/dev/null 2>&1 && [ -s "$HOME/.nvm/nvm.sh" ]; then
+  . "$HOME/.nvm/nvm.sh" --no-use
+  nvm use --silent >/dev/null
+fi
 pnpm exec lint-staged

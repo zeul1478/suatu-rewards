@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "../styles/tokens.css";
 @import "../styles/glass.css";
+@import "../styles/forms.css";
 
 @theme inline {
   --color-page: var(--surface-page);
@@ -56,6 +57,12 @@
     font-variant-numeric: tabular-nums lining-nums;
     font-weight: 600;
     letter-spacing: 0.02em;
+  }
+
+  /* 16px side gutter that also clears notches in landscape */
+  .screen-gutter {
+    padding-left: max(var(--space-4), env(safe-area-inset-left));
+    padding-right: max(var(--space-4), env(safe-area-inset-right));
   }
 
   /* Lane-marking divider: dashed stripe like a road's centre line */

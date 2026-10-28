@@ -44,15 +44,28 @@ tests/          unit/ (Vitest), db/ (Vitest against local DB), e2e/ + a11y/ (Pla
 
 Rules: no business logic in React components; small files; data access only from `server/`.
 
+## Accounts and sessions (M2)
+
+| Who                   | Logs in with         | Stored                                                                        | Session                                                                                                              |
+| --------------------- | -------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Customer              | phone + password     | Supabase Auth (bcrypt of a SHA-256 pre-hash, DECISIONS D16) + `customers` row | Supabase session in httpOnly cookies (`suatu-auth`), refreshed by `src/proxy.ts`, checked with Auth on every request |
+| Staff / owner / admin | user name + password | `staff` (argon2id)                                                            | random token in httpOnly cookie `suatu-staff`, SHA-256 in `staff_sessions`; one store; 15 min idle, 12 h max         |
+
+- Sign-up: Auth user → `register_customer()` (one transaction: claims an `unclaimed` customer or creates one, joins the store, writes 5 consent events, audits) → sign-in → verification email. If the database step fails, the Auth user is deleted again.
+- Throttling: `auth_throttles` + `auth_throttle_*()` functions (per phone, per staff account, per IP).
+- Emails: `EmailSender` → SMTP → Mailpit locally.
+- Legal: Markdown in `/legal`, rendered by `src/server/legal/documents.ts`; versions go into consent records.
+
 ## Local ports
 
-| Service                    | URL                                                                         |
-| -------------------------- | --------------------------------------------------------------------------- |
-| App                        | http://localhost:3000 (phone: `http://<laptop-ip>:3000` via `pnpm dev:lan`) |
-| Supabase API               | http://127.0.0.1:55321                                                      |
-| Postgres                   | 127.0.0.1:55322                                                             |
-| Supabase Studio            | http://127.0.0.1:55323                                                      |
-| Mailpit (test email inbox) | http://127.0.0.1:55324                                                      |
+| Service                       | URL                                                                         |
+| ----------------------------- | --------------------------------------------------------------------------- |
+| App                           | http://localhost:3000 (phone: `http://<laptop-ip>:3000` via `pnpm dev:lan`) |
+| Supabase API                  | http://127.0.0.1:55321                                                      |
+| Postgres                      | 127.0.0.1:55322                                                             |
+| Supabase Studio               | http://127.0.0.1:55323                                                      |
+| Mailpit (test email inbox)    | http://127.0.0.1:55324                                                      |
+| Mailpit SMTP (app sends here) | 127.0.0.1:55325                                                             |
 
 Ports are 553xx, not Supabase's default 543xx (see DECISIONS D8).
 

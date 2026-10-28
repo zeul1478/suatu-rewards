@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { NextIntlClientProvider } from "next-intl";
 import { barlow, barlowCondensed } from "./fonts";
 import "./globals.css";
 
@@ -23,7 +24,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${barlow.variable} ${barlowCondensed.variable} antialiased`}
       suppressHydrationWarning
     >
-      <body>{children}</body>
+      <body>
+        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+      </body>
     </html>
   );
 }

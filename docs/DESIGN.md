@@ -45,22 +45,24 @@ Rules:
 
 Measured when the tokens were written:
 
-| Pair                                                 | Ratio     | Needed |
-| ---------------------------------------------------- | --------- | ------ |
-| mist-100 on forest-950                               | 14.8      | 4.5    |
-| mist-400 on forest-950                               | 7.8       | 4.5    |
-| lime-300 on forest-950                               | 12.7      | 4.5    |
-| green-400 on forest-950                              | 7.1       | 4.5    |
-| Text on primary glass fill                           | 10.5      | 4.5    |
-| Primary glass border vs background                   | 3.6       | 3.0    |
-| **Secondary glass border at the spec's 0.18**        | **1.7 ✗** | 3.0    |
-| Secondary glass border at 0.40 (used)                | 3.5       | 3.0    |
-| Light theme: forest-950 on mist-100                  | 14.8      | 4.5    |
-| Light theme: secondary text `#3d5c4e`                | 6.6       | 4.5    |
-| Light theme: error red `#b23a28` (spec red is 3.1 ✗) | 5.3       | 4.5    |
-| Light theme: warning `#8a5a00`                       | 5.3       | 4.5    |
+| Pair                                                               | Ratio           | Needed |
+| ------------------------------------------------------------------ | --------------- | ------ |
+| mist-100 on forest-950                                             | 14.8            | 4.5    |
+| mist-400 on forest-950                                             | 7.8             | 4.5    |
+| lime-300 on forest-950                                             | 12.7            | 4.5    |
+| green-400 on forest-950                                            | 7.1             | 4.5    |
+| Text on primary glass fill                                         | 10.5            | 4.5    |
+| Primary glass border vs background                                 | 3.6             | 3.0    |
+| **Secondary glass border at the spec's 0.18**                      | **1.7 ✗**       | 3.0    |
+| Secondary glass border at 0.40 (used)                              | 3.5             | 3.0    |
+| Light theme: forest-950 on mist-100                                | 14.8            | 4.5    |
+| Light theme: secondary text `#3d5c4e`                              | 6.6             | 4.5    |
+| Light theme: error red `#b23a28` (spec red is 3.1 ✗)               | 5.3             | 4.5    |
+| **Dark theme: spec error red `#e5604d` on raised / sunken panels** | **3.6 / 4.3 ✗** | 4.5    |
+| Dark theme: error red `#f2836f` (used) on page / sunken / raised   | 6.5 / 5.8 / 4.9 | 4.5    |
+| Light theme: warning `#8a5a00`                                     | 5.3             | 4.5    |
 
-Changes from §9 because of these: secondary glass border 0.18 → 0.40; light theme uses darker red and amber, and a solid green-600 primary border. axe runs on every screen in every device project to keep it that way.
+Changes from §9 because of these: secondary glass border 0.18 → 0.40; dark-theme error red `#e5604d` → `#f2836f` (axe caught it on the error banner in M2); light theme uses darker red and amber, and a solid green-600 primary border. axe runs on every screen in every device project to keep it that way.
 
 ## Glass buttons
 
