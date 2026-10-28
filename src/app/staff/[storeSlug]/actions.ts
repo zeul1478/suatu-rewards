@@ -1,12 +1,15 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { fieldErrorsFrom, formDataObject, safeValues, type FormState } from "@/lib/forms";
 import { storeUrl } from "@/lib/storeUrl";
+import { addVisit } from "@/server/points/addVisit";
 import { clientIp } from "@/server/request";
+import { redeemCode } from "@/server/rewards/redemptions";
 import { logInStaff } from "@/server/staff/login";
-import { endStaffSession } from "@/server/staff/session";
+import { endStaffSession, getCurrentStaff } from "@/server/staff/session";
 import { getStoreOr404 } from "@/server/stores/getStore";
 
 const staffLoginSchema = z.object({
@@ -47,4 +50,109 @@ export async function staffLogoutAction(storeSlug: string, reason?: "idle"): Pro
   await endStaffSession();
   const login = storeUrl(storeSlug, "/login", "staff");
   redirect(reason === "idle" ? `${login}?reason=idle` : login);
+}
+
+/* ───────────── counter actions (§0 steps 4–10) ───────────── */
+
+export type VisitBanner = {
+  added: number;
+  duplicate: boolean;
+  isNewCustomer: boolean;
+  customerName: string | null;
+  phoneLast4: string;
+  balance: number;
+  targetCost: number | null;
+  rewardName: string | null;
+  unlocked: boolean;
+  visitsToNext: number;
+};
+
+export type AddVisitState = {
+  status: "idle" | "success" | "error";
+  /** Idempotency key for the next submission; a fresh one after every success (§0). */
+  nextKey: string;
+  error?: string;
+  /** What was typed, kept in the field after an error. */
+  phone?: string;
+  banner?: VisitBanner;
+};
+
+export async function addVisitAction(
+  storeSlug: string,
+  previous: AddVisitState,
+  formData: FormData,
+): Promise<AddVisitState> {
+  const store = await getStoreOr404(storeSlug);
+  const staff = await getCurrentStaff(store.id);
+  if (!staff) redirect(storeUrl(store.slug, "/login", "staff"));
+
+  const phone = String(formData.get("phone") ?? "").trim();
+  const idempotencyKey = String(formData.get("idempotencyKey") ?? "");
+  if (!phone) return { status: "error", nextKey: previous.nextKey, error: "errors.phone.required" };
+  if (!/^[0-9a-f-]{36}$/.test(idempotencyKey)) {
+    return { status: "error", nextKey: randomUUID(), error: "common.somethingWentWrong" };
+  }
+
+  const result = await addVisit({ store, staff, phone, idempotencyKey });
+  if (!result.ok) {
+    return {
+      status: "error",
+      nextKey: previous.nextKey,
+      error: result.error === "phoneInvalid" ? "errors.phone.invalid" : "staff.dailyCapReached",
+      phone,
+    };
+  }
+
+  const { progress } = result;
+  return {
+    status: "success",
+    nextKey: randomUUID(),
+    banner: {
+      added: result.added,
+      duplicate: result.duplicate,
+      isNewCustomer: result.isNewCustomer,
+      customerName: result.customerName,
+      phoneLast4: result.phoneLast4,
+      balance: progress.balance,
+      targetCost: progress.target?.costPoints ?? null,
+      rewardName: progress.target?.name ?? null,
+      unlocked: progress.unlocked,
+      visitsToNext: progress.visitsToNext,
+    },
+  };
+}
+
+const codeSchema = z
+  .string()
+  .trim()
+  .regex(/^\d{6}$/, "staff.codeFormat");
+
+export async function redeemCodeAction(
+  storeSlug: string,
+  _previous: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const store = await getStoreOr404(storeSlug);
+  const staff = await getCurrentStaff(store.id);
+  if (!staff) redirect(storeUrl(store.slug, "/login", "staff"));
+
+  const code = codeSchema.safeParse(formData.get("code") ?? "");
+  if (!code.success) return { status: "error", formError: "staff.codeFormat" };
+
+  const result = await redeemCode({ store, staff, code: code.data });
+  if (!result.ok) {
+    return {
+      status: "error",
+      formError: `staff.${result.error}`,
+      formErrorValues: "minutes" in result ? { minutes: result.minutes } : undefined,
+    };
+  }
+  return {
+    status: "success",
+    values: {
+      rewardName: result.rewardName,
+      phoneLast4: result.phoneLast4,
+      balance: String(result.balance),
+    },
+  };
 }

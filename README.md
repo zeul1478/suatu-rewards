@@ -39,6 +39,12 @@ Open that address on a phone on the same Wi-Fi, or scan the QR code on the dev h
 
 `0000` is refused by production builds.
 
+## Try the golden path (§0)
+
+1. Phone: open the app (QR on the dev home) → **Customer sign up** with any made-up number.
+2. Tablet or second phone: **Staff screen** → `0000` / `0000` → type that number → **Add visit (+5)**.
+3. Watch the phone go to 5 / 100 within ~3 seconds. Repeat to 100 → **Redeem** → type the 6-digit code at the counter.
+
 ## Scripts
 
 | Command                                             | Does                                                            |

@@ -17,3 +17,7 @@ select id, '0000', 'manager', 'Manager (dev)',
   '$argon2id$v=19$m=19456,t=2,p=1$NNMgCqOF1rmfLkaR9/w2bA$Pxnqh73ohMyiTIiaO5sVU8UxDKi+GxPbfeUGbUtH+OA',
   true
 from public.stores where slug = 'suatu';
+
+-- The one reward (spec §0): Free coffee at 100 points = 20 visits.
+insert into public.rewards (store_id, name, cost_points)
+select id, 'Free coffee', 100 from public.stores where slug = 'suatu';

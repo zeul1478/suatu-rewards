@@ -130,9 +130,18 @@
   "home": {
     "metaTitle": "Home",
     "greeting": "Hi, {name}",
-    "pointsPending": "Your points card appears here.",
-    "devPointsNote": "Development: the points engine arrives in Milestone 3.",
-    "account": "Account"
+    "account": "Account",
+    "yourPoints": "Your points",
+    "outOf": "out of",
+    "gaugeLabel": "Progress to a {reward}",
+    "visitsToGo": "{visits, plural, one {# more visit} other {# more visits}} to a {reward}",
+    "unlocked": "{reward} unlocked",
+    "redeem": "Redeem",
+    "redeeming": "Getting your code…",
+    "showCode": "Show my code",
+    "noRewards": "No rewards are available right now.",
+    "lastVisit": "Last visit: {date}",
+    "noVisitsYet": "Give your phone number at the counter: {points} points every visit."
   },
   "account": {
     "metaTitle": "Account",
@@ -184,7 +193,33 @@
     "code": "6-digit code from the customer's phone",
     "redeem": "Redeem",
     "recentTitle": "Recent entries",
-    "recentEmpty": "No visits added yet.",
-    "devNotReady": "Development: adding visits and redeeming arrive in Milestone 3."
+    "adding": "Adding…",
+    "pointsAdded": "+{points} points",
+    "newCustomer": "New customer",
+    "newCustomerHint": "They can sign up with this number to see their points.",
+    "visitsToGo": "{visits, plural, one {# more visit} other {# more visits}} to a {reward}",
+    "rewardAvailable": "Reward available: {reward}",
+    "duplicate": "Already counted — that entry was added once.",
+    "dailyCapReached": "This customer has reached today's points limit.",
+    "redeeming": "Redeeming…",
+    "redeemed": "{reward} redeemed for ••• {last4}",
+    "codeFormat": "Enter the 6 digits shown on the customer's phone.",
+    "invalidCode": "That code isn't valid. It may have expired or already been used.",
+    "notEnoughPoints": "The customer no longer has enough points for this reward.",
+    "locked": "Too many wrong codes. Redeeming is paused for {minutes, plural, one {# minute} other {# minutes}}.",
+    "recentLater": "Recent entries and Void arrive in Milestone 6."
+  },
+  "redeem": {
+    "title": "Your code",
+    "instructions": "Show this code to the cashier for your {reward}.",
+    "codeLabel": "Code {code}",
+    "expiresIn": "Expires in",
+    "timeLeft": "{minutes, plural, one {# minute} other {# minutes}} and {seconds, plural, one {# second} other {# seconds}} left",
+    "expired": "This code has expired. Your points are still there.",
+    "newCode": "Get a new code",
+    "gettingCode": "Getting a new code…",
+    "done": "Enjoy your {reward}!",
+    "balanceNow": "You now have {balance, plural, one {# point} other {# points}}.",
+    "back": "Back to home"
   }
 }

@@ -1,6 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import type { Page } from "@playwright/test";
-import { testCustomer } from "../support/data";
+import { testCustomer, testPhone } from "../support/data";
+import { closeDb, db } from "../support/db";
 import { expect, signUp, staffLogIn, test } from "../e2e/support/fixtures";
 
 /*
@@ -25,6 +26,8 @@ async function checkScreen(page: Page) {
   );
   expect(problems).toEqual([]);
 }
+
+test.afterAll(closeDb);
 
 test.describe("accessibility and layout", () => {
   for (const path of [
@@ -65,9 +68,35 @@ test.describe("accessibility and layout", () => {
     await checkScreen(page);
   });
 
-  test("staff counter screen", async ({ page }) => {
+  test("staff counter screen, empty and with a visit banner", async ({ page }) => {
     await staffLogIn(page, "0000", "0000");
     await expect(page.getByRole("heading", { name: "Add a visit" })).toBeVisible();
+    await checkScreen(page);
+
+    await page.getByLabel("Customer phone number").fill(testPhone().typed);
+    await page.getByRole("button", { name: "Add visit (+5)" }).click();
+    await expect(page.getByTestId("visit-banner")).toBeVisible();
+    await checkScreen(page);
+  });
+
+  test("customer home with a reward unlocked, and the code screen", async ({ page }) => {
+    const customer = testCustomer();
+    await signUp(page, customer);
+    const {
+      rows: [store],
+    } = await db().query(`select id from public.stores where slug = 'suatu'`);
+    for (let i = 0; i < 20; i++) {
+      await db().query(`select public.earn_points($1, $2, null, gen_random_uuid()::text)`, [
+        store.id,
+        customer.phone.e164,
+      ]);
+    }
+    await page.reload();
+    await expect(page.getByText("Free coffee unlocked")).toBeVisible();
+    await checkScreen(page);
+
+    await page.getByRole("button", { name: "Redeem" }).click();
+    await expect(page.getByRole("heading", { name: "Your code" })).toBeVisible();
     await checkScreen(page);
   });
 });

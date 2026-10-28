@@ -6,11 +6,12 @@ import { supabaseAdmin } from "@/server/supabase/admin";
  * Login throttling (§4.2, §6). Counts and locks live in Postgres (auth_throttles) so they hold
  * across server restarts and multiple servers.
  *
- * - Per account (customer phone / staff code): 5 failures in 15 min → locked 15 min.
+ * - Per account (customer phone / staff code) and per staff member entering redemption codes:
+ *   5 failures in 15 min → locked 15 min.
  * - Per IP: LOGIN_MAX_FAILURES_PER_IP failures in 15 min → that IP paused 15 min.
  */
 
-export type ThrottleScope = "customer_phone" | "staff_login" | "ip";
+export type ThrottleScope = "customer_phone" | "staff_login" | "ip" | "redeem_code";
 
 const ACCOUNT_MAX_FAILURES = 5;
 const WINDOW = "15 minutes";

@@ -1,19 +1,21 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+import { PointsCard } from "@/components/customer/PointsCard";
 import { FormAlert } from "@/components/ui/FormAlert";
 import { LogoutButton } from "@/components/ui/LogoutButton";
 import { storeUrl } from "@/lib/storeUrl";
 import { requireCustomer } from "@/server/customers/currentCustomer";
+import { getCustomerStatus } from "@/server/customers/status";
 import { getStoreOr404 } from "@/server/stores/getStore";
-import { logoutAction } from "./actions";
+import { logoutAction, redeemAction } from "./actions";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("home");
   return { title: t("metaTitle") };
 }
 
-// Customer home. The points card, fuel gauge and live updates arrive in Milestone 3.
+// Customer home (§11): greeting, live points card, Redeem when a reward is unlocked.
 export default async function CustomerHomePage({
   params,
   searchParams,
@@ -22,7 +24,8 @@ export default async function CustomerHomePage({
   const { passwordChanged } = await searchParams;
   const store = await getStoreOr404(storeSlug);
   const customer = await requireCustomer(store.slug);
-  const [t, tCommon, tLogin] = await Promise.all([
+  const [status, t, tCommon, tLogin] = await Promise.all([
+    getCustomerStatus(store, customer),
     getTranslations("home"),
     getTranslations("common"),
     getTranslations("login"),
@@ -42,12 +45,13 @@ export default async function CustomerHomePage({
 
       {passwordChanged ? <FormAlert tone="success">{tLogin("passwordChanged")}</FormAlert> : null}
 
-      <section className="flex flex-col gap-2 rounded-[var(--radius-lg)] border border-line bg-raised p-5">
-        <p className="text-ink">{t("pointsPending")}</p>
-        {process.env.NODE_ENV !== "production" ? (
-          <p className="text-sm text-ink-muted">{t("devPointsNote")}</p>
-        ) : null}
-      </section>
+      <PointsCard
+        initialStatus={status}
+        statusUrl={`/api${storeUrl(store.slug, "/status")}`}
+        redeemHref={storeUrl(store.slug, "/redeem")}
+        pointsPerVisit={store.pointsPerVisit}
+        redeemAction={redeemAction.bind(null, store.slug)}
+      />
 
       <nav className="flex flex-col gap-3">
         <Link href={storeUrl(store.slug, "/account")} className="glass">

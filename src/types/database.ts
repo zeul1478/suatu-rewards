@@ -242,6 +242,211 @@ export type Database = {
           },
         ];
       };
+      point_transactions: {
+        Row: {
+          amount_cents: number | null;
+          created_at: string;
+          customer_id: string;
+          external_ref: string | null;
+          id: string;
+          idempotency_key: string;
+          note: string | null;
+          points: number;
+          reverses_transaction_id: string | null;
+          source: string;
+          staff_id: string | null;
+          store_id: string;
+          type: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          amount_cents?: number | null;
+          created_at?: string;
+          customer_id: string;
+          external_ref?: string | null;
+          id?: string;
+          idempotency_key: string;
+          note?: string | null;
+          points: number;
+          reverses_transaction_id?: string | null;
+          source: string;
+          staff_id?: string | null;
+          store_id: string;
+          type: string;
+          updated_at?: string;
+        };
+        Update: {
+          amount_cents?: number | null;
+          created_at?: string;
+          customer_id?: string;
+          external_ref?: string | null;
+          id?: string;
+          idempotency_key?: string;
+          note?: string | null;
+          points?: number;
+          reverses_transaction_id?: string | null;
+          source?: string;
+          staff_id?: string | null;
+          store_id?: string;
+          type?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "point_transactions_customer_id_fkey";
+            columns: ["customer_id"];
+            isOneToOne: false;
+            referencedRelation: "customers";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "point_transactions_reverses_transaction_id_fkey";
+            columns: ["reverses_transaction_id"];
+            isOneToOne: false;
+            referencedRelation: "point_transactions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "point_transactions_staff_id_fkey";
+            columns: ["staff_id"];
+            isOneToOne: false;
+            referencedRelation: "staff";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "point_transactions_store_id_fkey";
+            columns: ["store_id"];
+            isOneToOne: false;
+            referencedRelation: "stores";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      redemptions: {
+        Row: {
+          code: string;
+          completed_at: string | null;
+          confirmed_by: string | null;
+          created_at: string;
+          customer_id: string;
+          expires_at: string;
+          id: string;
+          reward_id: string;
+          status: string;
+          store_id: string;
+          transaction_id: string | null;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          code: string;
+          completed_at?: string | null;
+          confirmed_by?: string | null;
+          created_at?: string;
+          customer_id: string;
+          expires_at: string;
+          id?: string;
+          reward_id: string;
+          status?: string;
+          store_id: string;
+          transaction_id?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          code?: string;
+          completed_at?: string | null;
+          confirmed_by?: string | null;
+          created_at?: string;
+          customer_id?: string;
+          expires_at?: string;
+          id?: string;
+          reward_id?: string;
+          status?: string;
+          store_id?: string;
+          transaction_id?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "redemptions_confirmed_by_fkey";
+            columns: ["confirmed_by"];
+            isOneToOne: false;
+            referencedRelation: "staff";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "redemptions_customer_id_fkey";
+            columns: ["customer_id"];
+            isOneToOne: false;
+            referencedRelation: "customers";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "redemptions_reward_id_fkey";
+            columns: ["reward_id"];
+            isOneToOne: false;
+            referencedRelation: "rewards";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "redemptions_store_id_fkey";
+            columns: ["store_id"];
+            isOneToOne: false;
+            referencedRelation: "stores";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "redemptions_transaction_id_fkey";
+            columns: ["transaction_id"];
+            isOneToOne: false;
+            referencedRelation: "point_transactions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      rewards: {
+        Row: {
+          active: boolean;
+          cost_points: number;
+          created_at: string;
+          id: string;
+          name: string;
+          sort_order: number;
+          store_id: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          active?: boolean;
+          cost_points: number;
+          created_at?: string;
+          id?: string;
+          name: string;
+          sort_order?: number;
+          store_id: string;
+          updated_at?: string;
+        };
+        Update: {
+          active?: boolean;
+          cost_points?: number;
+          created_at?: string;
+          id?: string;
+          name?: string;
+          sort_order?: number;
+          store_id?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "rewards_store_id_fkey";
+            columns: ["store_id"];
+            isOneToOne: false;
+            referencedRelation: "stores";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       staff: {
         Row: {
           active: boolean;
@@ -496,6 +701,23 @@ export type Database = {
         Returns: string;
       };
       auth_throttle_locked_until: { Args: { p_key: string; p_scope: string }; Returns: string };
+      complete_redemption: {
+        Args: { p_code: string; p_staff_id: string; p_store_id: string };
+        Returns: Json;
+      };
+      create_redemption: {
+        Args: { p_customer_id: string; p_reward_id: string; p_store_id: string };
+        Returns: Json;
+      };
+      earn_points: {
+        Args: {
+          p_idempotency_key: string;
+          p_phone_e164: string;
+          p_staff_id: string;
+          p_store_id: string;
+        };
+        Returns: Json;
+      };
       register_customer: {
         Args: {
           p_auth_user_id: string;

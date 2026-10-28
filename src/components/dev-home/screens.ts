@@ -1,7 +1,7 @@
 import { storeUrl } from "@/lib/storeUrl";
 
 /** Bump after each milestone ships; screens up to this number become links. */
-export const CURRENT_MILESTONE = 2;
+export const CURRENT_MILESTONE = 3;
 
 export const DEMO_STORE_SLUG = "suatu";
 

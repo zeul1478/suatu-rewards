@@ -9,7 +9,7 @@
 | `pnpm check`    | Lint + type-check + format check + unit tests                                     | —                         |
 | `pnpm e2e:prod` | Builds the app for production and proves its guards (0000 refused, dev home gone) | `tests/prod`              |
 
-`pnpm e2e` starts the dev server itself (or reuses one already running on port 3000). First time only: `pnpm e2e:install` downloads the browsers.
+`pnpm e2e` starts the dev server itself (or reuses one already running on port 3000). First time only: `pnpm e2e:install` downloads the browsers. Locally it runs 4 browsers at a time with 10 s per check; the full run takes about 7 minutes on this laptop. If many tests time out, check what else is using the CPU (a second Supabase project in Docker is the usual suspect).
 
 ### Device projects (spec §10)
 
@@ -25,10 +25,11 @@ Samsung Internet can't be driven by Playwright → manual checklist below.
 
 ## Status by milestone
 
-| Milestone | Automated tests                                                                                                                                                        |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| M1        | `storeUrl` unit tests (5); dev home e2e + axe + no-overflow on all 8 device projects (24 tests)                                                                        |
-| M2        | Unit 28 (incl. 5 from M1) · DB 11 (throttle functions, sign-up function, RLS, append-only consents) · e2e + a11y 45 per device × 8 projects = 360 · production build 2 |
+| Milestone | Automated tests                                                                                                                                                                                                                                                                                       |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| M1        | `storeUrl` unit tests (5); dev home e2e + axe + no-overflow on all 8 device projects (24 tests)                                                                                                                                                                                                       |
+| M2        | Unit 28 (incl. 5 from M1) · DB 11 (throttle functions, sign-up function, RLS, append-only consents) · e2e + a11y 45 per device × 8 projects = 360 · production build 2                                                                                                                                |
+| M3        | Unit 39 · DB 26 (points engine: 20 → 100 → redeem → 0, 105 → 5, idempotency, 10 parallel taps, concurrent cashiers, claim keeps points, daily cap, append-only ledger, code expiry/reuse/other store) · e2e + a11y 53 per device × 8 = 424 (full §0 golden path on every device) · production build 2 |
 
 ### §4.3b coverage (M2)
 
@@ -44,7 +45,8 @@ Samsung Internet can't be driven by Playwright → manual checklist below.
 | Change password needs the current one; other devices signed out                                                    | `passwords.spec.ts`                                                                                                                |
 | Reset link works once, expires at 60 min, old password stops working                                               | `passwords.spec.ts`                                                                                                                |
 | Staff 0000/0000 works in dev, refused in production; 5 wrong → lock; idle logout at 15 min (server + screen timer) | `staff.spec.ts`, `tests/prod`, `tests/unit/staffPasswordPolicy.test.ts`                                                            |
-| Redemption code cases                                                                                              | Milestone 3 (the feature doesn't exist yet)                                                                                        |
+| Redemption code: 6 digits, expires at 5:00, works once, other store refused                                        | `tests/db/points.test.ts` (server expiry moved into the past), `tests/e2e/redemption.spec.ts` (countdown with Playwright's clock)  |
+| Redemption code: 5 wrong → locked, unlocks after 15 min; can't be selected/copied                                  | `tests/e2e/redemption.spec.ts`                                                                                                     |
 
 "Fake clock": lock and link expiry are moved into the past in the database; the screen's idle timer uses Playwright's clock.
 
@@ -52,19 +54,20 @@ Samsung Internet can't be driven by Playwright → manual checklist below.
 
 Fill in as each milestone ships. ✅ pass · ❌ fail · — not yet applicable.
 
-| Check                           | iPhone Safari | iPhone home-screen | Android Chrome | Samsung Internet | Notes   |
-| ------------------------------- | ------------- | ------------------ | -------------- | ---------------- | ------- |
-| M1: dev home loads over Wi-Fi   | ✅            | —                  |                |                  |         |
-| M2: sign up, log out, log in    |               | —                  |                |                  |         |
-| M2: forgot password via Mailpit |               | —                  |                |                  |         |
-| M2: staff 0000 on tablet/phone  |               | —                  |                |                  |         |
-| VoiceOver / TalkBack pass       |               |                    |                |                  | from M2 |
-| Landscape                       |               |                    |                |                  |         |
-| Dark / light                    |               |                    |                |                  |         |
-| 200% text size                  |               |                    |                |                  |         |
-| Slow 3G                         |               |                    |                |                  |         |
-| Offline page                    |               |                    |                |                  | from M5 |
-| Airplane mode mid-action        |               |                    |                |                  | from M3 |
+| Check                                       | iPhone Safari | iPhone home-screen | Android Chrome | Samsung Internet | Notes   |
+| ------------------------------------------- | ------------- | ------------------ | -------------- | ---------------- | ------- |
+| M1: dev home loads over Wi-Fi               | ✅            | —                  |                |                  |         |
+| M2: sign up, log out, log in                |               | —                  |                |                  |         |
+| M2: forgot password via Mailpit             |               | —                  |                |                  |         |
+| M3: §0 golden path by hand (phone + tablet) |               | —                  |                |                  |         |
+| M2: staff 0000 on tablet/phone              |               | —                  |                |                  |         |
+| VoiceOver / TalkBack pass                   |               |                    |                |                  | from M2 |
+| Landscape                                   |               |                    |                |                  |         |
+| Dark / light                                |               |                    |                |                  |         |
+| 200% text size                              |               |                    |                |                  |         |
+| Slow 3G                                     |               |                    |                |                  |         |
+| Offline page                                |               |                    |                |                  | from M5 |
+| Airplane mode mid-action                    |               |                    |                |                  | from M3 |
 
 ## Testing on your phone
 

@@ -20,7 +20,10 @@ export async function closeDb(): Promise<void> {
 }
 
 /** "Fake clock" for lockouts: move an existing lock into the past. */
-export async function expireLock(scope: "customer_phone" | "staff_login" | "ip", key: string) {
+export async function expireLock(
+  scope: "customer_phone" | "staff_login" | "ip" | "redeem_code",
+  key: string,
+) {
   await db().query(
     `update public.auth_throttles set locked_until = now() - interval '1 second'
      where scope = $1 and key = $2`,

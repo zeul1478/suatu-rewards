@@ -14,6 +14,8 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     "test-results/**",
     "playwright-report/**",
+    // Brand kit (logo sources and their render scripts), not app code.
+    "brand/**",
   ]),
 ]);
 

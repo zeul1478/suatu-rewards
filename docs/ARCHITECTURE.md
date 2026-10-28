@@ -56,6 +56,24 @@ Rules: no business logic in React components; small files; data access only from
 - Emails: `EmailSender` → SMTP → Mailpit locally.
 - Legal: Markdown in `/legal`, rendered by `src/server/legal/documents.ts`; versions go into consent records.
 
+## Points engine (M3)
+
+```
+Counter tablet ── addVisitAction ──► earn_points(store, phone E.164, staff, idempotency key)
+                                       ├─ same key seen? → return the first result (duplicate)
+                                       ├─ find or create customer ('unclaimed' for new numbers)
+                                       ├─ lock store_customers row (FOR UPDATE)
+                                       ├─ insert ledger row (+5), update cached balance
+                                       └─ audit
+Customer phone ── Redeem ──► create_redemption → 6-digit code, 5 min (no points move yet)
+Counter tablet ── code ────► complete_redemption → ledger row (−cost), balance, status completed
+Customer phone ── every 3 s ─► GET /api/s/suatu/status → balance, progress, pending code, redeemed?
+```
+
+- `store_customers.points_balance` is a cache; the ledger (`point_transactions`, append-only, unique `idempotency_key`) is the truth. Tests check they always agree.
+- Progress maths lives once in `src/lib/progress.ts` and serves both screens.
+- Codes: unique per store while pending; throttled per staff member.
+
 ## Local ports
 
 | Service                       | URL                                                                         |

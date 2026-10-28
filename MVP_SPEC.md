@@ -11,6 +11,7 @@
 > - **Manager "release number" action (D4)** and **unclaimed accounts deleted after 12 months idle (D5).**
 > - **Fonts: Barlow + Barlow Condensed (D6)**; **contrast fixes to §9 (D7)**; **local Supabase on ports 55321–55324 (D8)**.
 > - **M2 (D16–D23):** passwords pre-hashed for Supabase's 72-byte limit; login limits in our own table; staff lockout via that table instead of `staff` columns; legal documents as versioned Markdown files instead of a `legal_documents` table; dark-theme error red `#f2836f`; HTTPS on the phone moved to M5.
+> - **M3 (D24–D31):** points move when the cashier confirms the code; wrong codes throttled per staff member; sign-up's claim of an unclaimed account replaces a separate `link_customer_on_signup`; void/adjust functions ship with their screens (M6/M7).
 
 ---
 
@@ -85,7 +86,7 @@ One web app, one database, four areas:
 | Points logic | **Postgres functions in one transaction with row locking** | Correct balances under double taps / two cashiers |
 | Validation | **Zod** everywhere (shared client + server schemas) | |
 | UI | **Tailwind CSS v4** + a small hand-built component set (Radix primitives where accessibility needs them: dialog, toast, switch) | Avoid the default "shadcn template" look — see §9 |
-| Icons | `lucide-react`, 1.75 stroke, used sparingly | |
+| Icons | **Custom Suatu icon set** in `brand/suatu/icons/` (45 two-tone SVGs + sprite). **No icon library** (no lucide). Turn them into a typed `<Icon name="…" />` React component (inline SVG, `currentColor` + `--icon-accent`) | Matches the logo; avoids the generic look |
 | Phone | `libphonenumber-js` → E.164 | |
 | Passwords | Supabase Auth (bcrypt) for customers; **argon2id** for staff passwords | |
 | i18n | **next-intl** (en; `ro.json` skeleton) | |
@@ -156,6 +157,9 @@ Edit name/email, change password, marketing consent toggle, **download my data (
 APP/
 ├─ MVP_SPEC.md  README.md
 ├─ docs/ (ARCHITECTURE, DECISIONS, TESTING, DESIGN).md
+├─ brand/behappy/ (company "Powered by behappy" badges: use powered-by-dark.svg in the customer app footer and Account page, powered-by-light.svg on the staff screen)
+├─ brand/suatu/icons/ (45 custom UI icons + README: colors, sizes, which icon goes on which screen)
+├─ brand/suatu/ (Suatu logo kit, Direction C "The Road": SVG + PNG + favicon.ico + manifest snippet; README says which file goes where. Ignore brand/_old-direction-a/)
 ├─ legal/ (privacy-policy.md, terms-of-service.md = base documents; app versions created from them)
 ├─ .vscode/ (extensions.json, settings.json, launch.json)
 ├─ supabase/ (config.toml, migrations/, seed.sql)
@@ -257,7 +261,11 @@ A light theme (mist background, forest text) for the staff screen in bright shop
 - Fallback when `backdrop-filter` isn't supported (`@supports`): solid `--forest-800` with the same border.
 - Blur only small elements (buttons, bottom nav, sheets) — **never blur long scrolling lists** (kills scroll performance on older Androids).
 
+**Logo:** use the files in `brand/suatu/` exactly as its README describes (wordmark in headers, road "A" mark for small spots, PNG icons in the PWA manifest, favicon, apple-touch icon, OG image). Don't redraw the logo.
+
 **Typography:** a characterful but readable pairing, self-hosted via `next/font` (no layout shift), e.g. **Space Grotesk** for numbers/headings (points look like a fuel-price display, `font-variant-numeric: tabular-nums`) + **Inter** for body. Base 16 px (inputs **≥ 16 px** so iOS doesn't zoom).
+
+**Icons:** only the custom set in `brand/suatu/icons/`, used as its README says (two-tone: main lines `currentColor`, detail `--icon-accent` = lime on dark, Suatu green on light). If an icon is missing, draw it in the same style (24 grid, 2 px stroke, square caps, miter joins) and add it to the folder, never pull one from a library.
 
 **Avoid the "AI look":** no purple/blue gradients, no emoji as icons, no generic stock illustrations, no "✨", no identical floating cards with big shadows everywhere, no centered-everything hero, no lorem ipsum. Use real hierarchy, a grid, one strong accent, purposeful whitespace, and real copy.
 

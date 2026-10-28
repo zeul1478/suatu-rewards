@@ -1,0 +1,109 @@
+"use client";
+
+import { useFormatter, useTranslations } from "next-intl";
+import Link from "next/link";
+import { useState } from "react";
+import { SubmitButton } from "@/components/ui/SubmitButton";
+import type { CustomerStatus } from "@/server/customers/status";
+import { FuelGauge } from "./FuelGauge";
+import { usePolling } from "./usePolling";
+
+type PointsCardProps = {
+  initialStatus: CustomerStatus;
+  statusUrl: string;
+  redeemHref: string;
+  pointsPerVisit: number;
+  redeemAction: (rewardId: string) => Promise<void>;
+};
+
+/**
+ * The customer's balance as a fuel-price sign plus fuel gauge, kept live by polling (§0 step 5).
+ * Fixed-width digits and reserved space mean the layout doesn't move when the number changes.
+ */
+export function PointsCard({
+  initialStatus,
+  statusUrl,
+  redeemHref,
+  pointsPerVisit,
+  redeemAction,
+}: PointsCardProps) {
+  const t = useTranslations("home");
+  const format = useFormatter();
+  const [status, setStatus] = useState(initialStatus);
+  usePolling<CustomerStatus>(statusUrl, 3000, setStatus);
+
+  const { progress, pendingRedemption, lastVisitAt } = status;
+  const target = progress.target;
+
+  return (
+    <section
+      aria-labelledby="points-heading"
+      className="flex flex-col gap-5 rounded-[var(--radius-lg)] border border-line bg-raised p-5"
+    >
+      <h2
+        id="points-heading"
+        className="font-display text-lg font-semibold tracking-[0.18em] text-ink-muted uppercase"
+      >
+        {t("yourPoints")}
+      </h2>
+
+      <p className="flex items-baseline gap-2" aria-live="polite" aria-atomic="true">
+        <span
+          data-testid="points-balance"
+          className="price-digits min-w-[3ch] text-7xl leading-none text-accent"
+        >
+          {progress.balance}
+        </span>
+        {target ? (
+          <span className="price-digits text-3xl text-ink-muted">
+            <span aria-hidden="true">/ </span>
+            <span className="sr-only">{t("outOf")} </span>
+            {target.costPoints}
+          </span>
+        ) : null}
+      </p>
+
+      {target ? (
+        <FuelGauge percent={progress.percent} label={t("gaugeLabel", { reward: target.name })} />
+      ) : null}
+
+      <div className="min-h-[var(--target-min)]">
+        {progress.unlocked && target ? (
+          <div className="flex flex-col gap-3">
+            <p className="font-display text-2xl font-bold text-accent">
+              {t("unlocked", { reward: target.name })}
+            </p>
+            {pendingRedemption ? (
+              <Link href={redeemHref} className="glass glass-primary glass-large w-full">
+                {t("showCode")}
+              </Link>
+            ) : (
+              <form action={redeemAction.bind(null, target.id)}>
+                <SubmitButton size="large" pendingLabel={t("redeeming")}>
+                  {t("redeem")}
+                </SubmitButton>
+              </form>
+            )}
+          </div>
+        ) : target ? (
+          <p className="text-lg text-ink">
+            {t("visitsToGo", { visits: progress.visitsToNext, reward: target.name })}
+          </p>
+        ) : (
+          <p className="text-ink-muted">{t("noRewards")}</p>
+        )}
+      </div>
+
+      <p className="border-t border-line pt-4 text-sm text-ink-muted">
+        {lastVisitAt
+          ? t("lastVisit", {
+              date: format.dateTime(new Date(lastVisitAt), {
+                dateStyle: "medium",
+                timeStyle: "short",
+              }),
+            })
+          : t("noVisitsYet", { points: pointsPerVisit })}
+      </p>
+    </section>
+  );
+}

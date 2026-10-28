@@ -110,3 +110,41 @@ Customer pages check the session with Supabase Auth on every request (`getUser()
 ### D23. Customer session cookies are httpOnly
 
 The browser never talks to Supabase, so it never needs to read the session cookie. Secure in production, 30-day lifetime (§4.2).
+
+## 2026-10-28 — Milestone 3
+
+### D24. Points move when the cashier confirms the code, not when it's shown
+
+Tapping Redeem only creates a 6-digit code (5 minutes). The ledger row and the balance change happen in `complete_redemption`, when staff type the code. An expired or abandoned code costs the customer nothing. A new code cancels the customer's previous one.
+
+### D25. Wrong redemption codes are throttled per staff member
+
+§4.3b says "wrong code 5× → locked". Staff don't say whose code it is, so the lock is on the staff member typing: 5 wrong codes → that person can't redeem for 15 minutes (same `auth_throttles` table). Wrong, expired, used and other-store codes all give the same answer.
+
+### D26. `link_customer_on_signup` is part of `register_customer`
+
+§7 lists a separate function. Points belong to the customer row, so claiming the `unclaimed` row at sign-up (M2) is what attaches them — nothing to copy. Tested: earn as unknown number → sign up → same balance.
+
+### D27. Void and owner adjustments come with their screens
+
+`void_transaction` (M6, recent entries) and `adjust_points` (M7, dashboard) are built with the screens that use them, so no unused code ships now. The ledger already has the `reversal` / `adjust` types and `reverses_transaction_id`.
+
+### D28. Idempotency keys come from the server
+
+The counter page renders a fresh random key with the form; every successful Add visit returns the next one. A double tap or a retried request reuses the same key and is counted once; a new entry always has a new key (§0 rule 1). The database enforces it with a unique index, also when two requests race.
+
+### D29. Countdown uses the server's "seconds left"
+
+The code screen counts down from the server's figure using elapsed time on the phone, so a phone with a wrong clock still shows the right time.
+
+### D30. Customer status is polled at `/api/s/[store]/status`
+
+Every 3 s while visible, paused when hidden (§3). The route sets refreshed session cookies itself (the proxy only covers `/s/*`). Polling responses are `no-store`.
+
+### D31. Sign-up sends the confirmation email after responding
+
+With `after()`, so slow email delivery never delays reaching the home screen.
+
+### Open question — brand kit fonts
+
+`brand/suatu/README.md` (added during M3) says Space Grotesk + Inter; D6 chose Barlow + Barlow Condensed. To settle before Milestone 4.

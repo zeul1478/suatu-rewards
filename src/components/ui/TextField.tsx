@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes } from "react";
+import type { InputHTMLAttributes, Ref } from "react";
 import { RequiredMark } from "./RequiredMark";
 
 type TextFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, "id"> & {
@@ -8,6 +8,7 @@ type TextFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, "id"> & {
   error?: string;
   /** Larger input for the staff screen. */
   variant?: "regular" | "large";
+  ref?: Ref<HTMLInputElement>;
 };
 
 /** Labelled input with hint and error wired to aria-describedby. Required fields show "*". */
@@ -19,6 +20,7 @@ export function TextField({
   required,
   variant = "regular",
   className = "",
+  ref,
   ...inputProps
 }: TextFieldProps) {
   const id = `field-${name}`;
@@ -40,6 +42,7 @@ export function TextField({
         </p>
       ) : null}
       <input
+        ref={ref}
         id={id}
         name={name}
         required={required}

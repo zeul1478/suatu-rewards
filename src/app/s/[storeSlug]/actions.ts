@@ -15,6 +15,7 @@ import { requireCustomer } from "@/server/customers/currentCustomer";
 import { logInCustomer, logOutCustomer } from "@/server/customers/login";
 import { requestPasswordReset, resetPassword } from "@/server/customers/passwordReset";
 import { signUpCustomer } from "@/server/customers/signup";
+import { startRedemption } from "@/server/rewards/redemptions";
 import { clientIp, requestOrigin } from "@/server/request";
 import { getStoreOr404 } from "@/server/stores/getStore";
 
@@ -158,4 +159,13 @@ export async function changePasswordAction(
     };
   }
   return { status: "error", fieldErrors: { newPassword: `newPassword.${result.error}` } };
+}
+
+/** Redeem button (§0 step 8): creates a 5-minute code, then shows it full screen. */
+export async function redeemAction(storeSlug: string, rewardId: string): Promise<void> {
+  const store = await getStoreOr404(storeSlug);
+  const customer = await requireCustomer(store.slug);
+  const result = await startRedemption({ store, customer, rewardId });
+  // Not enough points (balance changed meanwhile): back home, which shows the current balance.
+  redirect(storeUrl(store.slug, result.ok ? "/redeem" : ""));
 }

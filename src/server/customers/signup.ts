@@ -1,4 +1,5 @@
 import "server-only";
+import { after } from "next/server";
 import type { z } from "zod";
 import { toAuthSecret } from "@/lib/password/authSecret";
 import { checkPassword } from "@/lib/password/rules";
@@ -21,7 +22,7 @@ export type SignupResult =
  * Creates a customer account (§4.1): Supabase Auth user (phone pre-confirmed — no SMS), then the
  * customer row, store membership and consent records in one database transaction. A phone number
  * that staff already entered (status 'unclaimed') is claimed with its points instead of rejected.
- * Then signs the customer in on this device and emails a verification link.
+ * Then signs the customer in on this device and, after responding, emails a verification link.
  */
 export async function signUpCustomer(
   store: Store,
@@ -93,18 +94,21 @@ export async function signUpCustomer(
   });
   if (signInError) return { ok: false, formError: "signup.createdButNotSignedIn" };
 
-  try {
-    await sendEmailVerification({
-      store,
-      customerId,
-      email: input.email,
-      firstName: input.firstName,
-      origin: context.origin,
-    });
-  } catch (error) {
-    // The account works without it; the customer can ask for a new link later.
-    console.error("Verification email failed", { customerId, error: String(error) });
-  }
+  // Sent after the response, so the customer reaches their home without waiting on email.
+  after(async () => {
+    try {
+      await sendEmailVerification({
+        store,
+        customerId,
+        email: input.email,
+        firstName: input.firstName,
+        origin: context.origin,
+      });
+    } catch (error) {
+      // The account works without it; the customer can ask for a new link later.
+      console.error("Verification email failed", { customerId, error: String(error) });
+    }
+  });
 
   return { ok: true };
 }
