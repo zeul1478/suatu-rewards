@@ -17,6 +17,7 @@ export function Checkbox({ name, children, error, required, defaultChecked }: Ch
     <div className="flex flex-col gap-1">
       <div className="flex min-h-[var(--target-min)] items-start gap-3 py-1">
         <input
+          suppressHydrationWarning
           id={id}
           name={name}
           type="checkbox"

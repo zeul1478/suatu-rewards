@@ -11,7 +11,7 @@ type LogoutButtonProps = {
 /** A form, not a link: logging out changes state, so it's a POST (and CSRF-checked). */
 export function LogoutButton({ action, label, pendingLabel }: LogoutButtonProps) {
   return (
-    <form action={action}>
+    <form suppressHydrationWarning action={action}>
       <SubmitButton pendingLabel={pendingLabel} icon="logout" variant="secondary">
         {label}
       </SubmitButton>

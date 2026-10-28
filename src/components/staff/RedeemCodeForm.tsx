@@ -19,7 +19,7 @@ export function RedeemCodeForm({ action }: RedeemCodeFormProps) {
   const text = useFormText(state);
 
   return (
-    <form action={formAction} noValidate className="flex flex-col gap-4">
+    <form suppressHydrationWarning action={formAction} noValidate className="flex flex-col gap-4">
       <TextField
         name="code"
         label={t("code")}

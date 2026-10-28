@@ -29,7 +29,7 @@ export function AddVisitForm({ action, initialKey, pointsPerVisit }: AddVisitFor
   }, [state]);
 
   return (
-    <form action={formAction} noValidate className="flex flex-col gap-4">
+    <form suppressHydrationWarning action={formAction} noValidate className="flex flex-col gap-4">
       <input type="hidden" name="idempotencyKey" value={state.nextKey} />
       <TextField
         ref={phoneRef}

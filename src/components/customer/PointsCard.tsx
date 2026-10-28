@@ -89,7 +89,7 @@ export function PointsCard({
                 {t("showCode")}
               </Link>
             ) : (
-              <form action={redeemAction.bind(null, target.id)}>
+              <form suppressHydrationWarning action={redeemAction.bind(null, target.id)}>
                 <SubmitButton size="large" pendingLabel={t("redeeming")}>
                   {t("redeem")}
                 </SubmitButton>

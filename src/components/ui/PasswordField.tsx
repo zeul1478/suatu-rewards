@@ -70,6 +70,7 @@ export function PasswordField({
       ) : null}
       <div className="relative">
         <input
+          suppressHydrationWarning
           ref={inputRef}
           id={id}
           name={name}

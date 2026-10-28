@@ -25,7 +25,13 @@ export function LoginForm({ action, forgotHref, signupHref }: LoginFormProps) {
   const formRef = useFocusFirstError(state.status, state);
 
   return (
-    <form ref={formRef} action={formAction} noValidate className="flex flex-col gap-5">
+    <form
+      suppressHydrationWarning
+      ref={formRef}
+      action={formAction}
+      noValidate
+      className="flex flex-col gap-5"
+    >
       {text.formError ? <FormAlert tone="error">{text.formError}</FormAlert> : null}
 
       <TextField

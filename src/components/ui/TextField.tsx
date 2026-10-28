@@ -42,6 +42,9 @@ export function TextField({
         </p>
       ) : null}
       <input
+        // Chrome on iOS adds autofill attributes (__gcruniqueid) to inputs and forms before
+        // React loads; ignore attribute differences on this element only. Same on every form.
+        suppressHydrationWarning
         ref={ref}
         id={id}
         name={name}

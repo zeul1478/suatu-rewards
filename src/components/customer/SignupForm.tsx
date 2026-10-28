@@ -46,7 +46,13 @@ export function SignupForm({ action, storeName, loginHref, legal }: SignupFormPr
   );
 
   return (
-    <form ref={formRef} action={formAction} noValidate className="flex flex-col gap-5">
+    <form
+      suppressHydrationWarning
+      ref={formRef}
+      action={formAction}
+      noValidate
+      className="flex flex-col gap-5"
+    >
       {text.formError ? <FormAlert tone="error">{text.formError}</FormAlert> : null}
       {text.hasFieldErrors ? <FormAlert tone="error">{tCommon("fixFields")}</FormAlert> : null}
 

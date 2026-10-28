@@ -89,7 +89,7 @@ export function RedeemCode({ redemption, statusUrl, homeHref, newCodeAction }: R
           <p role="alert" className="font-semibold text-warning">
             {t("expired")}
           </p>
-          <form action={newCodeAction}>
+          <form suppressHydrationWarning action={newCodeAction}>
             <SubmitButton size="large" pendingLabel={t("gettingCode")}>
               {t("newCode")}
             </SubmitButton>

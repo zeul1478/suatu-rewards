@@ -23,7 +23,13 @@ export function StaffLoginForm({ action, notice }: StaffLoginFormProps) {
   const formRef = useFocusFirstError(state.status, state);
 
   return (
-    <form ref={formRef} action={formAction} noValidate className="flex flex-col gap-5">
+    <form
+      suppressHydrationWarning
+      ref={formRef}
+      action={formAction}
+      noValidate
+      className="flex flex-col gap-5"
+    >
       {notice && state.status === "idle" ? <FormAlert tone="info">{notice}</FormAlert> : null}
       {text.formError ? <FormAlert tone="error">{text.formError}</FormAlert> : null}
       <TextField
