@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { Icon } from "@/components/ui/icons/Icon";
@@ -29,7 +29,6 @@ export function PointsCard({
   redeemAction,
 }: PointsCardProps) {
   const t = useTranslations("home");
-  const format = useFormatter();
   const [status, setStatus] = useState(initialStatus);
   // Each rise in the balance replays a short "pump tick" on the number (off with reduced motion).
   const [bumps, setBumps] = useState(0);
@@ -40,7 +39,7 @@ export function PointsCard({
     setStatus(next);
   });
 
-  const { progress, pendingRedemption, lastVisitAt } = status;
+  const { progress, pendingRedemption, lastVisit } = status;
   const target = progress.target;
 
   return (
@@ -106,14 +105,9 @@ export function PointsCard({
         )}
       </div>
 
-      <p className="border-t border-line pt-4 text-sm text-ink-muted">
-        {lastVisitAt
-          ? t("lastVisit", {
-              date: format.dateTime(new Date(lastVisitAt), {
-                dateStyle: "medium",
-                timeStyle: "short",
-              }),
-            })
+      <p data-testid="last-visit" className="border-t border-line pt-4 text-sm text-ink-muted">
+        {lastVisit
+          ? t("lastVisit", { date: lastVisit })
           : t("noVisitsYet", { points: pointsPerVisit })}
       </p>
     </section>

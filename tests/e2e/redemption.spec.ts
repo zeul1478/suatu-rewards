@@ -11,7 +11,7 @@ test.afterAll(closeDb);
 async function giveVisits(phoneE164: string, visits: number) {
   const {
     rows: [store],
-  } = await db().query(`select id from public.stores where slug = 'suatu'`);
+  } = await db().query(`select id from public.stores where slug = 'suatu-test'`);
   for (let i = 0; i < visits; i++) {
     await db().query(`select public.earn_points($1, $2, null, gen_random_uuid()::text)`, [
       store.id,

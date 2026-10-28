@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 import { afterAll, describe, expect, it } from "vitest";
 import { testEmail, testPhone } from "../support/data";
-import { closeDb, createUnclaimedCustomer, db, suatuStoreId } from "../support/db";
+import { closeDb, createUnclaimedCustomer, db, testStoreId } from "../support/db";
 import { env } from "../support/env";
 
 /*
@@ -33,7 +33,7 @@ async function register(overrides: { phone?: string; email?: string; authUserId?
   const authUserId = overrides.authUserId ?? (await authUser(phone, email));
   return secret().rpc("register_customer", {
     p_auth_user_id: authUserId,
-    p_store_id: await suatuStoreId(),
+    p_store_id: await testStoreId(),
     p_phone_e164: phone,
     p_email: email,
     p_first_name: "Testa",

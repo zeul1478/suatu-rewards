@@ -15,7 +15,10 @@ export async function PhoneAccess() {
     : null;
 
   return (
-    <Section title="Open on your phone" note="Phone and laptop on the same Wi-Fi.">
+    <Section
+      title="1. Open the app on your phones"
+      note="Use two phones — or one phone with two browser tabs — on the same Wi-Fi as this laptop."
+    >
       {url && qrSvg ? (
         <div className="flex flex-wrap items-start gap-6">
           <div
@@ -29,10 +32,11 @@ export async function PhoneAccess() {
               On the laptop, start the app with <code className="text-ink">pnpm dev:lan</code>{" "}
               (plain <code className="text-ink">pnpm dev</code> only serves this laptop).
             </li>
-            <li>Scan the code with the phone camera, or type:</li>
+            <li>On each phone, scan the code with the camera, or type this address:</li>
             <li className="list-none">
               <span className="price-digits text-2xl break-all text-accent">{url}</span>
             </li>
+            <li>You land on this page. Then pick a part below on each phone.</li>
           </ol>
         </div>
       ) : (

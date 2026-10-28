@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { DemoLogins } from "@/components/dev-home/DemoLogins";
 import { LocalTools } from "@/components/dev-home/LocalTools";
 import { PhoneAccess } from "@/components/dev-home/PhoneAccess";
 import { ScreenList } from "@/components/dev-home/ScreenList";
+import { TryIt } from "@/components/dev-home/TryIt";
+import { TwoParts } from "@/components/dev-home/TwoParts";
 
 export const metadata: Metadata = {
   title: "Dev home",
@@ -27,7 +28,7 @@ export default function DevHomePage() {
         </div>
         <div className="lane-stripe" aria-hidden="true" />
         <h1 className="max-w-2xl font-display text-4xl leading-tight font-bold text-ink sm:text-5xl">
-          Dev home: every screen, login and tool in one place.
+          Test Suatu Rewards: a cashier and a customer, side by side.
         </h1>
         <p className="max-w-2xl text-ink-muted">
           This page exists only while the app runs on your laptop. Production builds show a 404
@@ -35,10 +36,10 @@ export default function DevHomePage() {
         </p>
       </header>
 
-      <div className="grid gap-10 md:grid-cols-2">
-        <PhoneAccess />
-        <DemoLogins />
-      </div>
+      <PhoneAccess />
+      <TwoParts />
+      <TryIt />
+      <div className="lane-stripe" aria-hidden="true" />
       <ScreenList />
       <LocalTools />
     </main>

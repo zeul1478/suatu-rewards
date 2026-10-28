@@ -31,8 +31,9 @@ export async function expireLock(
   );
 }
 
-export async function suatuStoreId(): Promise<string> {
-  const { rows } = await db().query(`select id from public.stores where slug = 'suatu'`);
+/** The tests' own store (tests/support/testStore.ts), never the real Suatu. */
+export async function testStoreId(): Promise<string> {
+  const { rows } = await db().query(`select id from public.stores where slug = 'suatu-test'`);
   return rows[0].id;
 }
 
@@ -41,7 +42,7 @@ export async function createTempStaff(code: string, password: string): Promise<v
   await db().query(
     `insert into public.staff (store_id, staff_code, role, display_name, password_hash)
      values ($1, $2, 'cashier', 'Test cashier', $3)`,
-    [await suatuStoreId(), code, await hash(password)],
+    [await testStoreId(), code, await hash(password)],
   );
 }
 
@@ -62,12 +63,16 @@ export async function ageRecoveryEmail(email: string, minutes: number): Promise<
   );
 }
 
-/** Customer created by a staff entry, before any sign-up (§0 step 10). */
+/** Customer created by a staff entry at the test store, before any sign-up (§0 step 10). */
 export async function createUnclaimedCustomer(phoneE164: string): Promise<string> {
   const { rows } = await db().query(
     `insert into public.customers (status, phone_e164) values ('unclaimed', $1) returning id`,
     [phoneE164],
   );
+  await db().query(`insert into public.store_customers (store_id, customer_id) values ($1, $2)`, [
+    await testStoreId(),
+    rows[0].id,
+  ]);
   return rows[0].id;
 }
 

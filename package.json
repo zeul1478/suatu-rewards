@@ -25,7 +25,9 @@
     "db:types": "supabase gen types typescript --local > src/types/database.ts && prettier --write src/types/database.ts",
     "e2e:prod": "playwright test --config playwright.prod.config.ts",
     "icons": "node scripts/build-icons.mjs && prettier --write src/components/ui/icons/iconPaths.ts",
-    "brand:sync": "node scripts/brand-sync.mjs"
+    "brand:sync": "node scripts/brand-sync.mjs",
+    "e2e:visual": "playwright test --config playwright.visual.config.ts",
+    "e2e:visual:update": "playwright test --config playwright.visual.config.ts --update-snapshots"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.2",

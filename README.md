@@ -32,10 +32,10 @@ Open that address on a phone on the same Wi-Fi, or scan the QR code on the dev h
 
 ## Demo logins (development only)
 
-| Who                             | Log in with                                          |
-| ------------------------------- | ---------------------------------------------------- |
-| Staff · manager · owner · admin | user name `0000`, password `0000`                    |
-| Demo customer (Andrei Popescu)  | phone `(954) 555-0142`, password `suatu demo coffee` |
+| Who                             | Log in with                                              |
+| ------------------------------- | -------------------------------------------------------- |
+| Staff · manager · owner · admin | user name `0000`, password `0000`                        |
+| Customer                        | sign up with your own details (any made-up number works) |
 
 `0000` is refused by production builds.
 

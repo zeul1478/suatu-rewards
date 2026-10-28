@@ -3,12 +3,14 @@ import { defineConfig, devices } from "@playwright/test";
 const port = Number(process.env.PORT ?? 3000);
 const baseURL = `http://localhost:${port}`;
 
-// Device matrix from spec §10. Samsung Internet can't be automated: see docs/TESTING.md.
+// Device matrix from spec §10 (iPad both ways: the counter tablet is used portrait and landscape).
+// Samsung Internet can't be automated: see docs/TESTING.md.
 const deviceProjects = [
   "iPhone SE",
   "iPhone 15 Pro",
   "Pixel 7",
   "Galaxy S9+",
+  "iPad (gen 7)",
   "iPad (gen 7) landscape",
   "Desktop Chrome",
   "Desktop Safari",
@@ -18,6 +20,8 @@ const deviceProjects = [
 export default defineConfig({
   testDir: "./tests",
   testMatch: ["e2e/**/*.spec.ts", "a11y/**/*.spec.ts"],
+  // Tests use their own store and clean up after themselves (tests/support/testStore.ts).
+  globalSetup: "./tests/support/globalSetup.ts",
   fullyParallel: true,
   // Locally the laptop also runs Docker (Supabase) and the dev server; 4 browsers at a time
   // keeps timings realistic. CI picks its own.

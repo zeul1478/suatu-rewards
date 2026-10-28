@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import type { Page } from "@playwright/test";
 import { testCustomer, testPhone } from "../support/data";
 import { closeDb, db } from "../support/db";
-import { expect, signUp, staffLogIn, test } from "../e2e/support/fixtures";
+import { expect, signUp, staffLogIn, STORE, test } from "../e2e/support/fixtures";
 
 /*
  * Every screen built so far: zero axe violations (WCAG 2.2 AA) and no sideways scrolling,
@@ -35,14 +35,14 @@ test.afterAll(closeDb);
 
 test.describe("accessibility and layout", () => {
   for (const path of [
-    "/s/suatu/signup",
-    "/s/suatu/login",
-    "/s/suatu/forgot-password",
-    "/s/suatu/reset-password?token=x&c=00000000-0000-4000-8000-000000000000",
+    `/s/${STORE}/signup`,
+    `/s/${STORE}/login`,
+    `/s/${STORE}/forgot-password`,
+    `/s/${STORE}/reset-password?token=x&c=00000000-0000-4000-8000-000000000000`,
     "/legal/privacy",
     "/legal/terms",
-    "/legal/suatu/program-terms",
-    "/staff/suatu/login",
+    `/legal/${STORE}/program-terms`,
+    `/staff/${STORE}/login`,
   ]) {
     test(`public screen ${path}`, async ({ page }) => {
       await page.goto(path);
@@ -51,7 +51,7 @@ test.describe("accessibility and layout", () => {
   }
 
   // The customer app follows the phone's appearance; the runs above use light mode.
-  for (const path of ["/s/suatu/signup", "/s/suatu/login", "/legal/privacy"]) {
+  for (const path of [`/s/${STORE}/signup`, `/s/${STORE}/login`, "/legal/privacy"]) {
     test(`dark mode ${path}`, async ({ page }) => {
       await page.emulateMedia({ colorScheme: "dark" });
       await page.goto(path);
@@ -66,14 +66,14 @@ test.describe("accessibility and layout", () => {
   });
 
   test("sign-up with every error showing", async ({ page }) => {
-    await page.goto("/s/suatu/signup");
+    await page.goto(`/s/${STORE}/signup`);
     await page.getByRole("button", { name: "Create account" }).click();
     await expect(page.getByText("Enter your phone number.")).toBeVisible();
     await checkScreen(page);
   });
 
   test("legal sheet open", async ({ page }) => {
-    await page.goto("/s/suatu/signup");
+    await page.goto(`/s/${STORE}/signup`);
     await page.getByRole("button", { name: "Program Terms" }).click();
     await expect(page.getByRole("dialog")).toBeVisible();
     await checkScreen(page);
@@ -83,7 +83,7 @@ test.describe("accessibility and layout", () => {
     const customer = testCustomer();
     await signUp(page, customer);
     await checkScreen(page);
-    await page.goto("/s/suatu/account");
+    await page.goto(`/s/${STORE}/account`);
     await checkScreen(page);
   });
 
@@ -103,7 +103,7 @@ test.describe("accessibility and layout", () => {
     await signUp(page, customer);
     const {
       rows: [store],
-    } = await db().query(`select id from public.stores where slug = 'suatu'`);
+    } = await db().query(`select id from public.stores where slug = 'suatu-test'`);
     for (let i = 0; i < 20; i++) {
       await db().query(`select public.earn_points($1, $2, null, gen_random_uuid()::text)`, [
         store.id,

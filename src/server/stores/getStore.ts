@@ -8,6 +8,7 @@ export type Store = {
   slug: string;
   name: string;
   timezone: string;
+  locale: string;
   pointsPerVisit: number;
 };
 
@@ -15,7 +16,7 @@ export type Store = {
 export const getStoreOr404 = cache(async (slug: string): Promise<Store> => {
   const { data, error } = await supabaseAdmin()
     .from("stores")
-    .select("id, slug, name, timezone, points_per_visit")
+    .select("id, slug, name, timezone, locale, points_per_visit")
     .eq("slug", slug)
     .eq("status", "active")
     .maybeSingle();
@@ -26,6 +27,7 @@ export const getStoreOr404 = cache(async (slug: string): Promise<Store> => {
     slug: data.slug,
     name: data.name,
     timezone: data.timezone,
+    locale: data.locale,
     pointsPerVisit: data.points_per_visit,
   };
 });

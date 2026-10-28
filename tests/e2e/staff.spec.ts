@@ -1,12 +1,6 @@
 import { randomInt } from "node:crypto";
-import {
-  ageStaffSessions,
-  closeDb,
-  createTempStaff,
-  expireLock,
-  suatuStoreId,
-} from "../support/db";
-import { expect, staffLogIn, test } from "./support/fixtures";
+import { ageStaffSessions, closeDb, createTempStaff, expireLock, testStoreId } from "../support/db";
+import { at, expect, staffLogIn, STORE, test } from "./support/fixtures";
 
 test.afterAll(closeDb);
 
@@ -28,12 +22,12 @@ test.describe("staff screen (§6, §0 step 3)", () => {
     expect(box?.height).toBeGreaterThanOrEqual(56);
 
     await page.getByRole("button", { name: "Log out" }).click();
-    await expect(page).toHaveURL(/\/staff\/suatu\/login$/);
+    await expect(page).toHaveURL(at(`/staff/${STORE}/login`));
   });
 
   test("signed-out visitors go to the staff login", async ({ page }) => {
-    await page.goto("/staff/suatu");
-    await expect(page).toHaveURL(/\/staff\/suatu\/login$/);
+    await page.goto(`/staff/${STORE}`);
+    await expect(page).toHaveURL(at(`/staff/${STORE}/login`));
   });
 
   test("wrong password is generic; 5 wrong locks the account, even for the right password", async ({
@@ -52,7 +46,7 @@ test.describe("staff screen (§6, §0 step 3)", () => {
     await staffLogIn(page, code, "counter password 1");
     await expect(page.getByText(/Locked for/)).toBeVisible();
 
-    await expireLock("staff_login", `${await suatuStoreId()}:${code.toLowerCase()}`);
+    await expireLock("staff_login", `${await testStoreId()}:${code.toLowerCase()}`);
     await staffLogIn(page, code, "counter password 1");
     await expect(page.getByRole("heading", { name: "Add a visit" })).toBeVisible();
   });
@@ -65,7 +59,7 @@ test.describe("staff screen (§6, §0 step 3)", () => {
 
     await ageStaffSessions(code, 16);
     await page.reload();
-    await expect(page).toHaveURL(/\/staff\/suatu\/login$/);
+    await expect(page).toHaveURL(at(`/staff/${STORE}/login`));
   });
 
   test("the screen logs itself out after 15 minutes without a tap", async ({ page }) => {
@@ -76,7 +70,7 @@ test.describe("staff screen (§6, §0 step 3)", () => {
     await expect(page.getByRole("heading", { name: "Add a visit" })).toBeVisible();
 
     await page.clock.fastForward("15:01");
-    await expect(page).toHaveURL(/\/staff\/suatu\/login\?reason=idle$/);
+    await expect(page).toHaveURL(at(`/staff/${STORE}/login?reason=idle`));
     await expect(
       page.getByText("You were logged out after 15 minutes without activity."),
     ).toBeVisible();

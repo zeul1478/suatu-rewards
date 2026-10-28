@@ -1,4 +1,4 @@
-import { expect, staffLogIn, test } from "./support/fixtures";
+import { expect, staffLogIn, STORE, test } from "./support/fixtures";
 
 /* The brand kit wired into the app (brand/suatu/README.md, spec §5/§9). */
 
@@ -7,7 +7,7 @@ test.describe("branding", () => {
     page,
     request,
   }) => {
-    await page.goto("/s/suatu/login");
+    await page.goto(`/s/${STORE}/login`);
     await expect(page.getByRole("img", { name: "Suatu" }).first()).toBeVisible();
     await expect(page.getByRole("img", { name: "Powered by behappy" })).toBeVisible();
 
@@ -36,13 +36,13 @@ test.describe("branding", () => {
   });
 
   test("the manifest names the store and its four app icons all load", async ({ request }) => {
-    const response = await request.get("/s/suatu/manifest.webmanifest");
+    const response = await request.get(`/s/${STORE}/manifest.webmanifest`);
     expect(response.headers()["content-type"]).toContain("application/manifest+json");
     const manifest = await response.json();
     expect(manifest).toMatchObject({
       name: "Suatu Rewards",
       short_name: "Suatu",
-      start_url: "/s/suatu",
+      start_url: `/s/${STORE}`,
       display: "standalone",
       theme_color: "#07231A",
     });
@@ -72,7 +72,7 @@ test.describe("branding", () => {
 
   test("brand icons follow the theme: lime details on dark", async ({ page }) => {
     await page.emulateMedia({ colorScheme: "dark" });
-    await page.goto("/s/suatu/login");
+    await page.goto(`/s/${STORE}/login`);
     const accent = await page
       .getByRole("button", { name: "Show password" })
       .locator("svg")

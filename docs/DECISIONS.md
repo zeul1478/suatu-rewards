@@ -177,3 +177,21 @@ Suatu green text (`#1E7A4F`, kept per the brand rules) was 4.3:1 on it; now 4.54
 ### D37. "Powered by behappy" placement (spec §5)
 
 Dark badge in the customer app footer (every customer screen, including Account), light badge at the bottom of the staff screen. behappy is the company that makes the app; it is platform branding, the same in every store's app (`src/lib/platform.ts`).
+
+## 2026-10-28 — Milestone 4, part 2
+
+### D38. Tests use their own store and clean up after themselves
+
+A second Supabase stack would cost ~1.5 GB more memory on an already busy laptop. Instead every test run works in a store called `suatu-test` (same look as Suatu) plus throwaway `test-…` stores, and a global teardown deletes everything tests created: their customers, logins, points, codes, sessions, logs and emails to `@example.test`. Customers who also belong to a real store are never touched. Result: the real Suatu data in Supabase Studio only ever holds what people did by hand.
+
+### D39. "Last visit" is formatted on the server
+
+Found by the new no-console-errors test: Node and Safari word dates differently ("Oct 28, 2026 at 2:20 PM" vs "…, 2:20 PM"), which broke hydration. The server now formats it once, in the store's time zone, and the phone just shows the text (also in the 3-second updates).
+
+### D40. Translations are compiled at build time
+
+`next-intl`'s `precompile` option: phones don't download the message parser. Customer home JavaScript went from just over to 142 KB gzipped (budget 150 KB). Little headroom is left: keep an eye on it in M5.
+
+### D41. Dev home is a "how to test" page
+
+Rewritten at the owner's request: open on two phones (or two tabs) → pick a part (Cashier with `0000/0000`, Customer with your own details) → try the whole flow. The demo customer Andrei is no longer listed (`pnpm db:seed-demo` still adds him on request).

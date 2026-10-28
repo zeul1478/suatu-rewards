@@ -1,6 +1,15 @@
 import { testCustomer, testPhone } from "../support/data";
 import { closeDb, createUnclaimedCustomer, customerByPhone } from "../support/db";
-import { expect, logOut, signUp, submitLogin, submitSignup, test } from "./support/fixtures";
+import {
+  at,
+  expect,
+  logOut,
+  signUp,
+  STORE,
+  submitLogin,
+  submitSignup,
+  test,
+} from "./support/fixtures";
 
 test.afterAll(closeDb);
 
@@ -21,11 +30,6 @@ test.describe("customer accounts (§0 steps 1–2, §4.1–4.2)", () => {
 
     const row = await customerByPhone(e164);
     expect(row?.status).toBe("active");
-  });
-
-  test("the demo customer listed on the dev home can log in", async ({ page }) => {
-    await submitLogin(page, "(954) 555-0142", "suatu demo coffee");
-    await expect(page.getByRole("heading", { name: "Hi, Andrei" })).toBeVisible();
   });
 
   test("a number staff already entered is claimed, not rejected (§0 step 11)", async ({ page }) => {
@@ -63,7 +67,7 @@ test.describe("customer accounts (§0 steps 1–2, §4.1–4.2)", () => {
   test("empty form: every required field explains itself and focus goes to the first", async ({
     page,
   }) => {
-    await page.goto("/s/suatu/signup");
+    await page.goto(`/s/${STORE}/signup`);
     await page.getByRole("button", { name: "Create account" }).click();
 
     await expect(
@@ -111,7 +115,7 @@ test.describe("customer accounts (§0 steps 1–2, §4.1–4.2)", () => {
   });
 
   test("terms open in a sheet without leaving the form", async ({ page }) => {
-    await page.goto("/s/suatu/signup");
+    await page.goto(`/s/${STORE}/signup`);
     await page.getByLabel("First name").fill("Kept");
     await page.getByRole("button", { name: "Privacy Policy" }).click();
 
@@ -125,13 +129,13 @@ test.describe("customer accounts (§0 steps 1–2, §4.1–4.2)", () => {
   });
 
   test("signed-out visitors are sent to log in; legal pages are public", async ({ page }) => {
-    await page.goto("/s/suatu/account");
-    await expect(page).toHaveURL(/\/s\/suatu\/login$/);
+    await page.goto(`/s/${STORE}/account`);
+    await expect(page).toHaveURL(at(`/s/${STORE}/login`));
 
     for (const [path, title] of [
       ["/legal/privacy", "Privacy Policy"],
       ["/legal/terms", "Terms of Use"],
-      ["/legal/suatu/program-terms", "Suatu Rewards Program Terms"],
+      [`/legal/${STORE}/program-terms`, "Suatu Rewards Program Terms"],
     ] as const) {
       await page.goto(path);
       await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();

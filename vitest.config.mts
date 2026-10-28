@@ -11,5 +11,7 @@ export default defineConfig({
   test: {
     include: ["tests/unit/**/*.test.ts", "tests/db/**/*.test.ts"],
     environment: "node",
+    // DB tests use their own stores and clean up after themselves (tests/support/testStore.ts).
+    globalSetup: ["./tests/support/globalSetup.ts"],
   },
 });

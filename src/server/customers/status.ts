@@ -9,7 +9,11 @@ import type { CurrentCustomer } from "./currentCustomer";
 /** Everything the customer home shows; also the JSON the home polls every 3 seconds. */
 export type CustomerStatus = {
   progress: Progress;
-  lastVisitAt: string | null;
+  /**
+   * "Oct 28, 2026, 2:20 PM" in the store's time zone, formatted here on the server: phones and
+   * Node word dates differently, so formatting on both sides wouldn't match.
+   */
+  lastVisit: string | null;
   pendingRedemption: PendingRedemption | null;
 };
 
@@ -36,7 +40,13 @@ export async function getCustomerStatus(
       pointsPerVisit: store.pointsPerVisit,
       rewards,
     }),
-    lastVisitAt: membership?.last_visit_at ?? null,
+    lastVisit: membership?.last_visit_at
+      ? new Intl.DateTimeFormat(store.locale, {
+          dateStyle: "medium",
+          timeStyle: "short",
+          timeZone: store.timezone,
+        }).format(new Date(membership.last_visit_at))
+      : null,
     pendingRedemption,
   };
 }

@@ -11,9 +11,13 @@
 
 `pnpm e2e` starts the dev server itself (or reuses one already running on port 3000). First time only: `pnpm e2e:install` downloads the browsers. Locally it runs 4 browsers at a time with 10 s per check; the full run takes about 7 minutes on this laptop. If many tests time out, check what else is using the CPU (a second Supabase project in Docker is the usual suspect).
 
+### Test data
+
+Tests never use the real Suatu store. They run in their own store (`suatu-test`) and delete everything they created when the run ends (`tests/support/testStore.ts`, DECISIONS D38). Don't run `pnpm test` and `pnpm e2e` at the same time: whichever finishes first cleans up the other's data.
+
 ### Device projects (spec §10)
 
-iPhone SE (320 px, WebKit) · iPhone 15 Pro (WebKit) · Pixel 7 (Chromium) · Galaxy S9+ (320 px, Chromium) · iPad (gen 7) landscape (WebKit) · Desktop Chrome · Desktop Safari · Desktop Firefox.
+iPhone SE (320 px, WebKit) · iPhone 15 Pro (WebKit) · Pixel 7 (Chromium) · Galaxy S9+ (320 px, Chromium) · iPad (gen 7) portrait and landscape (WebKit) · Desktop Chrome · Desktop Safari · Desktop Firefox.
 
 Samsung Internet can't be driven by Playwright → manual checklist below.
 
@@ -30,6 +34,7 @@ Samsung Internet can't be driven by Playwright → manual checklist below.
 | M1        | `storeUrl` unit tests (5); dev home e2e + axe + no-overflow on all 8 device projects (24 tests)                                                                                                                                                                                                       |
 | M2        | Unit 28 (incl. 5 from M1) · DB 11 (throttle functions, sign-up function, RLS, append-only consents) · e2e + a11y 45 per device × 8 projects = 360 · production build 2                                                                                                                                |
 | M3        | Unit 39 · DB 26 (points engine: 20 → 100 → redeem → 0, 105 → 5, idempotency, 10 parallel taps, concurrent cashiers, claim keeps points, daily cap, append-only ledger, code expiry/reuse/other store) · e2e + a11y 53 per device × 8 = 424 (full §0 golden path on every device) · production build 2 |
+| M4        | Unit + brand 73 · DB 26 · e2e + a11y 62 per device × 9 = 558 (incl. dark mode, no console errors in another time zone, branding) · visual 54 (12 screens × 6 devices… light and dark) · production 4 (guards + performance)                                                                           |
 
 ### §4.3b coverage (M2)
 
@@ -49,6 +54,16 @@ Samsung Internet can't be driven by Playwright → manual checklist below.
 | Redemption code: 5 wrong → locked, unlocks after 15 min; can't be selected/copied                                  | `tests/e2e/redemption.spec.ts`                                                                                                     |
 
 "Fake clock": lock and link expiry are moved into the past in the database; the screen's idle timer uses Playwright's clock.
+
+## Performance (M4, production build, emulated mid-range phone on slow 4G)
+
+| Screen        | LCP                          | CLS   | Initial JS (gzip) |
+| ------------- | ---------------------------- | ----- | ----------------- |
+| Log in        | 0.68 s                       | 0     | 143 KB            |
+| Customer home | 0.22 s (shared files cached) | 0     | 142 KB            |
+| Budget (§10)  | < 2.5 s                      | < 0.1 | < 150 KB          |
+
+INP (tap responsiveness) needs a real phone: on the manual checklist. Lighthouse CI runs in M9.
 
 ## Manual checklist
 

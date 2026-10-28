@@ -1,5 +1,6 @@
 import { test as base, expect, type Page } from "@playwright/test";
 import { testCustomer, testIp } from "../../support/data";
+import { TEST_STORE } from "../../support/testStore";
 
 /**
  * Every test gets its own fake client IP (x-forwarded-for) so per-IP login limits behave as if
@@ -14,6 +15,14 @@ export const test = base.extend({
 
 export { expect };
 
+/** Every browser test uses the tests' own store, never the real Suatu (tests/support/testStore.ts). */
+export const STORE = TEST_STORE.slug;
+
+/** Matches a URL ending in `path` (for toHaveURL). */
+export function at(path: string): RegExp {
+  return new RegExp(`${path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`);
+}
+
 export type TestCustomer = ReturnType<typeof testCustomer>;
 
 /** Fills and submits the sign-up form. Doesn't wait for the result. */
@@ -22,7 +31,7 @@ export async function submitSignup(
   customer: TestCustomer,
   options: { marketing?: boolean } = {},
 ) {
-  await page.goto("/s/suatu/signup");
+  await page.goto(`/s/${STORE}/signup`);
   await page.getByLabel("Phone number").fill(customer.phone.typed);
   await page.getByLabel("First name").fill(customer.firstName);
   await page.getByLabel("Last name").fill(customer.lastName);
@@ -40,7 +49,7 @@ export async function signUp(page: Page, customer: TestCustomer) {
 }
 
 export async function submitLogin(page: Page, phone: string, password: string) {
-  await page.goto("/s/suatu/login");
+  await page.goto(`/s/${STORE}/login`);
   await page.getByLabel("Phone number").fill(phone);
   await page.getByLabel("Password", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Log in" }).click();
@@ -48,11 +57,11 @@ export async function submitLogin(page: Page, phone: string, password: string) {
 
 export async function logOut(page: Page) {
   await page.getByRole("button", { name: "Log out" }).click();
-  await expect(page).toHaveURL(/\/s\/suatu\/login$/);
+  await expect(page).toHaveURL(at(`/s/${STORE}/login`));
 }
 
 export async function staffLogIn(page: Page, code: string, password: string) {
-  await page.goto("/staff/suatu/login");
+  await page.goto(`/staff/${STORE}/login`);
   await page.getByLabel("User name").fill(code);
   await page.getByLabel("Password", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Log in" }).click();

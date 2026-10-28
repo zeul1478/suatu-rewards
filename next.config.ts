@@ -2,7 +2,13 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 import { lanAddresses } from "./scripts/lan-addresses.mjs";
 
-const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
+const withNextIntl = createNextIntlPlugin({
+  requestConfig: "./src/i18n/request.ts",
+  experimental: {
+    // Texts are compiled at build time, so phones don't download the message parser (~12 KB).
+    messages: { format: "json", path: "./src/messages", locales: "infer", precompile: true },
+  },
+});
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,

@@ -1,7 +1,16 @@
 import { testCustomer } from "../support/data";
 import { ageRecoveryEmail, closeDb, expireLock } from "../support/db";
 import { emailCount, firstLink, latestEmailText } from "../support/mailpit";
-import { expect, logOut, signUp, submitLogin, submitSignup, test } from "./support/fixtures";
+import {
+  at,
+  expect,
+  logOut,
+  signUp,
+  STORE,
+  submitLogin,
+  submitSignup,
+  test,
+} from "./support/fixtures";
 
 test.afterAll(closeDb);
 
@@ -58,7 +67,7 @@ test.describe("password rules (§4.3, §4.3b)", () => {
   test("show/hide keeps the cursor; copy and cut are blocked; paste is allowed", async ({
     page,
   }) => {
-    await page.goto("/s/suatu/signup");
+    await page.goto(`/s/${STORE}/signup`);
     const input = passwordField(page);
     await input.fill("abcdefgh");
     await input.evaluate((element: HTMLInputElement) => element.setSelectionRange(3, 3));
@@ -161,7 +170,7 @@ test.describe("change password (§4.3b)", () => {
       otherPage.getByRole("heading", { name: `Hi, ${customer.firstName}` }),
     ).toBeVisible();
 
-    await page.goto("/s/suatu/account");
+    await page.goto(`/s/${STORE}/account`);
     await passwordField(page, "Current password").fill("not my password");
     await passwordField(page, "New password").fill("a brand new phrase");
     await page.getByRole("button", { name: "Change password" }).click();
@@ -174,12 +183,12 @@ test.describe("change password (§4.3b)", () => {
       page.getByText("Password changed. Other devices have been logged out."),
     ).toBeVisible();
 
-    await otherPage.goto("/s/suatu");
-    await expect(otherPage).toHaveURL(/\/s\/suatu\/login$/);
+    await otherPage.goto(`/s/${STORE}`);
+    await expect(otherPage).toHaveURL(at(`/s/${STORE}/login`));
     await otherDevice.close();
 
     // This device stays signed in; the old password no longer works.
-    await page.goto("/s/suatu");
+    await page.goto(`/s/${STORE}`);
     await expect(page.getByRole("heading", { name: `Hi, ${customer.firstName}` })).toBeVisible();
     await logOut(page);
     await submitLogin(page, customer.phone.typed, customer.password);
@@ -191,7 +200,7 @@ test.describe("change password (§4.3b)", () => {
 
 test.describe("forgot password (§4.2, §4.3b)", () => {
   async function requestReset(page: import("@playwright/test").Page, phone: string) {
-    await page.goto("/s/suatu/forgot-password");
+    await page.goto(`/s/${STORE}/forgot-password`);
     await page.getByLabel("Phone number").fill(phone);
     await page.getByRole("button", { name: "Email me a link" }).click();
     await expect(page.getByText(/If that number has an account/)).toBeVisible();
@@ -250,7 +259,7 @@ test.describe("forgot password (§4.2, §4.3b)", () => {
     const link = firstLink(await latestEmailText(customer.email, { subjectIncludes: "Confirm" }));
     await page.goto(link);
     await expect(page.getByText("Thanks — your email is confirmed.")).toBeVisible();
-    await page.goto("/s/suatu/account");
+    await page.goto(`/s/${STORE}/account`);
     await expect(page.getByText("Confirmed", { exact: true })).toBeVisible();
   });
 });
