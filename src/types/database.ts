@@ -242,6 +242,57 @@ export type Database = {
           },
         ];
       };
+      offers: {
+        Row: {
+          active: boolean;
+          body: string | null;
+          created_at: string;
+          ends_on: string | null;
+          id: string;
+          image_path: string | null;
+          sort_order: number;
+          starts_on: string | null;
+          store_id: string;
+          title: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          active?: boolean;
+          body?: string | null;
+          created_at?: string;
+          ends_on?: string | null;
+          id?: string;
+          image_path?: string | null;
+          sort_order?: number;
+          starts_on?: string | null;
+          store_id: string;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          active?: boolean;
+          body?: string | null;
+          created_at?: string;
+          ends_on?: string | null;
+          id?: string;
+          image_path?: string | null;
+          sort_order?: number;
+          starts_on?: string | null;
+          store_id?: string;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "offers_store_id_fkey";
+            columns: ["store_id"];
+            isOneToOne: false;
+            referencedRelation: "stores";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       point_transactions: {
         Row: {
           amount_cents: number | null;
@@ -695,6 +746,17 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      adjust_points: {
+        Args: {
+          p_customer_id: string;
+          p_idempotency_key: string;
+          p_note: string;
+          p_points: number;
+          p_staff_id: string;
+          p_store_id: string;
+        };
+        Returns: Json;
+      };
       anonymize_customer: { Args: { p_customer_id: string }; Returns: undefined };
       auth_throttle_clear: { Args: { p_key: string; p_scope: string }; Returns: undefined };
       auth_throttle_fail: {
@@ -710,6 +772,7 @@ export type Database = {
         Args: { p_customer_id: string; p_reward_id: string; p_store_id: string };
         Returns: Json;
       };
+      dashboard_overview: { Args: { p_store_id: string }; Returns: Json };
       earn_points: {
         Args: {
           p_idempotency_key: string;

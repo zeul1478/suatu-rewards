@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { brandFor } from "@/brands";
 import { BrandLogo } from "@/components/brand/BrandLogo";
@@ -57,11 +58,19 @@ export default async function StaffPage({ params }: PageProps<"/staff/[storeSlug
             {t("signedInAs", { name: staff.displayName })}
           </p>
         </div>
-        <LogoutButton
-          action={staffLogoutAction.bind(null, store.slug, undefined)}
-          label={tCommon("logOut")}
-          pendingLabel={tCommon("loggingOut")}
-        />
+        <div className="flex flex-wrap items-center gap-2">
+          {staff.role === "manager" ? (
+            <Link href={storeUrl(store.slug, "", "dashboard")} className="glass">
+              <Icon name="chart" size={22} />
+              {t("dashboardLink")}
+            </Link>
+          ) : null}
+          <LogoutButton
+            action={staffLogoutAction.bind(null, store.slug, undefined)}
+            label={tCommon("logOut")}
+            pendingLabel={tCommon("loggingOut")}
+          />
+        </div>
       </header>
 
       <main className="screen-gutter mx-auto grid w-full max-w-6xl flex-1 content-start gap-6 py-6 md:grid-cols-[3fr_2fr] md:gap-8">

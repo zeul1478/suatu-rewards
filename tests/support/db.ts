@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { hash } from "@node-rs/argon2";
 import pg from "pg";
 import { env } from "./env";
@@ -90,4 +91,30 @@ export async function customerByPhone(phoneE164: string) {
         first_name: string | null;
       }
     | undefined;
+}
+
+/**
+ * A store of its own (slug "test-…", removed by the cleanup) for tests that change store-wide
+ * things — rewards, offers, points per visit — which would upset tests running in parallel in
+ * the shared test store. Same 0000 / 0000 manager and Free coffee reward.
+ */
+export async function createScratchStore(): Promise<{ slug: string; id: string }> {
+  const slug = `test-${randomUUID().slice(0, 8)}`;
+  const {
+    rows: [store],
+  } = await db().query(
+    `insert into public.stores (slug, name, country, timezone, currency, locale, points_per_visit)
+     values ($1, 'Suatu', 'US', 'America/New_York', 'USD', 'en-US', 5) returning id`,
+    [slug],
+  );
+  await db().query(
+    `insert into public.rewards (store_id, name, cost_points) values ($1, 'Free coffee', 100)`,
+    [store.id],
+  );
+  await db().query(
+    `insert into public.staff (store_id, staff_code, role, display_name, password_hash)
+     values ($1, '0000', 'manager', 'Manager (dev)', $2)`,
+    [store.id, await hash("0000")],
+  );
+  return { slug, id: store.id };
 }

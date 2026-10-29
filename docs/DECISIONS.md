@@ -247,3 +247,45 @@ The counter shows the signed-in cashier's last 15 visits (newest first): time in
 ### D53. Screenshot tolerance 0.2%
 
 At 1% a whole changed section of a tall tablet page passed unnoticed. 0.2% still matches the same screen run after run.
+
+## 2026-10-29 — Milestone 7
+
+### D54. The dashboard uses staff accounts; managers only
+
+The owner dashboard (`/dashboard/<store>`) logs in with the same user name + password as the counter screen and shares its session (same cookie, same 15-minute idle logout). Only the `manager` role gets in: a cashier is refused at the dashboard login, and a cashier session that opens a dashboard URL is sent to the login with a notice. A separate "owner" account type (`store_members`, §7) isn't built yet: in this demo the manager is the owner (D2). Managers see an "Owner dashboard" link on the counter screen.
+
+### D55. Temporary passwords are replaced at the next login
+
+A password the owner types (adding someone, resetting a password) is temporary (`must_change_password`): the next login asks for the temporary password plus a new one, and only then starts the session. In production the development password `0000` is treated the same way, so §6's "force a real password on first login" now happens in the login form instead of a plain refusal. New staff passwords follow the customer rules (8–64 characters, not a common password), are never the user name, and can't stay the same. Resetting or turning someone off ends their open sessions at once.
+
+### D56. Contact details are masked everywhere in the dashboard and CSV
+
+Phones show as "••• 0142" and emails as "m•••@gmail.com" in lists, customer pages and the CSV export (§14 "visible (masked)"). The owner can still find someone by the last digits of their number or by name. Full details stay with the customer (their own Account page and data download). Every CSV export is written to the audit log; cells that start like a formula get a leading `'` (CSV injection).
+
+### D57. Owner adjustments: a note, both directions, never below zero
+
+`adjust_points()` adds or removes up to 10,000 points with a required note (3–200 characters) the customer sees in their History. It locks the membership row, refuses to go below zero, and uses an idempotency key so a double tap adjusts once. Audited.
+
+### D58. "Release number" = close the account that holds the number (D4)
+
+From a customer's page a manager can release the phone number (with a reason and a confirmation tick): the account is anonymized exactly like "Delete my account" (D43, history kept, Auth login removed) and the number can sign up fresh. This also cleans up a number a cashier mistyped. The reason goes to the audit log. ⚖ Real launches need SMS verification instead (D4).
+
+### D59. Offer pictures: private bucket, served by the app, shrunk in the browser
+
+Offers live in an `offers` table (title, details, optional start/end day in the store's calendar, on/off). Pictures go to a private Supabase Storage bucket (`offer-images`, JPG/PNG/WebP, 5 MB) and reach phones through `/api/s/<store>/offers/<id>/image`, because phones can't reach the laptop's storage address and production shouldn't expose it either. The file type is checked from its first bytes, not its name. The dashboard shrinks photos to 1600 px JPEG in the browser before upload (phone photos are ~4 MB); server actions accept up to 6 MB for when it can't.
+
+### D60. Overview numbers are counted in Postgres
+
+`dashboard_overview()` counts in the store's time zone: members (not deleted), visits today / 7 / 30 days (voided visits don't count), returning customers (came on 2+ different days in the last 30 days, out of everyone who came), rewards redeemed (all time and last 30 days). One query, tested against fixed data.
+
+### D61. Branding is shown, not edited, in Settings
+
+Settings edits points per visit (applies to new visits; balances stay). Reward costs are edited on Rewards. The look (logo, colours, fonts) is previewed but stays in code (`src/brands/<store>.ts`, D33), because behappy sets it up per store and it must stay reusable for other apps.
+
+### D62. The counter sign is the notice at collection (D5)
+
+`/dashboard/<store>/sign` prints a letter-size "Join Suatu Rewards" sign: the cheapest reward, a QR code to sign-up, three steps, and the notice that giving a number at the register saves it with points before sign-up, with the program-terms link. In development the QR uses the laptop's Wi-Fi address, so a phone can scan it.
+
+### D63. `pnpm dev:share`: a temporary public link (dev only)
+
+For a tester outside the Wi-Fi, `pnpm dev:share` runs the app plus a Cloudflare quick tunnel (`https://<random>.trycloudflare.com`). The link changes every run and dies with Ctrl+C. Only while it runs does the dev server accept that address (`DEV_SHARE=1` adds `*.trycloudflare.com` to `allowedDevOrigins` and the server-action origins). It is the development build with the `0000` login, so it's for short, supervised sessions only.

@@ -44,7 +44,10 @@
       "tooLong": "Use 64 characters or fewer.",
       "common": "This password is too common. Try a longer phrase only you would think of.",
       "matchesPhone": "Don't use your phone number as your password.",
-      "matchesEmail": "Don't use your email address as your password."
+      "matchesEmail": "Don't use your email address as your password.",
+      "required": "Choose a new password.",
+      "matchesStaffCode": "Don't use the user name as the password.",
+      "unchanged": "Choose a password different from the temporary one."
     },
     "currentPassword": {
       "required": "Enter your current password.",
@@ -57,10 +60,63 @@
       "required": "The program is for adults 18 and older."
     },
     "staffCode": {
-      "required": "Enter your user name."
+      "required": "Enter your user name.",
+      "format": "Use 4 to 32 letters or numbers, no spaces.",
+      "taken": "Someone at this store already has this user name."
     },
     "form": {
       "checkField": "Please check this field."
+    },
+    "direction": {
+      "required": "Choose add or remove."
+    },
+    "points": {
+      "invalid": "Enter a whole number of points from 1 to 10,000."
+    },
+    "note": {
+      "required": "Write a short note (at least 3 characters): why the change?",
+      "tooLong": "Keep the note under 200 characters."
+    },
+    "reason": {
+      "required": "Write the reason (at least 3 characters).",
+      "tooLong": "Keep the reason under 200 characters."
+    },
+    "confirm": {
+      "required": "Tick the box to confirm."
+    },
+    "rewardName": {
+      "required": "Give the reward a name.",
+      "tooLong": "Keep the name under 60 characters."
+    },
+    "costPoints": {
+      "invalid": "Enter the cost as a whole number of points, e.g. 100."
+    },
+    "offerTitle": {
+      "required": "Give the offer a title.",
+      "tooLong": "Keep the title under 60 characters."
+    },
+    "offerBody": {
+      "tooLong": "Keep the text under 200 characters."
+    },
+    "date": {
+      "invalid": "Pick a date."
+    },
+    "endsOn": {
+      "beforeStart": "The end date is before the start date."
+    },
+    "image": {
+      "invalid": "Use a JPG, PNG or WebP picture.",
+      "tooBig": "That picture is over 5 MB. Try a smaller one."
+    },
+    "displayName": {
+      "required": "Enter the name to show.",
+      "tooLong": "Keep the name under 40 characters."
+    },
+    "role": {
+      "required": "Choose a role."
+    },
+    "pointsPerVisit": {
+      "invalid": "Enter a whole number from 1 to 100."
     }
   },
   "signup": {
@@ -142,7 +198,9 @@
     "showCode": "Show my code",
     "noRewards": "No rewards are available right now.",
     "lastVisit": "Last visit: {date}",
-    "noVisitsYet": "Give your phone number at the counter: {points} points every visit."
+    "noVisitsYet": "Give your phone number at the counter: {points} points every visit.",
+    "offersTitle": "Offers",
+    "offerUntil": "Until {date}"
   },
   "account": {
     "metaTitle": "Account",
@@ -200,8 +258,13 @@
     "invalid": "User name or password is incorrect.",
     "locked": "Too many tries. Locked for {minutes, plural, one {# minute} other {# minutes}}.",
     "ipLimited": "Too many attempts from this device. Try again in {minutes, plural, one {# minute} other {# minutes}}.",
-    "needsRealPassword": "This account still has the development password. The owner must set a real password before it can be used.",
-    "loggedOutIdle": "You were logged out after 15 minutes without activity."
+    "loggedOutIdle": "You were logged out after 15 minutes without activity.",
+    "managersOnly": "The dashboard is for managers. Log in with a manager account.",
+    "mustChangePassword": "This password is temporary. Choose your own password to continue.",
+    "currentPassword": "Temporary password",
+    "newPassword": "New password",
+    "newPasswordHint": "At least 8 characters. Only you will know it.",
+    "submitNewPassword": "Save password and log in"
   },
   "staff": {
     "metaTitle": "Staff",
@@ -239,7 +302,8 @@
       "tooLate": "Too late: entries can be voided for 10 minutes. Ask the manager.",
       "alreadyVoided": "Already voided.",
       "pointsAlreadyUsed": "Can't void: the customer already used these points for a reward. Ask the manager."
-    }
+    },
+    "dashboardLink": "Owner dashboard"
   },
   "redeem": {
     "title": "Your code",
@@ -293,5 +357,262 @@
     "title": "You're offline",
     "body": "Your points are safe. Connect to the internet and try again.",
     "retry": "Try again"
+  },
+  "dashboardLogin": {
+    "metaTitle": "Owner log in",
+    "title": "Owner dashboard",
+    "intro": "Log in with a manager account to see customers, rewards, offers and staff."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "signedInAs": "Signed in as {name}",
+    "counterScreen": "Counter screen",
+    "nav": {
+      "label": "Dashboard",
+      "overview": "Overview",
+      "customers": "Customers",
+      "rewards": "Rewards",
+      "offers": "Offers",
+      "staff": "Staff",
+      "settings": "Settings",
+      "sign": "Counter sign"
+    },
+    "overview": {
+      "metaTitle": "Overview",
+      "title": "Overview",
+      "intro": "How {store} Rewards is doing. Days follow the store's time zone.",
+      "export": "Export customers (CSV)",
+      "printSign": "Print counter sign",
+      "visitsTitle": "Visits",
+      "today": "Today",
+      "last7": "Last 7 days",
+      "last30": "Last 30 days",
+      "customersTitle": "Customers",
+      "members": "Members",
+      "membersDetail": "{signedUp} signed up · the rest were added at the counter",
+      "returning": "Returning",
+      "returningDetail": "came on 2 or more days, of {visitors} visitors in the last 30 days",
+      "redeemed": "Rewards redeemed",
+      "redeemedDetail": "{last30} in the last 30 days"
+    },
+    "customers": {
+      "metaTitle": "Customers",
+      "title": "Customers",
+      "intro": "Phone numbers and emails are partly hidden. Search by the last digits of a phone number or by name.",
+      "export": "Export (CSV)",
+      "search": "Search customers",
+      "searchPlaceholder": "e.g. 0142 or Andrei",
+      "searchButton": "Search",
+      "empty": "No customers yet. They appear here after their first visit or sign-up.",
+      "noMatches": "No customers match “{query}”.",
+      "showing": "Showing {from}–{to} of {total}",
+      "colCustomer": "Customer",
+      "colPhone": "Phone",
+      "colPoints": "Points",
+      "colVisits": "Visits",
+      "colLastVisit": "Last visit",
+      "notSignedUp": "Not signed up yet",
+      "previous": "Previous",
+      "next": "Next",
+      "released": "The number was released. Its history is kept without personal details.",
+      "notFound": "This customer isn't in this store any more."
+    },
+    "customer": {
+      "metaTitle": "Customer",
+      "back": "All customers",
+      "notSignedUp": "Not signed up yet",
+      "unclaimedIntro": "A cashier added this number. Points wait here until someone signs up with it.",
+      "detailsTitle": "Details",
+      "points": "Points",
+      "visits": "Visits",
+      "phone": "Phone",
+      "email": "Email",
+      "emailConfirmed": "(confirmed)",
+      "emailNotConfirmed": "(not confirmed yet)",
+      "offerEmails": "Offer emails",
+      "yes": "Yes",
+      "no": "No",
+      "joined": "Joined",
+      "lastVisit": "Last visit",
+      "maskedNote": "Contact details are partly hidden to protect the customer's privacy.",
+      "adjustTitle": "Adjust points",
+      "historyTitle": "Points history",
+      "historyEmpty": "No points yet.",
+      "by": "by {name}",
+      "entry": {
+        "earn": "Visit",
+        "redeem": "Reward: {note}",
+        "adjust": "Adjusted: {note}",
+        "reversal": "Visit voided",
+        "expire": "Points expired"
+      }
+    },
+    "adjust": {
+      "direction": "Add or remove",
+      "add": "Add points",
+      "remove": "Remove points",
+      "points": "Points",
+      "note": "Note",
+      "noteHint": "Why? The customer sees it in their history.",
+      "submit": "Save adjustment",
+      "saving": "Saving…",
+      "done": "Done: {points} points. New balance: {balance}.",
+      "notFound": "This customer isn't in this store any more.",
+      "balanceBelowZero": "That would take the balance below zero.",
+      "invalidPoints": "Enter a whole number of points from 1 to 10,000.",
+      "noteRequired": "Write a short note: why the change?"
+    },
+    "release": {
+      "title": "Release this phone number",
+      "explain": "Use this when someone signed up with a number that isn't theirs, or a cashier typed a wrong number. The account using {phone} is closed: name, phone and email are erased, its points history is kept without them, and the number can be used for a new sign-up. This can't be undone.",
+      "reason": "Reason",
+      "reasonHint": "Kept in the store's log, e.g. “Real owner of the number asked at the counter”.",
+      "confirm": "I understand this closes the account and can't be undone.",
+      "submit": "Release number",
+      "releasing": "Releasing…"
+    },
+    "rewards": {
+      "metaTitle": "Rewards",
+      "title": "Rewards",
+      "intro": "What points buy. Customers earn {points} points per visit and see the active rewards, cheapest first.",
+      "empty": "No rewards yet. Add one below.",
+      "summary": "{cost} points = {visits, plural, one {# visit} other {# visits}} · redeemed {redeemed, plural, =0 {never} one {once} other {# times}}",
+      "off": "off",
+      "editLabel": "Edit {name}",
+      "name": "Name",
+      "cost": "Cost in points",
+      "active": "On: customers can see and redeem it",
+      "save": "Save changes",
+      "saved": "Saved.",
+      "saving": "Saving…",
+      "addTitle": "Add a reward",
+      "add": "Add reward",
+      "added": "Reward added.",
+      "delete": "Delete {name}",
+      "deleteExplain": "It disappears from the customer app. This can't be undone.",
+      "deleteConfirm": "Delete for good",
+      "deleting": "Deleting…",
+      "cantDelete": "Already redeemed, so it stays in customers' history. Turn it off instead.",
+      "notFound": "This reward doesn't exist any more.",
+      "inUse": "Already redeemed, so it can't be deleted. Turn it off instead."
+    },
+    "offers": {
+      "metaTitle": "Offers",
+      "title": "Offers",
+      "intro": "Offers show on customers' home screen, under their points, while they're on and within their dates.",
+      "new": "New offer",
+      "newTitle": "New offer",
+      "editTitle": "Edit offer",
+      "back": "All offers",
+      "empty": "No offers yet. Create one to show it on customers' home screen.",
+      "savedNotice": "Offer saved.",
+      "deletedNotice": "Offer deleted.",
+      "stateLive": "Showing now",
+      "stateScheduled": "Starts later",
+      "stateEnded": "Ended",
+      "stateOff": "Off",
+      "dates": "{from} – {to}",
+      "now": "now",
+      "noEnd": "no end date",
+      "always": "No dates: shows while on",
+      "titleField": "Title",
+      "titleHint": "Short and clear, e.g. “2 hot dogs for $3”.",
+      "titlePlaceholder": "Your offer title",
+      "body": "Details (optional)",
+      "startsOn": "Starts on (optional)",
+      "startsOnHint": "Empty: starts right away.",
+      "endsOn": "Ends on (optional)",
+      "endsOnHint": "Last day it shows.",
+      "image": "Picture (optional)",
+      "imageHint": "JPG, PNG or WebP. Phone photos are made smaller before upload.",
+      "imageShrinking": "Making the picture smaller…",
+      "removeImage": "Remove the current picture",
+      "active": "On: customers can see it",
+      "create": "Create offer",
+      "save": "Save offer",
+      "saving": "Saving…",
+      "preview": "Preview",
+      "previewHint": "How it looks in the customer app.",
+      "until": "Until {date}",
+      "delete": "Delete this offer",
+      "deleteExplain": "It disappears from the customer app. This can't be undone.",
+      "deleteConfirm": "Delete for good",
+      "deleting": "Deleting…",
+      "notFound": "This offer doesn't exist any more."
+    },
+    "staff": {
+      "metaTitle": "Staff",
+      "title": "Staff",
+      "intro": "Everyone who logs in at the counter. Passwords you set are temporary: each person chooses their own at their next login.",
+      "you": "(you)",
+      "userName": "user name {code}",
+      "roles": {
+        "cashier": "Cashier",
+        "cashierHint": "Adds visits, redeems codes, voids own entries.",
+        "manager": "Manager",
+        "managerHint": "Everything a cashier does, plus this dashboard."
+      },
+      "isOff": "Turned off: can't log in.",
+      "waitingForPassword": "Waiting to choose their own password at first login.",
+      "lastLogin": "Last login {when}",
+      "neverLoggedIn": "Hasn't logged in yet.",
+      "turnOff": "Turn off {name}",
+      "turnOn": "Turn {name} back on",
+      "resetTitle": "Reset {name}'s password",
+      "resetHint": "They'll be logged out and must choose their own at the next login.",
+      "resetSubmit": "Set temporary password",
+      "resetDone": "Done. Give {name} the temporary password.",
+      "addTitle": "Add a person",
+      "displayName": "Name",
+      "displayNameHint": "Shown on the counter screen, e.g. “Maria”.",
+      "staffCode": "User name",
+      "staffCodeHint": "What they type to log in: 4 to 32 letters or numbers.",
+      "role": "Role",
+      "tempPassword": "Temporary password",
+      "tempPasswordHint": "At least 8 characters. Tell them in person; they'll replace it.",
+      "add": "Add person",
+      "adding": "Adding…",
+      "added": "{name} added. They log in as {code} with the temporary password.",
+      "saving": "Saving…",
+      "notFound": "This person isn't on this store's staff.",
+      "notYourself": "You can't change your own account here."
+    },
+    "settings": {
+      "metaTitle": "Settings",
+      "title": "Settings",
+      "pointsTitle": "Points",
+      "pointsPerVisit": "Points per visit",
+      "pointsPerVisitHint": "Counts from the next visit. Balances already earned don't change.",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Saved. New visits earn the new amount.",
+      "costsTitle": "Reward costs",
+      "cost": "{points} pts · {visits, plural, one {# visit} other {# visits}}",
+      "editRewards": "Edit rewards",
+      "brandTitle": "Look",
+      "brandIntro": "How {program} looks in the customer app (dark) and on the counter screen and here (light).",
+      "swatch": {
+        "page": "Background",
+        "brand": "Brand green",
+        "accent": "Accent",
+        "text": "Text",
+        "lightBrand": "Green on light"
+      },
+      "brandHowToChange": "Logo, colours and fonts are set up by behappy for each store. Ask us to change them."
+    },
+    "sign": {
+      "metaTitle": "Counter sign",
+      "title": "Counter sign",
+      "intro": "Print it and put it by the register. Customers scan the code to sign up.",
+      "print": "Print",
+      "signLabel": "Counter sign",
+      "headline": "Join {program}",
+      "offer": "{reward} after {visits, plural, one {# visit} other {# visits}}",
+      "qrLabel": "QR code to sign up: {url}",
+      "step1": "1. Scan the code and sign up with your phone number.",
+      "step2": "2. At the register, tell the cashier your phone number.",
+      "step3": "3. Get {points} points every visit. Watch them on your phone.",
+      "notice": "When you give your phone number at the register, {store} saves it with your points, even before you sign up. Points have no cash value. Program terms and privacy: {terms}"
+    }
   }
 }

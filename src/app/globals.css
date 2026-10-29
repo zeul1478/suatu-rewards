@@ -98,3 +98,21 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Printing the counter sign (dashboard → Counter sign): white page, brand colours kept. */
+@media print {
+  @page {
+    size: letter;
+    margin: 0.5in;
+  }
+
+  body,
+  [data-theme] {
+    background: #ffffff !important;
+  }
+
+  .counter-sign {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}

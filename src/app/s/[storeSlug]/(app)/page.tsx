@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { brandFor } from "@/brands";
+import { OfferCard } from "@/components/customer/OfferCard";
 import { PointsCard } from "@/components/customer/PointsCard";
 import { ScreenHeader } from "@/components/customer/ScreenHeader";
 import { FormAlert } from "@/components/ui/FormAlert";
 import { storeUrl } from "@/lib/storeUrl";
 import { requireCustomer } from "@/server/customers/currentCustomer";
 import { getCustomerStatus } from "@/server/customers/status";
+import { getCurrentOffers } from "@/server/offers/offers";
 import { getStoreOr404 } from "@/server/stores/getStore";
 import { redeemAction } from "../actions";
 
@@ -15,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("metaTitle") };
 }
 
-// Customer home (§11): greeting, live points card, Redeem when a reward is unlocked.
+// Customer home (§11): greeting, live points card, Redeem when a reward is unlocked, offers.
 export default async function CustomerHomePage({
   params,
   searchParams,
@@ -24,11 +26,19 @@ export default async function CustomerHomePage({
   const { passwordChanged } = await searchParams;
   const store = await getStoreOr404(storeSlug);
   const customer = await requireCustomer(store.slug);
-  const [status, t, tLogin] = await Promise.all([
+  const [status, offers, t, tLogin] = await Promise.all([
     getCustomerStatus(store, customer),
+    getCurrentOffers(store),
     getTranslations("home"),
     getTranslations("login"),
   ]);
+
+  // Offer dates are calendar days; formatted here so phones don't reformat them (D39).
+  const untilDate = new Intl.DateTimeFormat(store.locale, {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
 
   return (
     <main className="screen-gutter mx-auto flex w-full max-w-md flex-col gap-6 pt-[max(var(--space-8),env(safe-area-inset-top))] pb-[var(--space-8)]">
@@ -46,6 +56,32 @@ export default async function CustomerHomePage({
         pointsPerVisit={store.pointsPerVisit}
         redeemAction={redeemAction.bind(null, store.slug)}
       />
+
+      {offers.length > 0 ? (
+        <section aria-labelledby="offers-heading" className="flex flex-col gap-3">
+          <h2
+            id="offers-heading"
+            className="font-display text-lg font-semibold tracking-[0.18em] text-ink-muted uppercase"
+          >
+            {t("offersTitle")}
+          </h2>
+          {offers.map((offer) => (
+            <OfferCard
+              key={offer.id}
+              title={offer.title}
+              body={offer.body}
+              imageUrl={offer.imageUrl}
+              until={
+                offer.endsOn
+                  ? t("offerUntil", {
+                      date: untilDate.format(new Date(`${offer.endsOn}T00:00:00Z`)),
+                    })
+                  : null
+              }
+            />
+          ))}
+        </section>
+      ) : null}
     </main>
   );
 }

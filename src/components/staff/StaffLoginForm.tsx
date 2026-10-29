@@ -15,12 +15,18 @@ type StaffLoginFormProps = {
   notice?: string;
 };
 
+/**
+ * User name + password. When the account still has a temporary password (or, in production, the
+ * development one), the server answers with step "newPassword": the same form then also asks
+ * for a new password, and logs in once it's set.
+ */
 export function StaffLoginForm({ action, notice }: StaffLoginFormProps) {
   const t = useTranslations("staffLogin");
   const tCommon = useTranslations("common");
   const [state, formAction] = useActionState(action, idleForm);
   const text = useFormText(state);
   const formRef = useFocusFirstError(state.status, state);
+  const newPasswordStep = state.values?.step === "newPassword";
 
   return (
     <form
@@ -31,7 +37,9 @@ export function StaffLoginForm({ action, notice }: StaffLoginFormProps) {
       className="flex flex-col gap-5"
     >
       {notice && state.status === "idle" ? <FormAlert tone="info">{notice}</FormAlert> : null}
-      {text.formError ? <FormAlert tone="error">{text.formError}</FormAlert> : null}
+      {text.formError ? (
+        <FormAlert tone={newPasswordStep ? "info" : "error"}>{text.formError}</FormAlert>
+      ) : null}
       <TextField
         name="staffCode"
         label={t("staffCode")}
@@ -47,15 +55,27 @@ export function StaffLoginForm({ action, notice }: StaffLoginFormProps) {
       />
       <PasswordField
         name="password"
-        label={t("password")}
+        label={newPasswordStep ? t("currentPassword") : t("password")}
         error={text.fieldError("password")}
         autoComplete="current-password"
         showLabel={tCommon("showPassword")}
         hideLabel={tCommon("hidePassword")}
         variant="large"
       />
+      {newPasswordStep ? (
+        <PasswordField
+          name="newPassword"
+          label={t("newPassword")}
+          hint={t("newPasswordHint")}
+          error={text.fieldError("newPassword")}
+          autoComplete="new-password"
+          showLabel={tCommon("showPassword")}
+          hideLabel={tCommon("hidePassword")}
+          variant="large"
+        />
+      ) : null}
       <SubmitButton size="large" pendingLabel={t("submitting")}>
-        {t("submit")}
+        {newPasswordStep ? t("submitNewPassword") : t("submit")}
       </SubmitButton>
     </form>
   );

@@ -92,6 +92,7 @@ Changes from §9 because of these: secondary glass border 0.18 → 0.40; dark-th
 - Content lines up on one column on phones; on tablets/desktop a 2-column grid where it helps.
 - 16 px side gutter, plus `env(safe-area-inset-*)` for notches and the home indicator.
 - `100dvh`, never `100vh`.
+- Owner dashboard (M7): light theme like the counter. Section list on the left on laptops, a sideways-scrolling row on phones. Numbers in the price-sign digits; offers previewed on the dark customer background exactly as customers see them; the counter sign prints on white.
 
 ## Motion
 

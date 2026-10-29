@@ -22,7 +22,7 @@ Why the browser never talks to Supabase directly: on a phone, `127.0.0.1:55321` 
 | Dev home (development only, 404 in production) | `/`                      | M1         |
 | Customer app                                   | `/s/[storeSlug]`         | M2–M5      |
 | Staff screen                                   | `/staff/[storeSlug]`     | M2, M3, M6 |
-| Owner dashboard                                | `/dashboard/[storeSlug]` | M7         |
+| Owner dashboard (managers)                     | `/dashboard/[storeSlug]` | M7         |
 | Admin                                          | `/admin`                 | M8         |
 | Legal pages                                    | `/legal/…`               | M2         |
 
@@ -73,6 +73,22 @@ Customer phone ── every 3 s ─► GET /api/s/suatu/status → balance, prog
 - `store_customers.points_balance` is a cache; the ledger (`point_transactions`, append-only, unique `idempotency_key`) is the truth. Tests check they always agree.
 - Progress maths lives once in `src/lib/progress.ts` and serves both screens.
 - Codes: unique per store while pending; throttled per staff member.
+
+## Owner dashboard (M7)
+
+```
+/dashboard/<store>/login ── staffLoginAction(area "dashboard") ── managers only, same staff session
+/dashboard/<store>/(manager)/…  layout: requireManager() → header, section nav, idle logout
+   overview   dashboard_overview()           customers  listCustomers / getCustomerDetail (masked)
+   adjust     adjust_points() (note, ≥ 0)    release    anonymize_customer + delete Auth login
+   rewards    rewards table                  offers     offers table + private "offer-images" bucket
+   staff      staffAdmin.ts (argon2id, temporary passwords, sessions revoked)
+   settings   stores.points_per_visit        sign       QR → /s/<store>/signup (printable)
+/api/dashboard/<store>/customers.csv   managers only, masked, audited
+/api/s/<store>/offers/<id>/image       offer picture, served by the app (phones can't reach storage)
+```
+
+Every dashboard page and action starts with `requireManager(storeSlug)` (`src/server/dashboard/access.ts`). Phones and emails are masked with `maskPhone` / `maskEmail` before they leave the server. Every change is written to `audit_log`.
 
 ## Branding (M4)
 

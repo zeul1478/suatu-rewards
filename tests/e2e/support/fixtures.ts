@@ -29,9 +29,9 @@ export type TestCustomer = ReturnType<typeof testCustomer>;
 export async function submitSignup(
   page: Page,
   customer: TestCustomer,
-  options: { marketing?: boolean } = {},
+  options: { marketing?: boolean; store?: string } = {},
 ) {
-  await page.goto(`/s/${STORE}/signup`);
+  await page.goto(`/s/${options.store ?? STORE}/signup`);
   await page.getByLabel("Phone number").fill(customer.phone.typed);
   await page.getByLabel("First name").fill(customer.firstName);
   await page.getByLabel("Last name").fill(customer.lastName);
@@ -43,8 +43,8 @@ export async function submitSignup(
   await page.getByRole("button", { name: "Create account" }).click();
 }
 
-export async function signUp(page: Page, customer: TestCustomer) {
-  await submitSignup(page, customer);
+export async function signUp(page: Page, customer: TestCustomer, options: { store?: string } = {}) {
+  await submitSignup(page, customer, options);
   await expect(page.getByRole("heading", { name: `Hi, ${customer.firstName}` })).toBeVisible();
 }
 
@@ -62,8 +62,13 @@ export async function logOut(page: Page) {
   await expect(page).toHaveURL(at(`/s/${STORE}/login`));
 }
 
-export async function staffLogIn(page: Page, code: string, password: string) {
-  await page.goto(`/staff/${STORE}/login`);
+export async function staffLogIn(
+  page: Page,
+  code: string,
+  password: string,
+  store: string = STORE,
+) {
+  await page.goto(`/staff/${store}/login`);
   await page.getByLabel("User name").fill(code);
   await page.getByLabel("Password", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Log in" }).click();
@@ -86,4 +91,23 @@ export async function fastForwardUntil(page: Page, time: string, expected: Locat
       await page.waitForLoadState("load");
     }
   }
+}
+
+/** Owner dashboard login: same accounts as the staff screen, managers only (§6). */
+export async function dashboardLogIn(
+  page: Page,
+  code = "0000",
+  password = "0000",
+  store: string = STORE,
+) {
+  await page.goto(`/dashboard/${store}/login`);
+  await page.getByLabel("User name").fill(code);
+  await page.getByLabel("Password", { exact: true }).fill(password);
+  await page.getByRole("button", { name: "Log in" }).click();
+}
+
+/** Logs in to the dashboard and waits for the overview, so the next page.goto doesn't cut it off. */
+export async function openDashboard(page: Page, store: string = STORE) {
+  await dashboardLogIn(page, "0000", "0000", store);
+  await expect(page.getByRole("heading", { level: 1, name: "Overview" })).toBeVisible();
 }

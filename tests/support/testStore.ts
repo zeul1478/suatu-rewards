@@ -1,4 +1,6 @@
+import { createClient } from "@supabase/supabase-js";
 import { db } from "./db";
+import { env } from "./env";
 
 /*
  * Tests never touch the real store's data. They run against their own store, "suatu-test"
@@ -38,6 +40,7 @@ export async function createTestStore(): Promise<void> {
  * they belong to is a test store, so someone who also joined the real Suatu is never touched.
  */
 export async function cleanUpTestData(): Promise<void> {
+  await removeTestOfferImages();
   const client = await db().connect();
   try {
     await client.query("begin");
@@ -65,6 +68,7 @@ export async function cleanUpTestData(): Promise<void> {
       delete from public.audit_log where store_id in (select id from test_stores)
         or actor_id in (select id from test_customers);
       delete from public.staff_sessions where store_id in (select id from test_stores);
+      delete from public.offers where store_id in (select id from test_stores);
       delete from public.auth_throttles where scope = 'customer_phone'
         and key in (select phone_e164 from test_customers);
       delete from public.auth_throttles where scope in ('staff_login', 'redeem_code')
@@ -86,4 +90,19 @@ export async function cleanUpTestData(): Promise<void> {
   } finally {
     client.release();
   }
+}
+
+/** Offer pictures go through the Storage API: Supabase refuses direct deletes of its tables. */
+async function removeTestOfferImages(): Promise<void> {
+  const { rows } = await db().query(`
+    select o.name from storage.objects o
+    where o.bucket_id = 'offer-images'
+      and split_part(o.name, '/', 1) in (
+        select id::text from public.stores where slug = '${TEST_STORE.slug}' or slug like 'test-%')`);
+  if (rows.length === 0) return;
+  const storage = createClient(env.supabaseUrl, env.secretKey, {
+    auth: { persistSession: false },
+  }).storage.from("offer-images");
+  const { error } = await storage.remove(rows.map((row: { name: string }) => row.name));
+  if (error) throw new Error(`Test image cleanup failed: ${error.message}`);
 }

@@ -1,8 +1,8 @@
 import AxeBuilder from "@axe-core/playwright";
 import type { Page } from "@playwright/test";
 import { testCustomer, testPhone } from "../support/data";
-import { closeDb, db } from "../support/db";
-import { expect, signUp, staffLogIn, STORE, test } from "../e2e/support/fixtures";
+import { closeDb, createScratchStore, db } from "../support/db";
+import { expect, openDashboard, signUp, staffLogIn, STORE, test } from "../e2e/support/fixtures";
 
 /*
  * Every screen built so far: zero axe violations (WCAG 2.2 AA) and no sideways scrolling,
@@ -43,6 +43,7 @@ test.describe("accessibility and layout", () => {
     "/legal/terms",
     `/legal/${STORE}/program-terms`,
     `/staff/${STORE}/login`,
+    `/dashboard/${STORE}/login`,
   ]) {
     test(`public screen ${path}`, async ({ page }) => {
       await page.goto(path);
@@ -116,6 +117,58 @@ test.describe("accessibility and layout", () => {
 
     await page.getByRole("button", { name: "Redeem" }).click();
     await expect(page.getByRole("heading", { name: "Your code" })).toBeVisible();
+    await checkScreen(page);
+  });
+});
+
+test.describe("owner dashboard", () => {
+  test("every section, plus a customer, in a store with an offer", async ({ page }) => {
+    const store = await createScratchStore();
+    const phone = testPhone();
+    const {
+      rows: [earned],
+    } = await db().query(`select public.earn_points($1, $2, null, gen_random_uuid()::text) as r`, [
+      store.id,
+      phone.e164,
+    ]);
+    await db().query(
+      `insert into public.offers (store_id, title, body, ends_on) values ($1, 'Coffee + donut $2', 'Mornings only.', '2099-12-31')`,
+      [store.id],
+    );
+    const { rows: offers } = await db().query(`select id from public.offers where store_id = $1`, [
+      store.id,
+    ]);
+
+    await openDashboard(page, store.slug);
+    await checkScreen(page);
+    for (const path of [
+      "/customers",
+      `/customers/${earned.r.customer_id}`,
+      "/rewards",
+      "/offers",
+      "/offers/new",
+      `/offers/${offers[0].id}`,
+      "/staff",
+      "/settings",
+      "/sign",
+    ]) {
+      await page.goto(`/dashboard/${store.slug}${path}`);
+      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      await checkScreen(page);
+    }
+  });
+
+  test("forms with errors showing", async ({ page }) => {
+    const store = await createScratchStore();
+    await openDashboard(page, store.slug);
+    await page.goto(`/dashboard/${store.slug}/staff`);
+    await page.getByRole("button", { name: "Add person" }).click();
+    await expect(page.getByText("Enter the name to show.")).toBeVisible();
+    await checkScreen(page);
+
+    await page.goto(`/dashboard/${store.slug}/offers/new`);
+    await page.getByRole("button", { name: "Create offer" }).click();
+    await expect(page.getByText("Give the offer a title.")).toBeVisible();
     await checkScreen(page);
   });
 });

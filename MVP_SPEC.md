@@ -16,6 +16,7 @@
 > - **M4 part 2 (D38–D41):** tests run in their own `suatu-test` store and clean up after themselves; visit times formatted on the server; translations precompiled (customer home JS 142 KB); dev home rewritten as a two-part "how to test" guide.
 > - **M5 (D42–D47):** hand-written service worker (offline page only) instead of Serwist; delete account anonymizes and keeps the ledger; tab bar on signed-in screens (Log out moved to Account); HTTPS on phones via `pnpm dev:cert` (mkcert).
 > - **M6 (D51–D53):** Void = reversal row, own entries, 10 minutes, refused if the points were already redeemed; recent entries per cashier with masked phones.
+> - **M7 (D54–D63):** dashboard = staff login, managers only; temporary passwords replaced at next login (also `0000` in production); phones and emails masked in dashboard and CSV; adjust with a note, never below zero; "release number" closes the account holding it; offer pictures in a private bucket served by the app; branding previewed, not edited; counter sign = notice at collection; `pnpm dev:share` temporary public link.
 
 ---
 

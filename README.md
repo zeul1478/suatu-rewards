@@ -45,6 +45,10 @@ Open that address on a phone on the same Wi-Fi, or scan the QR code on the dev h
 2. Tablet or second phone: **Staff screen** → `0000` / `0000` → type that number → **Add visit (+5)**.
 3. Watch the phone go to 5 / 100 within ~3 seconds. Repeat to 100 → **Redeem** → type the 6-digit code at the counter.
 
+## Owner dashboard
+
+`/dashboard/suatu`, same `0000` / `0000` (managers only). Overview numbers, customers (masked phones/emails, adjust points with a note, release a number), rewards, offers with picture and live preview, staff (add / turn off / reset — passwords set here are temporary), settings (points per visit), CSV export and the printable counter sign with a QR code.
+
 ## Scripts
 
 | Command                                             | Does                                                                                                                      |

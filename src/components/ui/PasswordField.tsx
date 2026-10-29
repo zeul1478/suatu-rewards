@@ -7,6 +7,8 @@ import { RequiredMark } from "./RequiredMark";
 type PasswordFieldProps = {
   name: string;
   label: string;
+  /** See TextField. */
+  idPrefix?: string;
   autoComplete: "new-password" | "current-password";
   showLabel: string;
   hideLabel: string;
@@ -27,6 +29,7 @@ const block = (event: ClipboardEvent | DragEvent) => event.preventDefault();
 export function PasswordField({
   name,
   label,
+  idPrefix = "field",
   autoComplete,
   showLabel,
   hideLabel,
@@ -38,7 +41,7 @@ export function PasswordField({
 }: PasswordFieldProps) {
   const [visible, setVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const id = `field-${name}`;
+  const id = `${idPrefix}-${name}`;
   const hintId = hint ? `${id}-hint` : undefined;
   const errorId = error ? `${id}-error` : undefined;
 

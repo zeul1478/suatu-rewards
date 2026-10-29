@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 
 type CheckboxProps = {
   name: string;
+  /** See TextField. */
+  idPrefix?: string;
   children: ReactNode;
   error?: string;
   required?: boolean;
@@ -10,8 +12,15 @@ type CheckboxProps = {
 };
 
 /** Native checkbox with a 44px tap row. Starts unchecked unless told otherwise. */
-export function Checkbox({ name, children, error, required, defaultChecked }: CheckboxProps) {
-  const id = `field-${name}`;
+export function Checkbox({
+  name,
+  idPrefix = "field",
+  children,
+  error,
+  required,
+  defaultChecked,
+}: CheckboxProps) {
+  const id = `${idPrefix}-${name}`;
   const errorId = error ? `${id}-error` : undefined;
   return (
     <div className="flex flex-col gap-1">

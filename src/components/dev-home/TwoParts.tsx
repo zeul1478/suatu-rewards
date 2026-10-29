@@ -44,14 +44,24 @@ export function TwoParts() {
           <ul className="flex list-disc flex-col gap-1 pl-5 text-sm text-ink-muted">
             <li>Type the customer&apos;s phone number → Add visit (+5)</li>
             <li>Type the 6-digit code from the customer&apos;s phone → Redeem</li>
+            <li>
+              The same login opens the owner dashboard: customers, rewards, offers, staff and the
+              printable counter sign
+            </li>
           </ul>
-          <Link
-            href={storeUrl(DEMO_STORE_SLUG, "", "staff")}
-            className="glass glass-primary mt-auto"
-          >
-            <Icon name="add-visit" />
-            Open the counter screen
-          </Link>
+          <div className="mt-auto flex flex-wrap gap-3">
+            <Link
+              href={storeUrl(DEMO_STORE_SLUG, "", "staff")}
+              className="glass glass-primary flex-1"
+            >
+              <Icon name="add-visit" />
+              Open the counter screen
+            </Link>
+            <Link href={storeUrl(DEMO_STORE_SLUG, "", "dashboard")} className="glass flex-1">
+              <Icon name="chart" />
+              Owner dashboard
+            </Link>
+          </div>
         </article>
 
         <article className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-line bg-raised p-5">

@@ -17,10 +17,17 @@ import { getStoreOr404 } from "@/server/stores/getStore";
 const staffLoginSchema = z.object({
   staffCode: z.string().trim().min(1, "staffCode.required"),
   password: z.string().min(1, "password.required"),
+  newPassword: z.string().optional(),
 });
 
+/**
+ * Staff and owner-dashboard login (§6). `area` decides where a successful login goes; the
+ * dashboard only lets managers in. A temporary password turns the form into a second step that
+ * asks for a new one (values.step = "newPassword").
+ */
 export async function staffLoginAction(
   storeSlug: string,
+  area: "staff" | "dashboard",
   _previous: FormState,
   formData: FormData,
 ): Promise<FormState> {
@@ -28,16 +35,41 @@ export async function staffLoginAction(
   const values = safeValues(formData, ["staffCode"]);
   const parsed = staffLoginSchema.safeParse(formDataObject(formData));
   if (!parsed.success) {
+    if (formData.has("newPassword")) values.step = "newPassword";
     return { status: "error", fieldErrors: fieldErrorsFrom(parsed.error), values };
+  }
+
+  if (formData.has("newPassword") && !parsed.data.newPassword) {
+    return {
+      status: "error",
+      fieldErrors: { newPassword: "newPassword.required" },
+      values: { ...values, step: "newPassword" },
+    };
   }
 
   const result = await logInStaff({
     storeId: store.id,
     staffCode: parsed.data.staffCode,
     password: parsed.data.password,
+    newPassword: parsed.data.newPassword || undefined,
     ip: await clientIp(),
+    managersOnly: area === "dashboard",
   });
   if (!result.ok) {
+    if (result.error === "mustChangePassword") {
+      return {
+        status: "error",
+        formError: "staffLogin.mustChangePassword",
+        values: { ...values, step: "newPassword" },
+      };
+    }
+    if (result.error === "newPasswordInvalid") {
+      return {
+        status: "error",
+        fieldErrors: { newPassword: `newPassword.${result.issue}` },
+        values: { ...values, step: "newPassword" },
+      };
+    }
     return {
       status: "error",
       formError: `staffLogin.${result.error}`,
@@ -45,7 +77,7 @@ export async function staffLoginAction(
       values,
     };
   }
-  redirect(storeUrl(store.slug, "", "staff"));
+  redirect(storeUrl(store.slug, "", area));
 }
 
 export async function staffLogoutAction(storeSlug: string, reason?: "idle"): Promise<void> {

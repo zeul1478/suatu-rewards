@@ -39,7 +39,7 @@ export default async function StaffLoginPage({
         <p className="text-ink-muted">{t("intro")}</p>
       </header>
       <StaffLoginForm
-        action={staffLoginAction.bind(null, store.slug)}
+        action={staffLoginAction.bind(null, store.slug, "staff")}
         notice={reason === "idle" ? t("loggedOutIdle") : undefined}
       />
     </main>

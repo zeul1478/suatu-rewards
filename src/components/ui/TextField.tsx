@@ -4,6 +4,8 @@ import { RequiredMark } from "./RequiredMark";
 type TextFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, "id"> & {
   name: string;
   label: string;
+  /** For several forms with the same fields on one page: ids become `<idPrefix>-<name>`. */
+  idPrefix?: string;
   hint?: string;
   error?: string;
   /** Larger input for the staff screen. */
@@ -15,6 +17,7 @@ type TextFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, "id"> & {
 export function TextField({
   name,
   label,
+  idPrefix = "field",
   hint,
   error,
   required,
@@ -23,7 +26,7 @@ export function TextField({
   ref,
   ...inputProps
 }: TextFieldProps) {
-  const id = `field-${name}`;
+  const id = `${idPrefix}-${name}`;
   const hintId = hint ? `${id}-hint` : undefined;
   const errorId = error ? `${id}-error` : undefined;
   const describedBy = [hintId, errorId].filter(Boolean).join(" ") || undefined;

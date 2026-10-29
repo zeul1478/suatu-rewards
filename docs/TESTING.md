@@ -71,21 +71,24 @@ INP (tap responsiveness) needs a real phone: on the manual checklist. Lighthouse
 
 Fill in as each milestone ships. ✅ pass · ❌ fail · — not yet applicable.
 
-| Check                                                            | iPhone Safari | iPhone home-screen | Android Chrome | Samsung Internet | Notes   |
-| ---------------------------------------------------------------- | ------------- | ------------------ | -------------- | ---------------- | ------- |
-| M1: dev home loads over Wi-Fi                                    | ✅            | —                  |                |                  |         |
-| M2: sign up, log out, log in                                     |               | —                  |                |                  |         |
-| M2: forgot password via Mailpit                                  |               | —                  |                |                  |         |
-| M6: Void a wrong entry at the counter; customer's phone shows it |               | —                  |                |                  |         |
-| M3: §0 golden path by hand (phone + tablet)                      |               | —                  |                |                  |         |
-| M2: staff 0000 on tablet/phone                                   |               | —                  |                |                  |         |
-| VoiceOver / TalkBack pass                                        |               |                    |                |                  | from M2 |
-| Landscape                                                        |               |                    |                |                  |         |
-| Dark / light                                                     |               |                    |                |                  |         |
-| 200% text size                                                   |               |                    |                |                  |         |
-| Slow 3G                                                          |               |                    |                |                  |         |
-| Offline page                                                     |               |                    |                |                  | from M5 |
-| Airplane mode mid-action                                         |               |                    |                |                  | from M3 |
+| Check                                                              | iPhone Safari | iPhone home-screen | Android Chrome | Samsung Internet | Notes   |
+| ------------------------------------------------------------------ | ------------- | ------------------ | -------------- | ---------------- | ------- |
+| M1: dev home loads over Wi-Fi                                      | ✅            | —                  |                |                  |         |
+| M2: sign up, log out, log in                                       |               | —                  |                |                  |         |
+| M2: forgot password via Mailpit                                    |               | —                  |                |                  |         |
+| M6: Void a wrong entry at the counter; customer's phone shows it   |               | —                  |                |                  |         |
+| M7: dashboard on laptop and phone; adjust; add staff + first login |               | —                  |                |                  |         |
+| M7: offer with a phone photo shows on the customer home            |               |                    |                |                  |         |
+| M7: print the counter sign and scan its QR code                    |               | —                  |                |                  |         |
+| M3: §0 golden path by hand (phone + tablet)                        |               | —                  |                |                  |         |
+| M2: staff 0000 on tablet/phone                                     |               | —                  |                |                  |         |
+| VoiceOver / TalkBack pass                                          |               |                    |                |                  | from M2 |
+| Landscape                                                          |               |                    |                |                  |         |
+| Dark / light                                                       |               |                    |                |                  |         |
+| 200% text size                                                     |               |                    |                |                  |         |
+| Slow 3G                                                            |               |                    |                |                  |         |
+| Offline page                                                       |               |                    |                |                  | from M5 |
+| Airplane mode mid-action                                           |               |                    |                |                  | from M3 |
 
 ## HTTPS (since M5)
 
