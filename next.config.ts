@@ -10,12 +10,18 @@ const withNextIntl = createNextIntlPlugin({
   },
 });
 
+// `pnpm dev:share` sets DEV_SHARE=1: the app is reachable through a temporary Cloudflare link
+// (https://<random>.trycloudflare.com) for testers outside the Wi-Fi. Off otherwise.
+const shareHosts = process.env.DEV_SHARE === "1" ? ["*.trycloudflare.com"] : [];
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   // The dev-tools button sat on top of the customer tab bar on phones. Errors still pop up.
   devIndicators: false,
   // Lets a phone on the same Wi-Fi load dev assets from http://<laptop-ip>:3000.
-  allowedDevOrigins: lanAddresses(),
+  allowedDevOrigins: [...lanAddresses(), ...shareHosts],
+  // Forms (server actions) only accept their own address unless the share link is listed.
+  experimental: { serverActions: { allowedOrigins: shareHosts } },
   // Legal documents are read from /legal at request time; ship them with the server.
   outputFileTracingIncludes: { "/**": ["./legal/*.md"] },
   // The service worker must never be served from a cache, or app updates would be delayed.

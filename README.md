@@ -47,17 +47,18 @@ Open that address on a phone on the same Wi-Fi, or scan the QR code on the dev h
 
 ## Scripts
 
-| Command                                             | Does                                                                                                   |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `pnpm dev:cert`                                     | Once: HTTPS certificate so phones can install the app (needs `brew install mkcert && mkcert -install`) |
-| `pnpm dev` / `pnpm dev:lan`                         | Dev server on this laptop / on the Wi-Fi network                                                       |
-| `pnpm db:start` · `db:stop` · `db:reset` · `db:env` | Local Supabase; `db:env` rewrites `.env.local`                                                         |
-| `pnpm test`                                         | Unit tests                                                                                             |
-| `pnpm e2e`                                          | Browser tests on all device profiles (`pnpm e2e:install` first)                                        |
-| `pnpm check`                                        | Lint, types, formatting, unit tests                                                                    |
-| `pnpm e2e:prod`                                     | Production build + its guards (0000 refused, dev home 404)                                             |
-| `pnpm db:types`                                     | Regenerate `src/types/database.ts` after a migration                                                   |
-| `pnpm build`                                        | Production build                                                                                       |
+| Command                                             | Does                                                                                                                      |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev:cert`                                     | Once: HTTPS certificate so phones can install the app (needs `brew install mkcert && mkcert -install`)                    |
+| `pnpm dev` / `pnpm dev:lan`                         | Dev server on this laptop / on the Wi-Fi network                                                                          |
+| `pnpm dev:share`                                    | Like `dev:lan` plus a temporary public link (Cloudflare) for testers elsewhere; dies on Ctrl+C. Dev only: cashier is 0000 |
+| `pnpm db:start` · `db:stop` · `db:reset` · `db:env` | Local Supabase; `db:env` rewrites `.env.local`                                                                            |
+| `pnpm test`                                         | Unit tests                                                                                                                |
+| `pnpm e2e`                                          | Browser tests on all device profiles (`pnpm e2e:install` first)                                                           |
+| `pnpm check`                                        | Lint, types, formatting, unit tests                                                                                       |
+| `pnpm e2e:prod`                                     | Production build + its guards (0000 refused, dev home 404)                                                                |
+| `pnpm db:types`                                     | Regenerate `src/types/database.ts` after a migration                                                                      |
+| `pnpm build`                                        | Production build                                                                                                          |
 
 ## Local tools
 
