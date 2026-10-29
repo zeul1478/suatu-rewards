@@ -6,13 +6,15 @@ import { brandFor } from "@/brands";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { AddVisitForm } from "@/components/staff/AddVisitForm";
 import { IdleLogout } from "@/components/staff/IdleLogout";
+import { RecentEntries } from "@/components/staff/RecentEntries";
 import { RedeemCodeForm } from "@/components/staff/RedeemCodeForm";
 import { Icon } from "@/components/ui/icons/Icon";
 import { LogoutButton } from "@/components/ui/LogoutButton";
 import { storeUrl } from "@/lib/storeUrl";
+import { getRecentEntries } from "@/server/points/recentEntries";
 import { getCurrentStaff, STAFF_IDLE_MS } from "@/server/staff/session";
 import { getStoreOr404 } from "@/server/stores/getStore";
-import { addVisitAction, redeemCodeAction, staffLogoutAction } from "./actions";
+import { addVisitAction, redeemCodeAction, staffLogoutAction, voidEntryAction } from "./actions";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("staff");
@@ -28,7 +30,11 @@ export default async function StaffPage({ params }: PageProps<"/staff/[storeSlug
   const store = await getStoreOr404(storeSlug);
   const staff = await getCurrentStaff(store.id);
   if (!staff) redirect(storeUrl(store.slug, "/login", "staff"));
-  const [t, tCommon] = await Promise.all([getTranslations("staff"), getTranslations("common")]);
+  const [t, tCommon, recent] = await Promise.all([
+    getTranslations("staff"),
+    getTranslations("common"),
+    getRecentEntries(store, staff),
+  ]);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -99,7 +105,7 @@ export default async function StaffPage({ params }: PageProps<"/staff/[storeSlug
             >
               {t("recentTitle")}
             </h2>
-            <p className="text-ink-muted">{t("recentLater")}</p>
+            <RecentEntries entries={recent} voidAction={voidEntryAction.bind(null, store.slug)} />
           </section>
         </div>
       </main>

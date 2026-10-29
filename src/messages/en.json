@@ -228,7 +228,18 @@
     "invalidCode": "That code isn't valid. It may have expired or already been used.",
     "notEnoughPoints": "The customer no longer has enough points for this reward.",
     "locked": "Too many wrong codes. Redeeming is paused for {minutes, plural, one {# minute} other {# minutes}}.",
-    "recentLater": "Recent entries and Void arrive in Milestone 6."
+    "recentEmpty": "No visits added yet. Your latest entries appear here, with Void for 10 minutes.",
+    "void": {
+      "button": "Void",
+      "voiding": "Voiding…",
+      "done": "Voided",
+      "label": "Void the visit for {customer} at {time}",
+      "notFound": "That entry can't be found.",
+      "notOwnEntry": "You can only void your own entries.",
+      "tooLate": "Too late: entries can be voided for 10 minutes. Ask the manager.",
+      "alreadyVoided": "Already voided.",
+      "pointsAlreadyUsed": "Can't void: the customer already used these points for a reward. Ask the manager."
+    }
   },
   "redeem": {
     "title": "Your code",

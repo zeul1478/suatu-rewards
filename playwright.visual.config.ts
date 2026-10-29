@@ -21,7 +21,8 @@ export default defineConfig({
   expect: {
     ...base.expect,
     toHaveScreenshot: {
-      maxDiffPixelRatio: 0.01,
+      // Tight: a whole changed section on a tall page can be under 1% of its pixels.
+      maxDiffPixelRatio: 0.002,
       animations: "disabled",
       caret: "hide",
       stylePath: "./tests/visual/hide-dev-tools.css",

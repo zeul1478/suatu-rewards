@@ -36,6 +36,7 @@ Samsung Internet can't be driven by Playwright → manual checklist below.
 | M3        | Unit 39 · DB 26 (points engine: 20 → 100 → redeem → 0, 105 → 5, idempotency, 10 parallel taps, concurrent cashiers, claim keeps points, daily cap, append-only ledger, code expiry/reuse/other store) · e2e + a11y 53 per device × 8 = 424 (full §0 golden path on every device) · production build 2 |
 | M4        | Unit + brand 73 · DB 26 · e2e + a11y 62 per device × 9 = 558 (incl. dark mode, no console errors in another time zone, branding) · visual 54 (12 screens × 6 devices… light and dark) · production 4 (guards + performance)                                                                           |
 | M5        | e2e + a11y 75 per device × 9 (tab bar, rewards, history, edit details, email change, offer-email consent, data export, delete account, offline page, install helper, service worker offline in Chromium) · visual 66 · production 4 (customer home JS 143 KB)                                         |
+| M6        | DB 32 (6 new: Void rules) · e2e + a11y 79 per device × 9 = 711 (705 run, 6 offline-only skips) · visual 66 at 0.2% tolerance                                                                                                                                                                          |
 
 ### §4.3b coverage (M2)
 
@@ -70,20 +71,21 @@ INP (tap responsiveness) needs a real phone: on the manual checklist. Lighthouse
 
 Fill in as each milestone ships. ✅ pass · ❌ fail · — not yet applicable.
 
-| Check                                       | iPhone Safari | iPhone home-screen | Android Chrome | Samsung Internet | Notes   |
-| ------------------------------------------- | ------------- | ------------------ | -------------- | ---------------- | ------- |
-| M1: dev home loads over Wi-Fi               | ✅            | —                  |                |                  |         |
-| M2: sign up, log out, log in                |               | —                  |                |                  |         |
-| M2: forgot password via Mailpit             |               | —                  |                |                  |         |
-| M3: §0 golden path by hand (phone + tablet) |               | —                  |                |                  |         |
-| M2: staff 0000 on tablet/phone              |               | —                  |                |                  |         |
-| VoiceOver / TalkBack pass                   |               |                    |                |                  | from M2 |
-| Landscape                                   |               |                    |                |                  |         |
-| Dark / light                                |               |                    |                |                  |         |
-| 200% text size                              |               |                    |                |                  |         |
-| Slow 3G                                     |               |                    |                |                  |         |
-| Offline page                                |               |                    |                |                  | from M5 |
-| Airplane mode mid-action                    |               |                    |                |                  | from M3 |
+| Check                                                            | iPhone Safari | iPhone home-screen | Android Chrome | Samsung Internet | Notes   |
+| ---------------------------------------------------------------- | ------------- | ------------------ | -------------- | ---------------- | ------- |
+| M1: dev home loads over Wi-Fi                                    | ✅            | —                  |                |                  |         |
+| M2: sign up, log out, log in                                     |               | —                  |                |                  |         |
+| M2: forgot password via Mailpit                                  |               | —                  |                |                  |         |
+| M6: Void a wrong entry at the counter; customer's phone shows it |               | —                  |                |                  |         |
+| M3: §0 golden path by hand (phone + tablet)                      |               | —                  |                |                  |         |
+| M2: staff 0000 on tablet/phone                                   |               | —                  |                |                  |         |
+| VoiceOver / TalkBack pass                                        |               |                    |                |                  | from M2 |
+| Landscape                                                        |               |                    |                |                  |         |
+| Dark / light                                                     |               |                    |                |                  |         |
+| 200% text size                                                   |               |                    |                |                  |         |
+| Slow 3G                                                          |               |                    |                |                  |         |
+| Offline page                                                     |               |                    |                |                  | from M5 |
+| Airplane mode mid-action                                         |               |                    |                |                  | from M3 |
 
 ## HTTPS (since M5)
 

@@ -1,6 +1,7 @@
 import type { Page } from "@playwright/test";
 import { testCustomer } from "../support/data";
-import { closeDb, db, testStoreId } from "../support/db";
+import { randomInt } from "node:crypto";
+import { closeDb, createTempStaff, db, testStoreId } from "../support/db";
 import { at, expect, signUp, STORE, staffLogIn, test } from "../e2e/support/fixtures";
 
 /*
@@ -102,10 +103,16 @@ test("counter: login and a visit added", async ({ page }) => {
   await expect(page).toHaveScreenshot("staff-login.png", { fullPage: true });
 
   const customer = await customerWithPoints(await page.context().newPage(), 0);
-  await staffLogIn(page, "0000", "0000");
+  // A fresh cashier, so "Recent entries" holds exactly this one visit on every run.
+  const code = `V${randomInt(100_000, 999_999)}`;
+  await createTempStaff(code, "counter password 8");
+  await staffLogIn(page, code, "counter password 8");
   await page.getByLabel("Customer phone number").fill(customer.phone.typed);
   await page.getByRole("button", { name: "Add visit (+5)" }).click();
   await expect(page.getByTestId("visit-banner")).toContainText("Ana E. · 5 / 100");
   await settle(page);
-  await expect(page).toHaveScreenshot("staff-visit-added.png", { fullPage: true });
+  await expect(page).toHaveScreenshot("staff-visit-added.png", {
+    fullPage: true,
+    mask: [page.getByText(/^\d{1,2}:\d{2}\s?[AP]M$/)],
+  });
 });

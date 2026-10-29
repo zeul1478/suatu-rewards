@@ -1,11 +1,13 @@
 "use server";
 
 import { randomUUID } from "node:crypto";
+import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { fieldErrorsFrom, formDataObject, safeValues, type FormState } from "@/lib/forms";
 import { storeUrl } from "@/lib/storeUrl";
 import { addVisit } from "@/server/points/addVisit";
+import { voidEntry } from "@/server/points/recentEntries";
 import { clientIp } from "@/server/request";
 import { redeemCode } from "@/server/rewards/redemptions";
 import { logInStaff } from "@/server/staff/login";
@@ -104,6 +106,7 @@ export async function addVisitAction(
   }
 
   const { progress } = result;
+  refresh(); // updates the recent-entries list
   return {
     status: "success",
     nextKey: randomUUID(),
@@ -155,4 +158,19 @@ export async function redeemCodeAction(
       balance: String(result.balance),
     },
   };
+}
+
+/** Void one of the cashier's own visits within 10 minutes (§6). */
+export async function voidEntryAction(
+  storeSlug: string,
+  transactionId: string,
+): Promise<FormState> {
+  const store = await getStoreOr404(storeSlug);
+  const staff = await getCurrentStaff(store.id);
+  if (!staff) redirect(storeUrl(store.slug, "/login", "staff"));
+
+  const result = await voidEntry({ store, staff, transactionId });
+  if (!result.ok) return { status: "error", formError: `staff.void.${result.error}` };
+  refresh();
+  return { status: "success", formErrorValues: { points: result.points, balance: result.balance } };
 }

@@ -233,3 +233,17 @@ Jumping Playwright's fake clock 15 minutes can make the dev server's live-reload
 ### D50. The HTTPS dev server trusts its own certificate
 
 After a server action redirects (log in, sign up, Add visit), Next.js fetches the next page from itself over HTTPS. Node ignores the Mac's trust store by default, so that fetch failed and the browser could end on a blank page. `pnpm dev:lan` now starts Next with `NODE_OPTIONS=--use-system-ca` (reaches Next's worker processes; uses the CA `mkcert -install` added) plus `NODE_EXTRA_CA_CERTS`.
+
+## 2026-10-29 — Milestone 6
+
+### D51. Void is a reversal, for your own entries, within 10 minutes
+
+`void_transaction()` (one transaction, membership row locked) adds a `reversal` row (−5) pointing at the original; a unique index allows only one reversal per entry. Refused when: not the cashier's own entry, older than 10 minutes, already voided, from another store, or the points were already spent on a reward (balance never below zero; the owner adjusts in M7). Visit count goes back down too.
+
+### D52. Recent entries are per cashier
+
+The counter shows the signed-in cashier's last 15 visits (newest first): time in the store's time zone, the customer as "Andrei P." or "••• 0142" (never the full number), +5, and Void while allowed. The Void button hides itself when its 10 minutes run out; the server checks again anyway. Add visit and Void refresh the list (`refresh()`).
+
+### D53. Screenshot tolerance 0.2%
+
+At 1% a whole changed section of a tall tablet page passed unnoticed. 0.2% still matches the same screen run after run.

@@ -739,6 +739,10 @@ export type Database = {
         Args: { p_customer_id: string; p_granted: boolean; p_source: string; p_store_id: string };
         Returns: undefined;
       };
+      void_transaction: {
+        Args: { p_staff_id: string; p_store_id: string; p_transaction_id: string };
+        Returns: Json;
+      };
     };
     Enums: {
       [_ in never]: never;

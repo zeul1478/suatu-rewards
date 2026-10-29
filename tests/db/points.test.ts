@@ -291,3 +291,106 @@ describe("redemptions (§0 steps 8–9, §4.3b)", () => {
     await expectBalanceMatchesLedger(store, phone, 95);
   });
 });
+
+describe("void_transaction (§6: own entries, 10 minutes)", () => {
+  async function staffMember(store: Store, code: string) {
+    const {
+      rows: [row],
+    } = await db().query(
+      `insert into public.staff (store_id, staff_code, role, display_name, password_hash)
+       values ($1, $2, 'cashier', 'Other cashier', 'not-a-real-hash') returning id`,
+      [store.id, code],
+    );
+    return row.id as string;
+  }
+
+  async function lastEarn(store: Store, phone: string) {
+    const {
+      rows: [row],
+    } = await db().query(
+      `select pt.id from public.point_transactions pt join public.customers c on c.id = pt.customer_id
+       where pt.store_id = $1 and c.phone_e164 = $2 and pt.type = 'earn' order by pt.created_at desc limit 1`,
+      [store.id, phone],
+    );
+    return row.id as string;
+  }
+
+  const voidIt = (store: Store, transactionId: string, staffId = store.staffId) =>
+    secret().rpc("void_transaction", {
+      p_store_id: store.id,
+      p_transaction_id: transactionId,
+      p_staff_id: staffId,
+    });
+
+  it("reverses the visit: points and visit count go back, the ledger keeps both rows", async () => {
+    const store = await makeStore();
+    const phone = testPhone().e164;
+    await earn(store, phone);
+    await earn(store, phone);
+    const { data, error } = await voidIt(store, await lastEarn(store, phone));
+    expect(error).toBeNull();
+    expect(data).toMatchObject({ balance: 5, points: 5 });
+    await expectBalanceMatchesLedger(store, phone, 5);
+    const { rows } = await db().query(
+      `select sc.visit_count, (select count(*)::int from public.point_transactions pt
+                               where pt.customer_id = sc.customer_id and pt.store_id = sc.store_id) as rows
+       from public.store_customers sc join public.customers c on c.id = sc.customer_id
+       where sc.store_id = $1 and c.phone_e164 = $2`,
+      [store.id, phone],
+    );
+    expect(rows[0]).toEqual({ visit_count: 1, rows: 3 });
+  });
+
+  it("only once", async () => {
+    const store = await makeStore();
+    const phone = testPhone().e164;
+    await earn(store, phone);
+    const id = await lastEarn(store, phone);
+    await voidIt(store, id);
+    expect((await voidIt(store, id)).error?.message).toBe("already_voided");
+    await expectBalanceMatchesLedger(store, phone, 0);
+  });
+
+  it("only your own entries", async () => {
+    const store = await makeStore();
+    const phone = testPhone().e164;
+    await earn(store, phone);
+    const other = await staffMember(store, "T5678");
+    expect((await voidIt(store, await lastEarn(store, phone), other)).error?.message).toBe(
+      "not_own_entry",
+    );
+  });
+
+  it("only within 10 minutes (fake clock: entry moved 11 minutes back)", async () => {
+    const store = await makeStore();
+    const phone = testPhone().e164;
+    await earn(store, phone);
+    const id = await lastEarn(store, phone);
+    await db().query(
+      `alter table public.point_transactions disable trigger user;
+       update public.point_transactions set created_at = now() - interval '11 minutes' where id = '${id}';
+       alter table public.point_transactions enable trigger user;`,
+    );
+    expect((await voidIt(store, id)).error?.message).toBe("too_late");
+  });
+
+  it("not when the points were already spent on a reward", async () => {
+    const store = await makeStore();
+    const phone = testPhone().e164;
+    for (let i = 0; i < 20; i++) await earn(store, phone);
+    const id = await lastEarn(store, phone);
+    await redeem(store, phone);
+    expect((await voidIt(store, id)).error?.message).toBe("points_already_used");
+    await expectBalanceMatchesLedger(store, phone, 0);
+  });
+
+  it("only visits in this store", async () => {
+    const store = await makeStore();
+    const otherStore = await makeStore();
+    const phone = testPhone().e164;
+    await earn(store, phone);
+    expect((await voidIt(otherStore, await lastEarn(store, phone))).error?.message).toBe(
+      "not_found",
+    );
+  });
+});
