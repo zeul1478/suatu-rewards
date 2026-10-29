@@ -38,7 +38,7 @@ export default async function CustomerLayout({ children, params }: LayoutProps<"
       // With a tab bar on screen, leave room for it so the last content and footer stay visible.
       className="app-backdrop flex min-h-dvh flex-col text-ink has-[.bottom-nav]:pb-[calc(3.5rem+env(safe-area-inset-bottom))]"
     >
-      <ServiceWorker storeSlug={store.slug} scope={`${storeUrl(store.slug)}/`} />
+      <ServiceWorker storeSlug={store.slug} scope={storeUrl(store.slug)} />
       <div className="flex-1">{children}</div>
       <PoweredBy theme="system" />
     </div>

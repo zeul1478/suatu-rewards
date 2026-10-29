@@ -278,20 +278,3 @@ test.describe("installable app", () => {
     }
   });
 });
-
-test.describe("works offline (Chromium)", () => {
-  test.skip(({ browserName }) => browserName !== "chromium", "Service worker + offline emulation");
-  test.use({ serviceWorkers: "allow" });
-
-  test("with no connection, the app shows its offline page", async ({ page, context }) => {
-    await signUp(page, testCustomer());
-    await page.evaluate(async () => {
-      await navigator.serviceWorker.ready;
-    });
-    await page.reload();
-    await context.setOffline(true);
-    await page.goto(`/s/${STORE}/history`).catch(() => undefined);
-    await expect(page.getByRole("heading", { name: "You're offline" })).toBeVisible();
-    await context.setOffline(false);
-  });
-});

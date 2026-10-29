@@ -85,6 +85,10 @@ Fill in as each milestone ships. ✅ pass · ❌ fail · — not yet applicable.
 | Offline page                                |               |                    |                |                  | from M5 |
 | Airplane mode mid-action                    |               |                    |                |                  | from M3 |
 
+## HTTPS (since M5)
+
+Once `pnpm dev:cert` has made `certs/dev-cert.pem`, `pnpm dev:lan` serves **https://** and the tests use it too (`ignoreHTTPSErrors`; the offline test also tells Chrome to accept the local certificate). Without the certificate everything runs on plain http as before.
+
 ## Testing on your phone
 
 1. Phone and laptop on the **same Wi-Fi**.

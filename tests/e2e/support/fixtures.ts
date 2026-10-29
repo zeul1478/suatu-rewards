@@ -1,4 +1,4 @@
-import { test as base, expect, type Page } from "@playwright/test";
+import { test as base, expect, type Locator, type Page } from "@playwright/test";
 import { testCustomer, testIp } from "../../support/data";
 import { TEST_STORE } from "../../support/testStore";
 
@@ -67,4 +67,23 @@ export async function staffLogIn(page: Page, code: string, password: string) {
   await page.getByLabel("User name").fill(code);
   await page.getByLabel("Password", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Log in" }).click();
+}
+
+/**
+ * Fast-forward the page's fake clock (page.clock) until `expected` shows. In development, a
+ * big jump can make the live-reload connection reconnect and reload the page, which restarts
+ * the app's timers; jumping again then measures a full interval from the reload. Each jump is a
+ * full `time`, so the check stays "nothing happens before `time` has passed".
+ */
+export async function fastForwardUntil(page: Page, time: string, expected: Locator) {
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    await page.clock.fastForward(time);
+    try {
+      await expect(expected).toBeVisible({ timeout: 5_000 });
+      return;
+    } catch (error) {
+      if (attempt === 3) throw error;
+      await page.waitForLoadState("load");
+    }
+  }
 }

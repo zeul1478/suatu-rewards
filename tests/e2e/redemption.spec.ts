@@ -2,7 +2,14 @@ import { randomInt } from "node:crypto";
 import type { Page } from "@playwright/test";
 import { testCustomer } from "../support/data";
 import { closeDb, createTempStaff, db, expireLock } from "../support/db";
-import { expect, signUp, staffLogIn, test, type TestCustomer } from "./support/fixtures";
+import {
+  expect,
+  fastForwardUntil,
+  signUp,
+  staffLogIn,
+  test,
+  type TestCustomer,
+} from "./support/fixtures";
 
 /* Redemption code cases from §4.3b. Points are given straight in the database to save time. */
 
@@ -35,21 +42,26 @@ test.describe("redemption codes (§4.3b)", () => {
     await customerWithCode(page);
     const code = page.getByRole("img", { name: /^Code / });
     expect(await code.evaluate((element) => getComputedStyle(element).userSelect)).toBe("none");
-    const copyCancelled = await code.evaluate((element) => {
-      const event = new Event("copy", { bubbles: true, cancelable: true });
-      element.dispatchEvent(event);
-      return event.defaultPrevented;
-    });
-    expect(copyCancelled).toBe(true);
+    // Retried until React has attached its handlers (a busy test machine can be slower than a hand).
+    await expect
+      .poll(() =>
+        code.evaluate((element) => {
+          const event = new Event("copy", { bubbles: true, cancelable: true });
+          element.dispatchEvent(event);
+          return event.defaultPrevented;
+        }),
+      )
+      .toBe(true);
   });
 
   test("the countdown reaches 0:00 after 5 minutes and offers a new code", async ({ page }) => {
     await page.clock.install();
     await customerWithCode(page);
-    await page.clock.fastForward("05:01");
-    await expect(
+    await fastForwardUntil(
+      page,
+      "05:01",
       page.getByText("This code has expired. Your points are still there."),
-    ).toBeVisible();
+    );
 
     await page.clock.resume();
     await page.getByRole("button", { name: "Get a new code" }).click();

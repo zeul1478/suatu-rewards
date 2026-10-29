@@ -221,3 +221,11 @@ They'd only add noise elsewhere, and Playwright's WebKit can't run service worke
 ### D47. HTTPS on phones with mkcert (`pnpm dev:cert`)
 
 Replaces D11's plan. `pnpm dev:cert` makes a certificate for localhost and the laptop's Wi-Fi address; `pnpm dev:lan` then serves HTTPS. Each phone installs the laptop's certificate authority once (download link and steps on the dev home; only the public certificate is served, development only). Needed for the service worker, "Install app" on Android and keeping the screen awake on the code screen.
+
+### D48. Service worker scope is the store's root, Home included
+
+It was registered for `/s/suatu/` (trailing slash), which covers every screen except Home itself (`/s/suatu`). Found by the offline test once HTTPS was on; now `/s/suatu`.
+
+### D49. Clock-jumping tests tolerate dev live-reload
+
+Jumping Playwright's fake clock 15 minutes can make the dev server's live-reload reconnect and reload the page, restarting the app's timers. `fastForwardUntil()` jumps again in that case (each jump is a full interval, so the test still proves "not before 15 minutes"). Production builds have no live-reload.

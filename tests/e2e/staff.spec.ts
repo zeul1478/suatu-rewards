@@ -1,6 +1,6 @@
 import { randomInt } from "node:crypto";
 import { ageStaffSessions, closeDb, createTempStaff, expireLock, testStoreId } from "../support/db";
-import { at, expect, staffLogIn, STORE, test } from "./support/fixtures";
+import { at, expect, fastForwardUntil, staffLogIn, STORE, test } from "./support/fixtures";
 
 test.afterAll(closeDb);
 
@@ -69,7 +69,11 @@ test.describe("staff screen (§6, §0 step 3)", () => {
     await staffLogIn(page, code, "counter password 3");
     await expect(page.getByRole("heading", { name: "Add a visit" })).toBeVisible();
 
-    await page.clock.fastForward("15:01");
+    await fastForwardUntil(
+      page,
+      "15:01",
+      page.getByText("You were logged out after 15 minutes without activity."),
+    );
     await expect(page).toHaveURL(at(`/staff/${STORE}/login?reason=idle`));
     await expect(
       page.getByText("You were logged out after 15 minutes without activity."),
