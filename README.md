@@ -20,7 +20,7 @@ pnpm db:start         # first time: downloads Supabase images (a few minutes), w
 pnpm dev              # http://localhost:3000
 ```
 
-Later: `pnpm db:reset` rebuilds the database from migrations + seed.
+Later: `pnpm db:reset` rebuilds the database from migrations + seed (it erases everything typed by hand; `pnpm db:start` keeps it).
 
 ## On your phone
 
@@ -65,10 +65,13 @@ Content-Security-Policy with a fresh nonce on every page (`src/proxy.ts`, `src/l
 | `pnpm dev` / `pnpm dev:lan`                         | Dev server on this laptop / on the Wi-Fi network                                                                          |
 | `pnpm dev:share`                                    | Like `dev:lan` plus a temporary public link (Cloudflare) for testers elsewhere; dies on Ctrl+C. Dev only: cashier is 0000 |
 | `pnpm db:start` · `db:stop` · `db:reset` · `db:env` | Local Supabase; `db:env` rewrites `.env.local`                                                                            |
-| `pnpm test`                                         | Unit tests                                                                                                                |
+| `pnpm test`                                         | Unit and database tests                                                                                                   |
 | `pnpm e2e`                                          | Browser tests on all device profiles (`pnpm e2e:install` first)                                                           |
 | `pnpm check`                                        | Lint, types, formatting, unit tests                                                                                       |
 | `pnpm e2e:prod`                                     | Production build + its guards (0000 refused, dev home 404)                                                                |
+| `pnpm e2e:visual`                                   | Screenshot comparisons (macOS)                                                                                            |
+| `pnpm lighthouse`                                   | Production build scored by Lighthouse (speed, accessibility, best practices)                                              |
+| `pnpm admin:create <name> "<Display name>"`         | Adds a platform admin with a temporary password, printed once (production: see `docs/DEPLOY.md`)                          |
 | `pnpm db:types`                                     | Regenerate `src/types/database.ts` after a migration                                                                      |
 | `pnpm build`                                        | Production build                                                                                                          |
 
@@ -83,4 +86,6 @@ The store's look is `src/brands/suatu.ts` (names, colours, fonts, which logo/ico
 
 ## Docs
 
-[Architecture](docs/ARCHITECTURE.md) · [Decisions](docs/DECISIONS.md) · [Design](docs/DESIGN.md) · [Testing](docs/TESTING.md)
+[Architecture](docs/ARCHITECTURE.md) · [Decisions](docs/DECISIONS.md) · [Design](docs/DESIGN.md) · [Testing](docs/TESTING.md) · [Deploying](docs/DEPLOY.md)
+
+Every push to GitHub runs the checks in `.github/workflows/ci.yml`.

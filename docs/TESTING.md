@@ -2,12 +2,16 @@
 
 ## Automated
 
-| Command         | What                                                                              | Where                     |
-| --------------- | --------------------------------------------------------------------------------- | ------------------------- |
-| `pnpm test`     | Unit tests (Vitest); DB-function tests join in M3                                 | `tests/unit`, `tests/db`  |
-| `pnpm e2e`      | End-to-end + accessibility (Playwright + axe) on every device project             | `tests/e2e`, `tests/a11y` |
-| `pnpm check`    | Lint + type-check + format check + unit tests                                     | —                         |
-| `pnpm e2e:prod` | Builds the app for production and proves its guards (0000 refused, dev home gone) | `tests/prod`              |
+| Command           | What                                                                                                                      | Where                     |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| `pnpm test`       | Unit tests (Vitest); DB-function tests join in M3                                                                         | `tests/unit`, `tests/db`  |
+| `pnpm e2e`        | End-to-end + accessibility (Playwright + axe) on every device project                                                     | `tests/e2e`, `tests/a11y` |
+| `pnpm check`      | Lint + type-check + format check + unit tests                                                                             | —                         |
+| `pnpm e2e:prod`   | Builds the app for production and proves its guards (0000 refused, dev home gone)                                         | `tests/prod`              |
+| `pnpm e2e:visual` | Screenshot comparisons of key screens (macOS only: fonts render differently on Linux)                                     | `tests/visual`            |
+| `pnpm lighthouse` | Production build scored by Lighthouse as a mid-range phone on slow 4G: speed ≥ 90, accessibility 100, best practices ≥ 95 | `lighthouserc.cjs`        |
+
+**CI:** `.github/workflows/ci.yml` runs everything above except the screenshots on every push and pull request, against a fresh local Supabase inside GitHub's runner.
 
 `pnpm e2e` starts the dev server itself (or reuses one already running on port 3000). First time only: `pnpm e2e:install` downloads the browsers. Locally it runs 4 browsers at a time with 10 s per check; the full run takes about 7 minutes on this laptop. If many tests time out, check what else is using the CPU (a second Supabase project in Docker is the usual suspect).
 
@@ -39,6 +43,7 @@ Samsung Internet can't be driven by Playwright → manual checklist below.
 | M6        | DB 32 (6 new: Void rules) · e2e + a11y 79 per device × 9 = 711 (705 run, 6 offline-only skips) · visual 66 at 0.2% tolerance                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | M7        | Unit + DB 90 (adjust_points, dashboard_overview, CSV, masking, staff passwords, image types) · e2e + a11y 96 per device × 9 = 864 (858 run, 6 offline-only skips): dashboard access, masked customers, adjust, release, CSV, rewards, offers with picture, staff first login, settings, sign · visual 66 · production 4 (0000 must be replaced)                                                                                                                                                                                                                                                                                            |
 | M8        | Unit + DB 114 (create_store, store list numbers, admin tables closed to browsers, CSP and headers, store-from-address, language picking, every `ro.json` text valid with the English placeholders, PII redaction in logs) · e2e + a11y 109 per device × 9 = 981 (975 run, 6 offline-only skips): admin access, add a store + owner first login, Romanian store, pause / resume, form errors, audit log, security headers on every page, no CSP violations across customer and dashboard screens, store header can't be forged · axe on admin and Romanian screens · production 6 (admin 0000 must be replaced, CSP lets the app run, HSTS) |
+| M9        | Clean clone (fresh copy, its own database): all migrations + seed apply, `pnpm check` 114 green, e2e 217 on two devices · Unit + DB 120 (+ retention job, emailed links use APP_URL in production) · Lighthouse 6 public screens: speed 92–94, accessibility 100, best practices 100 · CI workflow checked with actionlint (runs once the repository is on GitHub)                                                                                                                                                                                                                                                                         |
 
 ### §4.3b coverage (M2)
 
@@ -71,28 +76,32 @@ INP (tap responsiveness) needs a real phone: on the manual checklist. Lighthouse
 
 ## Manual checklist
 
-Fill in as each milestone ships. ✅ pass · ❌ fail · — not yet applicable.
+Things the automated tests can't prove: real phones, real fingers, real screen readers, real networks. **Only a person fills this in**: ✅ pass · ❌ fail (write what happened in Notes) · — doesn't apply. Empty means not tried yet.
 
-| Check                                                              | iPhone Safari | iPhone home-screen | Android Chrome | Samsung Internet | Notes   |
-| ------------------------------------------------------------------ | ------------- | ------------------ | -------------- | ---------------- | ------- |
-| M1: dev home loads over Wi-Fi                                      | ✅            | —                  |                |                  |         |
-| M2: sign up, log out, log in                                       |               | —                  |                |                  |         |
-| M2: forgot password via Mailpit                                    |               | —                  |                |                  |         |
-| M6: Void a wrong entry at the counter; customer's phone shows it   |               | —                  |                |                  |         |
-| M7: dashboard on laptop and phone; adjust; add staff + first login |               | —                  |                |                  |         |
-| M7: offer with a phone photo shows on the customer home            |               |                    |                |                  |         |
-| M7: print the counter sign and scan its QR code                    |               | —                  |                |                  |         |
-| M8: admin — add a store, its owner logs in and sets a password     |               | —                  |                |                  |         |
-| M8: a Romanian store's sign-up on the phone                        |               | —                  |                |                  |         |
-| M3: §0 golden path by hand (phone + tablet)                        |               | —                  |                |                  |         |
-| M2: staff 0000 on tablet/phone                                     |               | —                  |                |                  |         |
-| VoiceOver / TalkBack pass                                          |               |                    |                |                  | from M2 |
-| Landscape                                                          |               |                    |                |                  |         |
-| Dark / light                                                       |               |                    |                |                  |         |
-| 200% text size                                                     |               |                    |                |                  |         |
-| Slow 3G                                                            |               |                    |                |                  |         |
-| Offline page                                                       |               |                    |                |                  | from M5 |
-| Airplane mode mid-action                                           |               |                    |                |                  | from M3 |
+Setup: laptop runs `pnpm dev:lan`; phones on the same Wi-Fi open the address it prints (https://10.0.0.157:3000 on this laptop). Counter = a second phone or tablet. "Home-screen" = the app added to the home screen (Account → Add to Home Screen).
+
+| #   | Check                                                                                                              | iPhone Safari | iPhone home-screen | Android Chrome | Samsung Internet | Notes |
+| --- | ------------------------------------------------------------------------------------------------------------------ | ------------- | ------------------ | -------------- | ---------------- | ----- |
+| 1   | Dev home loads over Wi-Fi                                                                                          | ✅            | —                  |                |                  |       |
+| 2   | **§0 golden path:** sign up → counter adds visits → phone updates within ~3 s → 100 → Redeem → code at counter → 0 |               |                    |                |                  |       |
+| 3   | Counter types a new number first, then that person signs up and sees the points                                    |               | —                  |                |                  |       |
+| 4   | Log out, log in; wrong password 5 times → locked message                                                           |               |                    |                |                  |       |
+| 5   | Forgot password → email in Mailpit (laptop) → link opened on the phone → new password works                        |               | —                  |                |                  |       |
+| 6   | Account: edit name, change password, download my data, delete account                                              |               |                    |                |                  |       |
+| 7   | Counter: Void a wrong entry within 10 minutes; the customer's phone shows it                                       |               | —                  |                |                  |       |
+| 8   | Counter `0000` on a tablet, portrait and landscape; logs out after 15 minutes idle                                 |               | —                  |                |                  |       |
+| 9   | Dashboard on laptop and phone: search a customer, adjust points with a note, add a cashier + their first login     |               | —                  |                |                  |       |
+| 10  | Offer with a photo taken on the phone shows on the customer home                                                   |               |                    |                |                  |       |
+| 11  | Print the counter sign; scan its QR code with the phone camera → sign-up opens                                     |               | —                  |                |                  |       |
+| 12  | Admin: add a store, its owner logs in and chooses a password, pause / switch back on                               |               | —                  |                |                  |       |
+| 13  | A Romanian store's sign-up reads naturally (native speaker)                                                        |               | —                  |                |                  |       |
+| 14  | Add to Home Screen: opens full screen with the Suatu icon; airplane mode → offline page                            | —             |                    |                |                  |       |
+| 15  | VoiceOver (iPhone) / TalkBack (Android): sign up and read the points without looking                               |               |                    |                |                  |       |
+| 16  | Phone text size at maximum (200%): nothing cut off or overlapping on sign-up, home, counter                        |               |                    |                |                  |       |
+| 17  | Dark and light phone setting: customer app follows it; counter and dashboard stay light                            |               |                    |                |                  |       |
+| 18  | Slow connection (or one bar of signal): screens still usable, buttons show "…ing" while waiting                    |               |                    |                |                  |       |
+| 19  | Airplane mode in the middle of Redeem or Add visit: a clear message, nothing doubled after reconnecting            |               |                    |                |                  |       |
+| 20  | Taps feel instant (INP): tab bar, Add visit, Redeem                                                                |               |                    |                |                  |       |
 
 ## HTTPS (since M5)
 
@@ -106,4 +115,4 @@ Once `pnpm dev:cert` has made `certs/dev-cert.pem`, `pnpm dev:lan` serves **http
 
 If it doesn't load: check the Mac's firewall (System Settings → Network → Firewall) allows incoming connections for `node`, and that the phone isn't on a guest network that isolates devices.
 
-HTTPS on the phone (needed for the PWA in Milestone 5) gets its own steps for iPhone and Android when it's set up.
+HTTPS on the phone: see "HTTPS (since M5)" above and the README.

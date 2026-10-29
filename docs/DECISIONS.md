@@ -316,3 +316,25 @@ The text of a store's screens (customer app, counter screen, dashboard, program 
 - **Rate limits reviewed:** customer login (5 per phone, 30 per IP / 15 min), staff and admin login (5 per account), redemption codes (5 wrong per cashier), forgot-password (counts against the IP) were already in place. Added: **sign-ups**, 20 per IP per hour (fake accounts, probing which numbers are registered), and **password-reset emails**, 3 per phone number per hour, whoever asks. Actions that need a signed-in customer or staff member (adding visits, redeeming, editing) aren't limited further. ⚖ The per-IP limits trust `x-forwarded-for`, which Vercel sets itself; behind another host this must be revisited. Several customers behind one mobile-carrier address share the sign-up limit; 20 an hour is a guess to revisit with real traffic.
 - **CSRF:** every change is a server action (POST with Next's origin check) or a POST route; logout is a form. Unchanged since M2.
 - **No personal data in logs:** the only server logs are two "verification email failed" lines, which now pass the mail server's error through `redactPii()` (emails → `m•••@gmail.com`, phone numbers → `••• 0142`), because mail servers put the recipient's address in their errors. Database errors we rethrow carry Postgres's message, which never includes the row's values. The audit log stores ids, counts and reward names only. Masking on screens and in the CSV: D56.
+
+## Milestone 9 — quality and handoff
+
+### D68. "From a clean clone" means `pnpm db:start`, not `db:reset`
+
+§14 says `pnpm install && pnpm db:reset && pnpm dev`. `db:reset` needs Supabase already running, so on a fresh machine the first command is `pnpm db:start` (starts Supabase, applies the migrations and seed, writes `.env.local`, adds the demo customer). The README says so. Checked in M9 on a fresh copy with its own database on other ports: every migration and the seed applied, `pnpm check` and the browser tests on two devices passed.
+
+### D69. Lighthouse and CI
+
+`pnpm lighthouse` builds for production and scores the six public screens three times each (median) as Lighthouse's default mobile profile: speed ≥ 90, accessibility 100, best practices ≥ 95. SEO is off on purpose: store, staff and admin screens ask not to be indexed. Signed-in screens are covered by the Playwright performance budgets instead (LCP, CLS, JS size; M4). `.github/workflows/ci.yml` runs lint, types, formatting, unit + DB tests, the full browser suite on 9 device profiles, the production guards and Lighthouse against a local Supabase inside the runner. Screenshot comparisons stay a laptop check (made on macOS; Linux renders fonts differently). There's no GitHub repository yet, so CI has only been checked with actionlint, not run.
+
+### D70. Retention job (D5) built
+
+`purge_idle_unclaimed_customers()` runs nightly at 04:30 UTC (pg_cron): unclaimed accounts created more than 12 months ago with no visit in 12 months are erased like "Delete my account" (D43). History stays; a `customer.expired` audit row is written by "system". Signed-up customers are never touched by it.
+
+### D71. Production email: links from APP_URL, SMTP login
+
+In production every emailed link (password reset, email confirmation) and the counter-sign QR use `APP_URL`, never the request's Host header, so a forged request can't send a reset link to another site. The app refuses to start in production without `APP_URL`. The email sender accepts `SMTP_USER`, `SMTP_PASSWORD` and `SMTP_SECURE`, so any provider's SMTP works without code changes. Steps: `docs/DEPLOY.md`.
+
+### D72. First admin from the command line
+
+`pnpm admin:create <user-name> "<Display name>"` inserts a platform admin with a random 16-character temporary password, printed once, which must be replaced at the first login. Locally it uses `.env.local`; for production it takes the hosted database's `DATABASE_URL`. It refuses `0000`.

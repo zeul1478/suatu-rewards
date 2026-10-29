@@ -82,7 +82,8 @@ export async function cleanUpTestData(): Promise<void> {
       delete from public.store_customers where store_id in (select id from test_stores)
         or customer_id in (select id from test_customers);
       delete from public.audit_log where store_id in (select id from test_stores)
-        or actor_id in (select id from test_customers) or actor_id in (select id from test_admins);
+        or actor_id in (select id from test_customers) or actor_id in (select id from test_admins)
+        or target_id in (select id from test_customers);
       delete from public.staff_sessions where store_id in (select id from test_stores);
       delete from public.offers where store_id in (select id from test_stores);
       delete from public.auth_throttles where scope in ('customer_phone', 'reset_email')

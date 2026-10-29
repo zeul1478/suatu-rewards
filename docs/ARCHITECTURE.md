@@ -107,7 +107,9 @@ Fixed headers on every response (nosniff, DENY, referrer, permissions, HSTS in p
    audit         audit_log, newest first, by store and area, UTC
 ```
 
-Admins are not store staff and have no store (D64). Limits for logins, codes, sign-ups and reset emails are in `src/server/throttle.ts` (D67).
+Admins are not store staff and have no store (D64). The first real admin comes from `pnpm admin:create` (D72).
+
+Nightly at 04:30 UTC, pg_cron runs `purge_idle_unclaimed_customers()` (D5, D70). Limits for logins, codes, sign-ups and reset emails are in `src/server/throttle.ts` (D67).
 
 ## Branding (M4)
 

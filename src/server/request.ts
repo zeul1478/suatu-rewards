@@ -1,6 +1,6 @@
 import "server-only";
 import { headers } from "next/headers";
-import { isProduction } from "@/server/env";
+import { isProduction, serverEnv } from "@/server/env";
 import { lanAddresses } from "../../scripts/lan-addresses.mjs";
 
 /**
@@ -13,8 +13,13 @@ export async function clientIp(): Promise<string> {
   return forwarded || headerList.get("x-real-ip") || "unknown";
 }
 
-/** Origin the visitor is using (http://10.0.0.157:3000 on a phone), for links in emails. */
+/**
+ * Origin for links in emails and on the counter sign. In production it's always APP_URL, never
+ * the request's Host header, so a forged request can't point a password-reset link elsewhere.
+ * In development, the address the visitor is using (http://10.0.0.157:3000 on a phone).
+ */
 export async function requestOrigin(): Promise<string> {
+  if (isProduction()) return new URL(serverEnv().APP_URL).origin;
   const headerList = await headers();
   const host = headerList.get("x-forwarded-host") ?? headerList.get("host") ?? "localhost:3000";
   const proto = headerList.get("x-forwarded-proto") ?? "http";

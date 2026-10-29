@@ -1,0 +1,67 @@
+# Every push and pull request: the same checks as on the laptop (docs/TESTING.md), against a
+# local Supabase started inside the runner. Nothing here touches a real database or real keys.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      # pnpm's version comes from "packageManager" in package.json, Node's from .nvmrc.
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Start local Supabase (migrations + seed)
+        run: pnpm exec supabase start --exclude studio
+
+      - name: Write .env.local from the local Supabase
+        run: pnpm db:env
+
+      - name: Lint, types, formatting, unit and database tests
+        run: pnpm check
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium webkit firefox
+
+      - name: End-to-end and accessibility (9 device projects)
+        run: pnpm e2e
+
+      - name: Production build guards and performance budgets
+        run: pnpm e2e:prod
+
+      - name: Lighthouse
+        run: pnpm lighthouse
+
+      # Screenshot comparisons (pnpm e2e:visual) are made on macOS and stay a laptop check:
+      # fonts render differently on Linux.
+
+      - name: Keep the reports when something fails
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports
+          path: |
+            test-results/
+            playwright-report/
+            .lighthouseci/
+          retention-days: 7

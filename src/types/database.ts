@@ -891,6 +891,7 @@ export type Database = {
         };
         Returns: Json;
       };
+      purge_idle_unclaimed_customers: { Args: { p_idle?: string }; Returns: number };
       register_customer: {
         Args: {
           p_auth_user_id: string;

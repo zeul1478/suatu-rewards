@@ -55,3 +55,6 @@ next-env.d.ts
 
 # local HTTPS certificate for the dev server (pnpm dev:cert)
 /certs/
+
+# Lighthouse CI reports (pnpm lighthouse)
+.lighthouseci/

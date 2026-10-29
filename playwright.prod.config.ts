@@ -12,6 +12,8 @@ export default defineConfig({
   projects: [{ name: "Desktop Chrome", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
     command: `pnpm build && pnpm start --port ${port}`,
+    // Production builds take every emailed link from APP_URL (src/server/request.ts).
+    env: { APP_URL: `http://localhost:${port}` },
     url: `http://localhost:${port}/legal/privacy`,
     reuseExistingServer: false,
     timeout: 300_000,
