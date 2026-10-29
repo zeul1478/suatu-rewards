@@ -7,6 +7,11 @@ updates:
     schedule:
       interval: monthly
     open-pull-requests-limit: 3
+    # Major versions (TypeScript 6, React 20, …) are planned upgrades, not automatic ones.
+    # @types/node follows the Node version the app runs on (24, .nvmrc).
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     groups:
       minor-and-patch:
         update-types: [minor, patch]
