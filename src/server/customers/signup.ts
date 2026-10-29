@@ -10,6 +10,7 @@ import type { Store } from "@/server/stores/getStore";
 import { supabaseAdmin } from "@/server/supabase/admin";
 import { supabaseForCustomer } from "@/server/supabase/session";
 import { sendEmailVerification } from "./emailVerification";
+import { redactPii } from "@/lib/mask";
 
 export type SignupInput = z.output<typeof signupSchema>;
 
@@ -106,7 +107,7 @@ export async function signUpCustomer(
       });
     } catch (error) {
       // The account works without it; the customer can ask for a new link later.
-      console.error("Verification email failed", { customerId, error: String(error) });
+      console.error("Verification email failed", { customerId, error: redactPii(String(error)) });
     }
   });
 

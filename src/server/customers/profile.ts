@@ -5,6 +5,7 @@ import type { Store } from "@/server/stores/getStore";
 import { supabaseAdmin } from "@/server/supabase/admin";
 import type { CurrentCustomer } from "./currentCustomer";
 import { sendEmailVerification } from "./emailVerification";
+import { redactPii } from "@/lib/mask";
 
 export type ProfileInput = { firstName: string; lastName: string; email: string };
 
@@ -80,7 +81,7 @@ export async function updateProfile(input: {
       } catch (error) {
         console.error("Verification email failed", {
           customerId: customer.id,
-          error: String(error),
+          error: redactPii(String(error)),
         });
       }
     });

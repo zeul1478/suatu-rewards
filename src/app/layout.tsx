@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
+import { getLocale } from "next-intl/server";
 import { brandThemeStyle, DEFAULT_BRAND } from "@/brands";
 import { brandMetadata } from "@/brands/metadata";
 import { fontVariables } from "./fonts";
@@ -20,12 +21,15 @@ export const viewport: Viewport = {
   themeColor: DEFAULT_BRAND.colors.dark.page,
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+// Every page renders per request: the Content-Security-Policy nonce (src/proxy.ts) and the
+// store's language (src/i18n/request.ts) both come from the request.
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const locale = await getLocale();
   return (
     // suppressHydrationWarning: some browsers (e.g. Chrome on iOS) add attributes to <html>
     // before React loads. Only this element's own attributes are exempt, not its children.
     <html
-      lang="en"
+      lang={locale}
       data-theme="dark"
       style={brandThemeStyle(DEFAULT_BRAND)}
       className={`${fontVariables} antialiased`}

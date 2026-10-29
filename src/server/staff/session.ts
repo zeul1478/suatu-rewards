@@ -23,7 +23,6 @@ export type StaffMember = {
   storeId: string;
   displayName: string;
   role: "cashier" | "manager";
-  isPlatformAdmin: boolean;
 };
 
 export async function startStaffSession(staffId: string, storeId: string): Promise<void> {
@@ -56,7 +55,7 @@ export const getCurrentStaff = cache(async (storeId: string): Promise<StaffMembe
   const { data: session } = await admin
     .from("staff_sessions")
     .select(
-      "id, store_id, last_seen_at, expires_at, revoked_at, staff:staff_id (id, display_name, role, active, is_platform_admin)",
+      "id, store_id, last_seen_at, expires_at, revoked_at, staff:staff_id (id, display_name, role, active)",
     )
     .eq("token_hash", hashToken(token))
     .maybeSingle();
@@ -84,7 +83,6 @@ export const getCurrentStaff = cache(async (storeId: string): Promise<StaffMembe
     storeId: session.store_id,
     displayName: session.staff.display_name,
     role: session.staff.role as StaffMember["role"],
-    isPlatformAdmin: session.staff.is_platform_admin,
   };
 });
 

@@ -20,7 +20,7 @@ export default async function StaffPage({ params }: PageProps<"/dashboard/[store
   const { storeSlug } = await params;
   const { store, manager } = await requireManager(storeSlug);
   const [staff, t] = await Promise.all([
-    listStaff(store, manager),
+    listStaff(store, manager.id),
     getTranslations("dashboard.staff"),
   ]);
 

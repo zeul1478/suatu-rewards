@@ -175,6 +175,8 @@ describe("row-level security", () => {
       "staff_sessions",
       "auth_throttles",
       "audit_log",
+      "platform_admins",
+      "admin_sessions",
     ] as const) {
       const { data } = await anon().from(table).select("*").limit(5);
       expect(data ?? [], table).toEqual([]);

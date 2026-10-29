@@ -90,6 +90,25 @@ Customer phone ── every 3 s ─► GET /api/s/suatu/status → balance, prog
 
 Every dashboard page and action starts with `requireManager(storeSlug)` (`src/server/dashboard/access.ts`). Phones and emails are masked with `maskPhone` / `maskEmail` before they leave the server. Every change is written to `audit_log`.
 
+## Admin, languages and security headers (M8)
+
+```
+Every page request ─► src/proxy.ts
+   ├─ Content-Security-Policy with a fresh nonce (Next puts it on its own scripts)
+   ├─ x-suatu-store: <slug from the address>  (always overwritten) ─► src/i18n/request.ts
+   │     stores.locale en-US → messages/en.json · ro-RO → messages/ro.json · no store → English
+   └─ /s/… only: refresh the customer's Supabase session
+Fixed headers on every response (nosniff, DENY, referrer, permissions, HSTS in prod): next.config.ts
+
+/admin/login ── adminLoginAction ── platform_admins (argon2id) → admin_sessions, cookie "suatu-admin" (path /admin)
+/admin/(signed-in)/…  layout: requireAdmin() → header, nav, idle logout
+   stores        admin_store_summaries()     stores/new   create_store() (store + owner + Free coffee)
+   stores/<id>   pause/resume, owners & cashiers via staffAdmin.ts (actor "admin")
+   audit         audit_log, newest first, by store and area, UTC
+```
+
+Admins are not store staff and have no store (D64). Limits for logins, codes, sign-ups and reset emails are in `src/server/throttle.ts` (D67).
+
 ## Branding (M4)
 
 ```

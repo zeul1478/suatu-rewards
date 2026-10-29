@@ -98,14 +98,19 @@ export async function customerByPhone(phoneE164: string) {
  * things — rewards, offers, points per visit — which would upset tests running in parallel in
  * the shared test store. Same 0000 / 0000 manager and Free coffee reward.
  */
-export async function createScratchStore(): Promise<{ slug: string; id: string }> {
+export async function createScratchStore(
+  options: { romania?: boolean } = {},
+): Promise<{ slug: string; id: string }> {
   const slug = `test-${randomUUID().slice(0, 8)}`;
+  const place = options.romania
+    ? ["RO", "Europe/Bucharest", "RON", "ro-RO"]
+    : ["US", "America/New_York", "USD", "en-US"];
   const {
     rows: [store],
   } = await db().query(
     `insert into public.stores (slug, name, country, timezone, currency, locale, points_per_visit)
-     values ($1, 'Suatu', 'US', 'America/New_York', 'USD', 'en-US', 5) returning id`,
-    [slug],
+     values ($1, 'Suatu', $2, $3, $4, $5, 5) returning id`,
+    [slug, ...place],
   );
   await db().query(
     `insert into public.rewards (store_id, name, cost_points) values ($1, 'Free coffee', 100)`,

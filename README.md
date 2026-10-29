@@ -32,10 +32,10 @@ Open that address on a phone on the same Wi-Fi, or scan the QR code on the dev h
 
 ## Demo logins (development only)
 
-| Who                             | Log in with                                              |
-| ------------------------------- | -------------------------------------------------------- |
-| Staff · manager · owner · admin | user name `0000`, password `0000`                        |
-| Customer                        | sign up with your own details (any made-up number works) |
+| Who                             | Log in with                                                                                  |
+| ------------------------------- | -------------------------------------------------------------------------------------------- |
+| Staff · manager · owner · admin | user name `0000`, password `0000` (admin is its own account with the same name and password) |
+| Customer                        | sign up with your own details (any made-up number works)                                     |
 
 `0000` is refused by production builds.
 
@@ -48,6 +48,14 @@ Open that address on a phone on the same Wi-Fi, or scan the QR code on the dev h
 ## Owner dashboard
 
 `/dashboard/suatu`, same `0000` / `0000` (managers only). Overview numbers, customers (masked phones/emails, adjust points with a note, release a number), rewards, offers with picture and live preview, staff (add / turn off / reset — passwords set here are temporary), settings (points per visit), CSV export and the printable counter sign with a QR code.
+
+## Admin (behappy)
+
+`/admin`, `0000` / `0000` (a separate admin account, not a store's staff). Every store with its numbers; **Add a store** (address, location → language and currency, points per visit, first owner with a temporary password); pause / switch back on; a store's owners and cashiers; the audit log of every store. Stores in Romania show their screens in Romanian (`src/messages/ro.json`, a draft for a native speaker to review).
+
+## Security
+
+Content-Security-Policy with a fresh nonce on every page (`src/proxy.ts`, `src/lib/securityHeaders.ts`), plus nosniff, no framing, referrer and permissions policies, and HSTS in production. Rate limits on logins, redemption codes, sign-ups and reset emails (`src/server/throttle.ts`). Details and what to revisit before launch: `docs/DECISIONS.md` D67.
 
 ## Scripts
 

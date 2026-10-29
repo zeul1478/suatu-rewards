@@ -1,0 +1,762 @@
+{
+  "common": {
+    "programName": "{store} Rewards",
+    "showPassword": "Arată parola",
+    "hidePassword": "Ascunde parola",
+    "close": "Închide",
+    "logOut": "Ieși din cont",
+    "loggingOut": "Se iese din cont…",
+    "fixFields": "Corectează câmpurile marcate.",
+    "somethingWentWrong": "Ceva n-a mers bine la noi. Te rugăm să încerci din nou.",
+    "demoBanner": "Aplicație demo — doar date fictive"
+  },
+  "errors": {
+    "phone": {
+      "required": "Introdu numărul de telefon.",
+      "invalid": "Nu pare a fi un număr de telefon. Include prefixul, de ex. 954 555 0142.",
+      "taken": "Există deja un cont cu acest număr — intră în cont."
+    },
+    "firstName": {
+      "required": "Introdu prenumele.",
+      "tooLong": "Folosește cel mult 50 de caractere.",
+      "invalid": "Folosește litere, spații, cratime sau apostrofuri."
+    },
+    "lastName": {
+      "required": "Introdu numele de familie.",
+      "tooLong": "Folosește cel mult 50 de caractere.",
+      "invalid": "Folosește litere, spații, cratime sau apostrofuri."
+    },
+    "email": {
+      "required": "Introdu adresa de email.",
+      "invalid": "Introdu o adresă de email validă, de ex. name@example.com.",
+      "taken": "Acest email este deja folosit de alt cont."
+    },
+    "password": {
+      "required": "Introdu parola.",
+      "tooShort": "Folosește cel puțin 8 caractere.",
+      "tooLong": "Folosește cel mult 64 de caractere.",
+      "common": "Parola e prea des folosită. Încearcă o frază mai lungă, la care te-ai gândi doar tu.",
+      "matchesPhone": "Nu folosi numărul de telefon ca parolă.",
+      "matchesEmail": "Nu folosi adresa de email ca parolă."
+    },
+    "newPassword": {
+      "tooShort": "Folosește cel puțin 8 caractere.",
+      "tooLong": "Folosește cel mult 64 de caractere.",
+      "common": "Parola e prea des folosită. Încearcă o frază mai lungă, la care te-ai gândi doar tu.",
+      "matchesPhone": "Nu folosi numărul de telefon ca parolă.",
+      "matchesEmail": "Nu folosi adresa de email ca parolă.",
+      "required": "Alege o parolă nouă.",
+      "matchesStaffCode": "Nu folosi numele de utilizator ca parolă.",
+      "unchanged": "Alege o parolă diferită de cea temporară."
+    },
+    "currentPassword": {
+      "required": "Introdu parola actuală.",
+      "wrong": "Nu este parola ta actuală."
+    },
+    "acceptTerms": {
+      "required": "Trebuie să accepți termenii ca să te înscrii."
+    },
+    "confirmAdult": {
+      "required": "Programul este pentru adulți de 18 ani sau mai mult."
+    },
+    "staffCode": {
+      "required": "Introdu numele de utilizator.",
+      "format": "Folosește între 4 și 32 de litere sau cifre, fără spații.",
+      "taken": "Cineva din acest magazin are deja acest nume de utilizator."
+    },
+    "form": {
+      "checkField": "Verifică acest câmp."
+    },
+    "direction": {
+      "required": "Alege adaugă sau scade."
+    },
+    "points": {
+      "invalid": "Introdu un număr întreg de puncte, între 1 și 10.000."
+    },
+    "note": {
+      "required": "Scrie o notă scurtă (minim 3 caractere): de ce schimbarea?",
+      "tooLong": "Nota trebuie să aibă sub 200 de caractere."
+    },
+    "reason": {
+      "required": "Scrie motivul (minim 3 caractere).",
+      "tooLong": "Motivul trebuie să aibă sub 200 de caractere."
+    },
+    "confirm": {
+      "required": "Bifează caseta pentru a confirma."
+    },
+    "rewardName": {
+      "required": "Dă un nume recompensei.",
+      "tooLong": "Numele trebuie să aibă sub 60 de caractere."
+    },
+    "costPoints": {
+      "invalid": "Introdu costul ca număr întreg de puncte, de ex. 100."
+    },
+    "offerTitle": {
+      "required": "Dă un titlu ofertei.",
+      "tooLong": "Titlul trebuie să aibă sub 60 de caractere."
+    },
+    "offerBody": {
+      "tooLong": "Textul trebuie să aibă sub 200 de caractere."
+    },
+    "date": {
+      "invalid": "Alege o dată."
+    },
+    "endsOn": {
+      "beforeStart": "Data de sfârșit este înaintea datei de început."
+    },
+    "image": {
+      "invalid": "Folosește o imagine JPG, PNG sau WebP.",
+      "tooBig": "Imaginea are peste 5 MB. Încearcă una mai mică."
+    },
+    "displayName": {
+      "required": "Introdu numele afișat.",
+      "tooLong": "Numele trebuie să aibă sub 40 de caractere."
+    },
+    "role": {
+      "required": "Alege un rol."
+    },
+    "pointsPerVisit": {
+      "invalid": "Introdu un număr întreg între 1 și 100."
+    },
+    "storeName": {
+      "required": "Scrie numele magazinului.",
+      "tooLong": "Folosește cel mult 60 de caractere."
+    },
+    "slug": {
+      "format": "Folosește 3–40 litere mici, cifre și cratime simple, de ex. benzinaria-centru.",
+      "reserved": "Adresele care încep cu „test-” sunt rezervate testelor automate.",
+      "taken": "Alt magazin folosește deja această adresă."
+    },
+    "timezone": {
+      "required": "Alege unde se află magazinul."
+    }
+  },
+  "signup": {
+    "metaTitle": "Creează cont",
+    "title": "Înscrie-te în {store} Rewards",
+    "intro": "5 puncte la fiecare vizită. Cafea gratuită la 100.",
+    "phone": "Număr de telefon",
+    "phoneHint": "Așa te găsește casierul. Nu trimitem niciodată SMS-uri.",
+    "firstName": "Prenume",
+    "lastName": "Nume",
+    "email": "Email",
+    "emailHint": "Doar pentru resetarea parolei și pentru oferte, dacă le ceri.",
+    "password": "Parolă",
+    "passwordHint": "Cel puțin 8 caractere. O frază scurtă e ușor de ținut minte.",
+    "acceptTerms": "Accept Termenii programului, Termenii de utilizare și Politica de confidențialitate",
+    "confirmAdult": "Am 18 ani sau mai mult",
+    "marketingEmail": "Trimite-mi oferte {store} pe email (opțional)",
+    "submit": "Creează cont",
+    "submitting": "Se creează contul…",
+    "haveAccount": "Ai deja cont?",
+    "logIn": "Intră în cont",
+    "createdButNotSignedIn": "Contul a fost creat. Te rugăm să intri în cont.",
+    "readTerms": "Citește-i mai întâi:",
+    "accountDeleted": "Contul tău a fost șters. Poți crea unul nou oricând.",
+    "tooMany": "Prea multe înscrieri din această rețea. Încearcă din nou peste {minutes, plural, one {# minut} few {# minute} other {# de minute}}."
+  },
+  "login": {
+    "metaTitle": "Intră în cont",
+    "title": "Bine ai revenit",
+    "phone": "Număr de telefon",
+    "password": "Parolă",
+    "submit": "Intră în cont",
+    "submitting": "Se intră în cont…",
+    "forgot": "Ai uitat parola?",
+    "noAccount": "Ești nou aici?",
+    "createAccount": "Creează un cont",
+    "invalid": "Numărul de telefon sau parola sunt greșite.",
+    "locked": "Prea multe încercări. Contul e blocat pentru {minutes, plural, one {# minut} few {# minute} other {# de minute}}. Între timp îți poți reseta parola prin email.",
+    "ipLimited": "Prea multe încercări de pe acest dispozitiv. Încearcă din nou peste {minutes, plural, one {# minut} few {# minute} other {# de minute}}.",
+    "passwordChanged": "Parola a fost schimbată. Ești în cont."
+  },
+  "forgot": {
+    "metaTitle": "Am uitat parola",
+    "title": "Resetează parola",
+    "intro": "Introdu numărul de telefon. Îți trimitem un link de resetare la adresa de email din cont.",
+    "phone": "Număr de telefon",
+    "submit": "Trimite-mi un link",
+    "submitting": "Se trimite…",
+    "sent": "Dacă numărul are cont, un link de resetare e pe drum către emailul din cont. Funcționează o singură dată și expiră în 60 de minute.",
+    "devMailpit": "Dezvoltare: emailurile ajung în Mailpit pe laptop.",
+    "back": "Înapoi la autentificare"
+  },
+  "reset": {
+    "metaTitle": "Parolă nouă",
+    "title": "Alege o parolă nouă",
+    "password": "Parolă nouă",
+    "passwordHint": "Cel puțin 8 caractere. Celelalte dispozitive vor ieși din cont.",
+    "submit": "Salvează parola nouă",
+    "submitting": "Se salvează…",
+    "linkInvalid": "Linkul a expirat sau a fost deja folosit. Cere unul nou.",
+    "requestNew": "Trimite un link nou"
+  },
+  "verifyEmail": {
+    "metaTitle": "Confirmă emailul",
+    "verified": "Mulțumim — emailul tău e confirmat.",
+    "invalid": "Linkul de confirmare a expirat sau a fost deja folosit.",
+    "continue": "Continuă"
+  },
+  "home": {
+    "metaTitle": "Acasă",
+    "greeting": "Salut, {name}",
+    "account": "Cont",
+    "yourPoints": "Punctele tale",
+    "outOf": "din",
+    "gaugeLabel": "Progres spre {reward}",
+    "visitsToGo": "Încă {visits, plural, one {# vizită} few {# vizite} other {# de vizite}} până la {reward}",
+    "unlocked": "{reward} deblocat",
+    "redeem": "Folosește",
+    "redeeming": "Îți pregătim codul…",
+    "showCode": "Arată codul",
+    "noRewards": "Momentan nu sunt recompense disponibile.",
+    "lastVisit": "Ultima vizită: {date}",
+    "noVisitsYet": "Spune-ți numărul de telefon la casă: {points} puncte la fiecare vizită.",
+    "offersTitle": "Oferte",
+    "offerUntil": "Până la {date}"
+  },
+  "account": {
+    "metaTitle": "Cont",
+    "title": "Cont",
+    "details": "Datele tale",
+    "name": "Nume",
+    "phone": "Telefon",
+    "email": "Email",
+    "emailVerified": "Emailul tău e confirmat.",
+    "emailUnverified": "Emailul tău nu e confirmat încă. Caută linkul în inbox.",
+    "changePassword": "Schimbă parola",
+    "currentPassword": "Parola actuală",
+    "newPassword": "Parolă nouă",
+    "newPasswordHint": "Cel puțin 8 caractere. Celelalte dispozitive vor ieși din cont.",
+    "savePassword": "Schimbă parola",
+    "savingPassword": "Se salvează…",
+    "passwordChanged": "Parola a fost schimbată. Celelalte dispozitive au ieșit din cont.",
+    "locked": "Prea multe încercări greșite. Schimbarea parolei e blocată pentru {minutes, plural, one {# minut} few {# minute} other {# de minute}}.",
+    "back": "Înapoi acasă",
+    "phoneFixed": "Casierul te găsește după numărul de telefon, așa că nu-l poți schimba aici.",
+    "emailHint": "O adresă de email nouă trebuie confirmată: îți trimitem un link.",
+    "saveDetails": "Salvează datele",
+    "saving": "Se salvează…",
+    "saved": "Datele au fost salvate.",
+    "savedCheckEmail": "Datele au fost salvate. Ți-am trimis un link ca să confirmi noul email.",
+    "offersTitle": "Emailuri cu oferte",
+    "offersOn": "Primești oferte {store} pe email. Le poți opri oricând.",
+    "offersOff": "Nu primești emailuri cu oferte. Pornește-le ca să afli de promoțiile {store}.",
+    "offersTurnOn": "Trimite-mi oferte pe email",
+    "offersTurnOff": "Oprește emailurile cu oferte",
+    "dataTitle": "Datele tale",
+    "dataExplain": "Descarcă tot ce păstrăm despre tine: date, istoricul punctelor, recompense și termenii acceptați.",
+    "dataDownload": "Descarcă datele mele",
+    "installTitle": "Adaugă pe ecranul principal",
+    "deleteTitle": "Șterge contul",
+    "deleteExplain": "Îți șterge numele, numărul de telefon și emailul și te scoate din cont peste tot. Punctele nu mai pot fi recuperate. Istoricul punctelor rămâne doar ca cifre anonime pentru evidența magazinului.",
+    "deletePassword": "Parola ta, pentru confirmare",
+    "deleteConfirm": "Șterge contul definitiv",
+    "deleting": "Se șterge…"
+  },
+  "legal": {
+    "programTerms": "Termenii programului",
+    "termsOfUse": "Termeni de utilizare",
+    "privacyPolicy": "Politica de confidențialitate",
+    "version": "Versiunea {version}"
+  },
+  "staffLogin": {
+    "metaTitle": "Autentificare personal",
+    "title": "Personal",
+    "intro": "Intră în cont ca să adaugi vizite și să validezi recompense.",
+    "staffCode": "Nume de utilizator",
+    "password": "Parolă",
+    "submit": "Intră în cont",
+    "submitting": "Se intră în cont…",
+    "invalid": "Numele de utilizator sau parola sunt greșite.",
+    "locked": "Prea multe încercări. Blocat pentru {minutes, plural, one {# minut} few {# minute} other {# de minute}}.",
+    "ipLimited": "Prea multe încercări de pe acest dispozitiv. Încearcă din nou peste {minutes, plural, one {# minut} few {# minute} other {# de minute}}.",
+    "loggedOutIdle": "Ai fost scos din cont după 15 minute de inactivitate.",
+    "managersOnly": "Panoul este pentru manageri. Intră cu un cont de manager.",
+    "mustChangePassword": "Această parolă este temporară. Alege-ți propria parolă ca să continui.",
+    "currentPassword": "Parolă temporară",
+    "newPassword": "Parolă nouă",
+    "newPasswordHint": "Cel puțin 8 caractere. Doar tu o vei ști.",
+    "submitNewPassword": "Salvează parola și intră"
+  },
+  "staff": {
+    "metaTitle": "Personal",
+    "signedInAs": "Conectat ca {name}",
+    "addVisitTitle": "Adaugă o vizită",
+    "phone": "Telefonul clientului",
+    "phoneHint": "Orice format. Numerele noi primesc automat un cont.",
+    "addVisit": "Adaugă vizită (+{points})",
+    "redeemTitle": "Validează o recompensă",
+    "code": "Codul de 6 cifre de pe telefonul clientului",
+    "redeem": "Validează",
+    "recentTitle": "Înregistrări recente",
+    "adding": "Se adaugă…",
+    "pointsAdded": "+{points} puncte",
+    "newCustomer": "Client nou",
+    "newCustomerHint": "Se poate înscrie cu acest număr ca să-și vadă punctele.",
+    "visitsToGo": "Încă {visits, plural, one {# vizită} few {# vizite} other {# de vizite}} până la {reward}",
+    "rewardAvailable": "Recompensă disponibilă: {reward}",
+    "duplicate": "Deja înregistrat — vizita a fost adăugată o singură dată.",
+    "dailyCapReached": "Clientul a atins limita de puncte pentru azi.",
+    "redeeming": "Se validează…",
+    "redeemed": "{reward} validat pentru ••• {last4}",
+    "codeFormat": "Introdu cele 6 cifre de pe telefonul clientului.",
+    "invalidCode": "Codul nu e valid. Poate a expirat sau a fost deja folosit.",
+    "notEnoughPoints": "Clientul nu mai are destule puncte pentru această recompensă.",
+    "locked": "Prea multe coduri greșite. Validarea e oprită pentru {minutes, plural, one {# minut} few {# minute} other {# de minute}}.",
+    "recentEmpty": "Nicio vizită adăugată încă. Ultimele înregistrări apar aici și pot fi anulate timp de 10 minute.",
+    "void": {
+      "button": "Anulează",
+      "voiding": "Se anulează…",
+      "done": "Anulat",
+      "label": "Anulează vizita pentru {customer} de la {time}",
+      "notFound": "Înregistrarea nu a fost găsită.",
+      "notOwnEntry": "Poți anula doar înregistrările tale.",
+      "tooLate": "Prea târziu: vizitele pot fi anulate doar 10 minute. Întreabă managerul.",
+      "alreadyVoided": "Deja anulat.",
+      "pointsAlreadyUsed": "Nu se poate anula: clientul a folosit deja aceste puncte pentru o recompensă. Întreabă managerul."
+    },
+    "dashboardLink": "Panoul proprietarului"
+  },
+  "redeem": {
+    "title": "Codul tău",
+    "instructions": "Arată acest cod casierului pentru {reward}.",
+    "codeLabel": "Cod {code}",
+    "expiresIn": "Expiră în",
+    "timeLeft": "Mai sunt {minutes, plural, one {# minut} few {# minute} other {# de minute}} și {seconds, plural, one {# secundă} few {# secunde} other {# de secunde}}",
+    "expired": "Codul a expirat. Punctele tale sunt tot acolo.",
+    "newCode": "Ia un cod nou",
+    "gettingCode": "Se generează un cod nou…",
+    "done": "Poftă bună la {reward}!",
+    "balanceNow": "Acum ai {balance, plural, one {# punct} few {# puncte} other {# de puncte}}.",
+    "back": "Înapoi acasă"
+  },
+  "nav": {
+    "label": "Principal",
+    "home": "Acasă",
+    "rewards": "Recompense",
+    "history": "Istoric",
+    "account": "Cont"
+  },
+  "rewards": {
+    "title": "Recompense",
+    "balance": "Ai {balance, plural, one {# punct} few {# puncte} other {# de puncte}}.",
+    "cost": "{points} puncte",
+    "redeem": "Folosește",
+    "redeeming": "Îți pregătim codul…",
+    "showCode": "Arată codul",
+    "pointsToGo": "Încă {points} puncte ({visits, plural, one {# vizită} few {# vizite} other {# de vizite}})",
+    "empty": "Momentan nu sunt recompense disponibile."
+  },
+  "history": {
+    "title": "Istoric",
+    "earn": "Vizită",
+    "redeem": "{reward} folosit",
+    "adjust": "Puncte ajustate de magazin",
+    "reversal": "Vizită anulată de magazin",
+    "expire": "Puncte expirate",
+    "empty": "Nicio vizită încă. Spune-ți numărul de telefon la casă și primești {points} puncte la fiecare vizită."
+  },
+  "install": {
+    "installed": "Suatu e pe ecranul tău principal.",
+    "iosStep1": "În Safari, apasă butonul Partajează (pătratul cu săgeată).",
+    "iosStep2": "Derulează și apasă Adaugă pe ecranul principal.",
+    "iosStep3": "Apasă Adaugă. Acum Suatu se deschide ca o aplicație.",
+    "installButton": "Instalează aplicația",
+    "browserMenu": "Deschide meniul browserului și alege Instalează aplicația sau Adaugă pe ecranul principal."
+  },
+  "offline": {
+    "metaTitle": "Offline",
+    "title": "Ești offline",
+    "body": "Punctele tale sunt în siguranță. Conectează-te la internet și încearcă din nou.",
+    "retry": "Încearcă din nou"
+  },
+  "dashboardLogin": {
+    "metaTitle": "Autentificare proprietar",
+    "title": "Panoul proprietarului",
+    "intro": "Intră cu un cont de manager ca să vezi clienți, recompense, oferte și personal."
+  },
+  "dashboard": {
+    "title": "Panou",
+    "signedInAs": "Conectat ca {name}",
+    "counterScreen": "Ecranul casei",
+    "nav": {
+      "label": "Panou",
+      "overview": "Rezumat",
+      "customers": "Clienți",
+      "rewards": "Recompense",
+      "offers": "Oferte",
+      "staff": "Personal",
+      "settings": "Setări",
+      "sign": "Afiș casă"
+    },
+    "overview": {
+      "metaTitle": "Rezumat",
+      "title": "Rezumat",
+      "intro": "Cum merge {store} Rewards. Zilele urmează fusul orar al magazinului.",
+      "export": "Exportă clienții (CSV)",
+      "printSign": "Printează afișul",
+      "visitsTitle": "Vizite",
+      "today": "Azi",
+      "last7": "Ultimele 7 zile",
+      "last30": "Ultimele 30 de zile",
+      "customersTitle": "Clienți",
+      "members": "Membri",
+      "membersDetail": "{signedUp} înscriși · restul adăugați la casă",
+      "returning": "Revin",
+      "returningDetail": "au venit în 2 sau mai multe zile, din {visitors} vizitatori în ultimele 30 de zile",
+      "redeemed": "Recompense folosite",
+      "redeemedDetail": "{last30} în ultimele 30 de zile"
+    },
+    "customers": {
+      "metaTitle": "Clienți",
+      "title": "Clienți",
+      "intro": "Numerele de telefon și emailurile sunt parțial ascunse. Caută după ultimele cifre ale telefonului sau după nume.",
+      "export": "Exportă (CSV)",
+      "search": "Caută clienți",
+      "searchPlaceholder": "de ex. 0142 sau Andrei",
+      "searchButton": "Caută",
+      "empty": "Niciun client încă. Apar aici după prima vizită sau înscriere.",
+      "noMatches": "Niciun client pentru „{query}”.",
+      "showing": "{from}–{to} din {total}",
+      "colCustomer": "Client",
+      "colPhone": "Telefon",
+      "colPoints": "Puncte",
+      "colVisits": "Vizite",
+      "colLastVisit": "Ultima vizită",
+      "notSignedUp": "Neînscris încă",
+      "previous": "Înapoi",
+      "next": "Înainte",
+      "released": "Numărul a fost eliberat. Istoricul e păstrat fără date personale.",
+      "notFound": "Acest client nu mai este în acest magazin."
+    },
+    "customer": {
+      "metaTitle": "Client",
+      "back": "Toți clienții",
+      "notSignedUp": "Neînscris încă",
+      "unclaimedIntro": "Un casier a adăugat acest număr. Punctele așteaptă aici până se înscrie cineva cu el.",
+      "detailsTitle": "Detalii",
+      "points": "Puncte",
+      "visits": "Vizite",
+      "phone": "Telefon",
+      "email": "Email",
+      "emailConfirmed": "(confirmat)",
+      "emailNotConfirmed": "(neconfirmat încă)",
+      "offerEmails": "Emailuri cu oferte",
+      "yes": "Da",
+      "no": "Nu",
+      "joined": "Înscris",
+      "lastVisit": "Ultima vizită",
+      "maskedNote": "Datele de contact sunt parțial ascunse pentru a proteja confidențialitatea clientului.",
+      "adjustTitle": "Ajustează punctele",
+      "historyTitle": "Istoricul punctelor",
+      "historyEmpty": "Niciun punct încă.",
+      "by": "de {name}",
+      "entry": {
+        "earn": "Vizită",
+        "redeem": "Recompensă: {note}",
+        "adjust": "Ajustare: {note}",
+        "reversal": "Vizită anulată",
+        "expire": "Puncte expirate"
+      }
+    },
+    "adjust": {
+      "direction": "Adaugă sau scade",
+      "add": "Adaugă puncte",
+      "remove": "Scade puncte",
+      "points": "Puncte",
+      "note": "Notă",
+      "noteHint": "De ce? Clientul o vede în istoric.",
+      "submit": "Salvează ajustarea",
+      "saving": "Se salvează…",
+      "done": "Gata: {points} puncte. Sold nou: {balance}.",
+      "notFound": "Acest client nu mai este în acest magazin.",
+      "balanceBelowZero": "Soldul ar scădea sub zero.",
+      "invalidPoints": "Introdu un număr întreg de puncte, între 1 și 10.000.",
+      "noteRequired": "Scrie o notă scurtă: de ce schimbarea?"
+    },
+    "release": {
+      "title": "Eliberează acest număr",
+      "explain": "Folosește asta când cineva s-a înscris cu un număr care nu e al lui sau un casier a tastat greșit numărul. Contul care folosește {phone} se închide: numele, telefonul și emailul se șterg, istoricul punctelor rămâne fără ele, iar numărul poate fi folosit la o nouă înscriere. Acțiunea nu poate fi anulată.",
+      "reason": "Motiv",
+      "reasonHint": "Se păstrează în jurnalul magazinului, de ex. „Adevăratul proprietar al numărului a cerut la casă”.",
+      "confirm": "Înțeleg că se închide contul și că acțiunea nu poate fi anulată.",
+      "submit": "Eliberează numărul",
+      "releasing": "Se eliberează…"
+    },
+    "rewards": {
+      "metaTitle": "Recompense",
+      "title": "Recompense",
+      "intro": "Ce se poate lua pe puncte. Clienții primesc {points} puncte la fiecare vizită și văd recompensele active, de la cea mai ieftină.",
+      "empty": "Nicio recompensă încă. Adaugă una mai jos.",
+      "summary": "{cost} puncte = {visits, plural, one {# vizită} few {# vizite} other {# de vizite}} · folosită {redeemed, plural, =0 {niciodată} one {o dată} few {de # ori} other {de # de ori}}",
+      "off": "oprită",
+      "editLabel": "Editează {name}",
+      "name": "Nume",
+      "cost": "Cost în puncte",
+      "active": "Pornită: clienții o văd și o pot folosi",
+      "save": "Salvează",
+      "saved": "Salvat.",
+      "saving": "Se salvează…",
+      "addTitle": "Adaugă o recompensă",
+      "add": "Adaugă recompensa",
+      "added": "Recompensă adăugată.",
+      "delete": "Șterge {name}",
+      "deleteExplain": "Dispare din aplicația clienților. Acțiunea nu poate fi anulată.",
+      "deleteConfirm": "Șterge definitiv",
+      "deleting": "Se șterge…",
+      "cantDelete": "A fost deja folosită, deci rămâne în istoricul clienților. Oprește-o în schimb.",
+      "notFound": "Această recompensă nu mai există.",
+      "inUse": "A fost deja folosită, deci nu poate fi ștearsă. Oprește-o în schimb."
+    },
+    "offers": {
+      "metaTitle": "Oferte",
+      "title": "Oferte",
+      "intro": "Ofertele apar pe ecranul principal al clienților, sub puncte, cât timp sunt pornite și în perioada lor.",
+      "new": "Ofertă nouă",
+      "newTitle": "Ofertă nouă",
+      "editTitle": "Editează oferta",
+      "back": "Toate ofertele",
+      "empty": "Nicio ofertă încă. Creează una ca să apară pe ecranul principal al clienților.",
+      "savedNotice": "Oferta a fost salvată.",
+      "deletedNotice": "Oferta a fost ștearsă.",
+      "stateLive": "Activă acum",
+      "stateScheduled": "Începe mai târziu",
+      "stateEnded": "Încheiată",
+      "stateOff": "Oprită",
+      "dates": "{from} – {to}",
+      "now": "acum",
+      "noEnd": "fără dată de sfârșit",
+      "always": "Fără date: apare cât e pornită",
+      "titleField": "Titlu",
+      "titleHint": "Scurt și clar, de ex. „2 hot dogi la $3”.",
+      "titlePlaceholder": "Titlul ofertei",
+      "body": "Detalii (opțional)",
+      "startsOn": "Începe pe (opțional)",
+      "startsOnHint": "Gol: începe imediat.",
+      "endsOn": "Se termină pe (opțional)",
+      "endsOnHint": "Ultima zi în care apare.",
+      "image": "Imagine (opțional)",
+      "imageHint": "JPG, PNG sau WebP. Pozele de pe telefon sunt micșorate înainte de încărcare.",
+      "imageShrinking": "Se micșorează imaginea…",
+      "removeImage": "Elimină imaginea actuală",
+      "active": "Pornită: clienții o pot vedea",
+      "create": "Creează oferta",
+      "save": "Salvează oferta",
+      "saving": "Se salvează…",
+      "preview": "Previzualizare",
+      "previewHint": "Cum arată în aplicația clienților.",
+      "until": "Până la {date}",
+      "delete": "Șterge această ofertă",
+      "deleteExplain": "Dispare din aplicația clienților. Acțiunea nu poate fi anulată.",
+      "deleteConfirm": "Șterge definitiv",
+      "deleting": "Se șterge…",
+      "notFound": "Această ofertă nu mai există."
+    },
+    "staff": {
+      "metaTitle": "Personal",
+      "title": "Personal",
+      "intro": "Toți cei care intră în cont la casă. Parolele setate de tine sunt temporare: fiecare își alege propria parolă la următoarea autentificare.",
+      "you": "(tu)",
+      "userName": "nume de utilizator {code}",
+      "roles": {
+        "cashier": "Casier",
+        "cashierHint": "Adaugă vizite, validează coduri, își anulează propriile înregistrări.",
+        "manager": "Manager",
+        "managerHint": "Tot ce face un casier, plus acest panou."
+      },
+      "isOff": "Dezactivat: nu poate intra în cont.",
+      "waitingForPassword": "Își va alege parola la prima autentificare.",
+      "lastLogin": "Ultima autentificare {when}",
+      "neverLoggedIn": "Nu s-a autentificat încă.",
+      "turnOff": "Dezactivează {name}",
+      "turnOn": "Reactivează {name}",
+      "resetTitle": "Resetează parola pentru {name}",
+      "resetHint": "Va fi scos din cont și își va alege o parolă nouă la următoarea autentificare.",
+      "resetSubmit": "Setează parola temporară",
+      "resetDone": "Gata. Dă-i lui {name} parola temporară.",
+      "addTitle": "Adaugă o persoană",
+      "displayName": "Nume",
+      "displayNameHint": "Apare pe ecranul casei, de ex. „Maria”.",
+      "staffCode": "Nume de utilizator",
+      "staffCodeHint": "Ce tastează la autentificare: între 4 și 32 de litere sau cifre.",
+      "role": "Rol",
+      "tempPassword": "Parolă temporară",
+      "tempPasswordHint": "Cel puțin 8 caractere. Spune-i-o personal; o va schimba.",
+      "add": "Adaugă persoana",
+      "adding": "Se adaugă…",
+      "added": "{name} a fost adăugat. Intră în cont ca {code} cu parola temporară.",
+      "saving": "Se salvează…",
+      "notFound": "Această persoană nu face parte din personalul magazinului.",
+      "notYourself": "Nu îți poți modifica propriul cont aici."
+    },
+    "settings": {
+      "metaTitle": "Setări",
+      "title": "Setări",
+      "pointsTitle": "Puncte",
+      "pointsPerVisit": "Puncte pe vizită",
+      "pointsPerVisitHint": "Se aplică de la următoarea vizită. Punctele deja câștigate nu se schimbă.",
+      "save": "Salvează",
+      "saving": "Se salvează…",
+      "saved": "Salvat. Vizitele noi primesc noua valoare.",
+      "costsTitle": "Costul recompenselor",
+      "cost": "{points} pct · {visits, plural, one {# vizită} few {# vizite} other {# de vizite}}",
+      "editRewards": "Editează recompensele",
+      "brandTitle": "Aspect",
+      "brandIntro": "Cum arată {program} în aplicația clienților (întunecat) și pe ecranul casei și aici (luminos).",
+      "swatch": {
+        "page": "Fundal",
+        "brand": "Verde brand",
+        "accent": "Accent",
+        "text": "Text",
+        "lightBrand": "Verde pe luminos"
+      },
+      "brandHowToChange": "Logoul, culorile și fonturile sunt configurate de behappy pentru fiecare magazin. Cere-ne să le schimbăm."
+    },
+    "sign": {
+      "metaTitle": "Afiș casă",
+      "title": "Afiș casă",
+      "intro": "Printează-l și pune-l lângă casă. Clienții scanează codul ca să se înscrie.",
+      "print": "Printează",
+      "signLabel": "Afiș casă",
+      "headline": "Înscrie-te în {program}",
+      "offer": "{reward} după {visits, plural, one {# vizită} few {# vizite} other {# de vizite}}",
+      "qrLabel": "Cod QR pentru înscriere: {url}",
+      "step1": "1. Scanează codul și înscrie-te cu numărul de telefon.",
+      "step2": "2. La casă, spune-i casierului numărul de telefon.",
+      "step3": "3. Primești {points} puncte la fiecare vizită. Le vezi pe telefon.",
+      "notice": "Când îți spui numărul de telefon la casă, {store} îl salvează împreună cu punctele tale, chiar înainte să te înscrii. Punctele nu au valoare în bani. Termenii programului și confidențialitate: {terms}"
+    }
+  },
+  "adminLogin": {
+    "metaTitle": "Autentificare admin",
+    "title": "Admin",
+    "intro": "Pentru echipa behappy: toate magazinele, proprietarii lor și jurnalul de audit."
+  },
+  "admin": {
+    "title": "Admin",
+    "signedInAs": "Conectat ca {name}",
+    "nav": {
+      "label": "Secțiuni admin",
+      "stores": "Magazine",
+      "audit": "Jurnal de audit"
+    },
+    "stores": {
+      "metaTitle": "Magazine",
+      "title": "Magazine",
+      "intro": "Toate magazinele de pe platformă. Vizitele sunt din ultimele 30 de zile.",
+      "add": "Adaugă un magazin",
+      "empty": "Niciun magazin încă.",
+      "colStore": "Magazin",
+      "colStatus": "Stare",
+      "colMembers": "Membri",
+      "colVisits": "Vizite",
+      "colStaff": "Personal",
+      "colLastVisit": "Ultima vizită",
+      "status": {
+        "active": "Activ",
+        "paused": "Pe pauză",
+        "closed": "Închis"
+      }
+    },
+    "newStore": {
+      "metaTitle": "Adaugă un magazin",
+      "title": "Adaugă un magazin",
+      "intro": "Un magazin nou pentru un client, cu primul său proprietar. Pornește cu o recompensă, Cafea gratuită la 100 de puncte; proprietarul o poate schimba din panou.",
+      "storeTitle": "Magazin",
+      "name": "Numele magazinului",
+      "nameHint": "Cum îl știu clienții, de ex. „Benzinăria Centru”.",
+      "slug": "Adresă web",
+      "slugHint": "Aplicația clienților se deschide la /s/ urmat de această adresă. Litere mici, cifre și cratime.",
+      "timezone": "Locație",
+      "timezoneHint": "Stabilește ora vizitelor și limba aplicației.",
+      "timezoneChoose": "Alege…",
+      "pointsPerVisit": "Puncte pe vizită",
+      "pointsPerVisitHint": "Între 1 și 100.",
+      "countries": {
+        "US": "Statele Unite (English)",
+        "RO": "România (Română)"
+      },
+      "timezones": {
+        "America_New_York": "Ora Estului (New York)",
+        "America_Chicago": "Ora Centrală (Chicago)",
+        "America_Denver": "Ora Munților (Denver)",
+        "America_Los_Angeles": "Ora Pacificului (Los Angeles)",
+        "Europe_Bucharest": "București"
+      },
+      "ownerTitle": "Primul proprietar",
+      "ownerIntro": "Se conectează la panoul proprietarului și la ecranul de la casă. Parola e temporară: își alege una proprie la prima conectare.",
+      "ownerName": "Numele proprietarului",
+      "ownerCode": "Nume de utilizator",
+      "ownerCodeHint": "4–32 litere sau cifre.",
+      "ownerPassword": "Parolă temporară",
+      "ownerPasswordHint": "Cel puțin 8 caractere. Spune-i-o personal.",
+      "create": "Creează magazinul",
+      "creating": "Se creează…"
+    },
+    "store": {
+      "metaTitle": "Magazin",
+      "intro": "Aplicația clienților la /s/{slug}.",
+      "created": "Magazin creat. Dă-i proprietarului numele de utilizator și parola temporară.",
+      "openApp": "Aplicația clienților",
+      "openDashboard": "Panoul proprietarului",
+      "detailsTitle": "Detalii",
+      "status": "Stare",
+      "address": "Aplicația clienților",
+      "country": "Țară",
+      "timezone": "Fus orar",
+      "language": "Limbă",
+      "currency": "Monedă",
+      "pointsPerVisit": "Puncte pe vizită",
+      "createdAt": "Adăugat",
+      "brandNote": "Aspect: brandul implicit până se adaugă un fișier de brand (src/brands/{slug}.ts).",
+      "pauseHint": "Pauza scoate offline aplicația clienților, ecranul de la casă și panoul, iar personalul e deconectat. Nu se șterge nimic.",
+      "resumeHint": "Magazinul e offline. Repornește-l ca să redeschizi aplicația, ecranul de la casă și panoul.",
+      "pause": "Pune pe pauză {name}",
+      "resume": "Repornește {name}",
+      "saving": "Se salvează…",
+      "ownersTitle": "Proprietari",
+      "ownersIntro": "Manageri: ei folosesc panoul proprietarului. În acest demo, proprietarul e un manager.",
+      "cashiersTitle": "Casieri",
+      "nobody": "Nimeni încă.",
+      "addTitle": "Adaugă un proprietar sau un casier",
+      "notFound": "Acest magazin nu există."
+    },
+    "audit": {
+      "metaTitle": "Jurnal de audit",
+      "title": "Jurnal de audit",
+      "intro": "Cine ce a făcut, cele mai noi primele. Orele sunt UTC. Clienții nu sunt numiți aici.",
+      "store": "Magazin",
+      "allStores": "Toate magazinele",
+      "area": "Ce",
+      "allAreas": "Tot",
+      "areas": {
+        "customer": "Conturi de clienți",
+        "points": "Puncte",
+        "reward": "Recompense folosite",
+        "offer": "Oferte",
+        "staff": "Personal",
+        "store": "Magazine",
+        "admin": "Conectări admin"
+      },
+      "filter": "Arată",
+      "empty": "Nimic aici încă.",
+      "colTime": "Ora (UTC)",
+      "colStore": "Magazin",
+      "colWho": "Cine",
+      "colAction": "Acțiune",
+      "colDetails": "Detalii",
+      "platform": "Platformă",
+      "actors": {
+        "customer": "Client",
+        "staff": "Personal",
+        "admin": "Admin",
+        "system": "Sistem"
+      },
+      "actorNamed": "{type}: {name}",
+      "newer": "Mai noi",
+      "older": "Mai vechi",
+      "tableLabel": "Înregistrări de audit"
+    }
+  }
+}

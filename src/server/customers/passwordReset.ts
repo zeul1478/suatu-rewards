@@ -33,6 +33,9 @@ export async function requestPasswordReset(input: {
     .eq("status", "active")
     .maybeSingle();
   if (!customer?.email || !customer.first_name) return;
+  // At most 3 emails an hour to one person, however many devices ask.
+  if (await lockedUntil("reset_email", input.phoneE164)) return;
+  await recordFailure("reset_email", input.phoneE164);
 
   const { data, error } = await admin.auth.admin.generateLink({
     type: "recovery",

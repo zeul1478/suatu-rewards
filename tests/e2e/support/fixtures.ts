@@ -1,6 +1,6 @@
 import { test as base, expect, type Locator, type Page } from "@playwright/test";
 import { testCustomer, testIp } from "../../support/data";
-import { TEST_STORE } from "../../support/testStore";
+import { TEST_ADMIN, TEST_STORE } from "../../support/testStore";
 
 /**
  * Every test gets its own fake client IP (x-forwarded-for) so per-IP login limits behave as if
@@ -110,4 +110,13 @@ export async function dashboardLogIn(
 export async function openDashboard(page: Page, store: string = STORE) {
   await dashboardLogIn(page, "0000", "0000", store);
   await expect(page.getByRole("heading", { level: 1, name: "Overview" })).toBeVisible();
+}
+
+/** Platform admin login with the tests' own admin account (tests/support/testStore.ts). */
+export async function openAdmin(page: Page) {
+  await page.goto("/admin/login");
+  await page.getByLabel("User name").fill(TEST_ADMIN.username);
+  await page.getByLabel("Password", { exact: true }).fill(TEST_ADMIN.password);
+  await page.getByRole("button", { name: "Log in" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Stores" })).toBeVisible();
 }

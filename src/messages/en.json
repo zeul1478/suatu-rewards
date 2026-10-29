@@ -117,6 +117,18 @@
     },
     "pointsPerVisit": {
       "invalid": "Enter a whole number from 1 to 100."
+    },
+    "storeName": {
+      "required": "Enter the store's name.",
+      "tooLong": "Use 60 characters or fewer."
+    },
+    "slug": {
+      "format": "Use 3 to 40 lowercase letters, numbers and single hyphens, e.g. pine-street-gas.",
+      "reserved": "Addresses starting with “test-” are kept for automated tests.",
+      "taken": "Another store already uses this address."
+    },
+    "timezone": {
+      "required": "Choose where the store is."
     }
   },
   "signup": {
@@ -140,7 +152,8 @@
     "logIn": "Log in",
     "createdButNotSignedIn": "Your account was created. Please log in.",
     "readTerms": "Read them first:",
-    "accountDeleted": "Your account was deleted. You can create a new one any time."
+    "accountDeleted": "Your account was deleted. You can create a new one any time.",
+    "tooMany": "Too many sign-ups from this network. Try again in {minutes, plural, one {# minute} other {# minutes}}."
   },
   "login": {
     "metaTitle": "Log in",
@@ -613,6 +626,137 @@
       "step2": "2. At the register, tell the cashier your phone number.",
       "step3": "3. Get {points} points every visit. Watch them on your phone.",
       "notice": "When you give your phone number at the register, {store} saves it with your points, even before you sign up. Points have no cash value. Program terms and privacy: {terms}"
+    }
+  },
+  "adminLogin": {
+    "metaTitle": "Admin log in",
+    "title": "Admin",
+    "intro": "For the behappy team: every store, their owners and the audit log."
+  },
+  "admin": {
+    "title": "Admin",
+    "signedInAs": "Signed in as {name}",
+    "nav": {
+      "label": "Admin sections",
+      "stores": "Stores",
+      "audit": "Audit log"
+    },
+    "stores": {
+      "metaTitle": "Stores",
+      "title": "Stores",
+      "intro": "Every store on the platform. Visits are the last 30 days.",
+      "add": "Add a store",
+      "empty": "No stores yet.",
+      "colStore": "Store",
+      "colStatus": "Status",
+      "colMembers": "Members",
+      "colVisits": "Visits",
+      "colStaff": "Staff",
+      "colLastVisit": "Last visit",
+      "status": {
+        "active": "Active",
+        "paused": "Paused",
+        "closed": "Closed"
+      }
+    },
+    "newStore": {
+      "metaTitle": "Add a store",
+      "title": "Add a store",
+      "intro": "A new client store with its first owner. It starts with one reward, Free coffee at 100 points; the owner can change it in their dashboard.",
+      "storeTitle": "Store",
+      "name": "Store name",
+      "nameHint": "As customers know it, e.g. “Pine Street Gas”.",
+      "slug": "Web address",
+      "slugHint": "The customer app opens at /s/ followed by this address. Lowercase letters, numbers and hyphens.",
+      "timezone": "Location",
+      "timezoneHint": "Sets the clock for visit times and the app's language.",
+      "timezoneChoose": "Choose…",
+      "pointsPerVisit": "Points per visit",
+      "pointsPerVisitHint": "Between 1 and 100.",
+      "countries": {
+        "US": "United States (English)",
+        "RO": "Romania (Română)"
+      },
+      "timezones": {
+        "America_New_York": "Eastern time (New York)",
+        "America_Chicago": "Central time (Chicago)",
+        "America_Denver": "Mountain time (Denver)",
+        "America_Los_Angeles": "Pacific time (Los Angeles)",
+        "Europe_Bucharest": "Bucharest"
+      },
+      "ownerTitle": "First owner",
+      "ownerIntro": "They log in to the owner dashboard and the counter screen. The password is temporary: they choose their own at the first login.",
+      "ownerName": "Owner's name",
+      "ownerCode": "User name",
+      "ownerCodeHint": "4 to 32 letters or numbers.",
+      "ownerPassword": "Temporary password",
+      "ownerPasswordHint": "At least 8 characters. Tell them in person.",
+      "create": "Create store",
+      "creating": "Creating…"
+    },
+    "store": {
+      "metaTitle": "Store",
+      "intro": "Customer app at /s/{slug}.",
+      "created": "Store created. Give the owner their user name and temporary password.",
+      "openApp": "Customer app",
+      "openDashboard": "Owner dashboard",
+      "detailsTitle": "Details",
+      "status": "Status",
+      "address": "Customer app",
+      "country": "Country",
+      "timezone": "Time zone",
+      "language": "Language",
+      "currency": "Currency",
+      "pointsPerVisit": "Points per visit",
+      "createdAt": "Added",
+      "brandNote": "Look: the default brand until a brand file is added (src/brands/{slug}.ts).",
+      "pauseHint": "Pausing takes the customer app, counter screen and dashboard offline and logs staff out. Nothing is deleted.",
+      "resumeHint": "The store is offline. Switch it back on to reopen its app, counter screen and dashboard.",
+      "pause": "Pause {name}",
+      "resume": "Switch {name} back on",
+      "saving": "Saving…",
+      "ownersTitle": "Owners",
+      "ownersIntro": "Managers: they run the owner dashboard. In this demo the owner is a manager.",
+      "cashiersTitle": "Cashiers",
+      "nobody": "Nobody yet.",
+      "addTitle": "Add an owner or cashier",
+      "notFound": "This store doesn't exist."
+    },
+    "audit": {
+      "metaTitle": "Audit log",
+      "title": "Audit log",
+      "intro": "Who did what, newest first. Times are UTC. Customers are never named here.",
+      "store": "Store",
+      "allStores": "All stores",
+      "area": "What",
+      "allAreas": "Everything",
+      "areas": {
+        "customer": "Customer accounts",
+        "points": "Points",
+        "reward": "Rewards redeemed",
+        "offer": "Offers",
+        "staff": "Staff",
+        "store": "Stores",
+        "admin": "Admin logins"
+      },
+      "filter": "Show",
+      "empty": "Nothing here yet.",
+      "colTime": "Time (UTC)",
+      "colStore": "Store",
+      "colWho": "Who",
+      "colAction": "Action",
+      "colDetails": "Details",
+      "platform": "Platform",
+      "actors": {
+        "customer": "Customer",
+        "staff": "Staff",
+        "admin": "Admin",
+        "system": "System"
+      },
+      "actorNamed": "{type}: {name}",
+      "newer": "Newer",
+      "older": "Older",
+      "tableLabel": "Audit entries"
     }
   }
 }

@@ -2,7 +2,6 @@ import "server-only";
 import { hash } from "@node-rs/argon2";
 import { recordAudit } from "@/server/audit";
 import { checkNewStaffPassword, type StaffPasswordIssue } from "@/server/staff/passwordPolicy";
-import type { StaffMember } from "@/server/staff/session";
 import type { Store } from "@/server/stores/getStore";
 import { supabaseAdmin } from "@/server/supabase/admin";
 import { isUuid } from "./customers";
@@ -10,8 +9,11 @@ import { isUuid } from "./customers";
 /*
  * Staff management (§6): the owner adds people, turns them off, and resets passwords. Every
  * password the owner types is temporary: the person must choose their own at the next login
- * (must_change_password), so the owner never knows a working password.
+ * (must_change_password), so the owner never knows a working password. A platform admin uses
+ * the same functions from /admin to set up a store's owners; the audit log records who acted.
  */
+
+export type StaffActor = { type: "staff" | "admin"; id: string };
 
 export type StaffRow = {
   id: string;
@@ -24,7 +26,7 @@ export type StaffRow = {
   isYou: boolean;
 };
 
-export async function listStaff(store: Store, manager: StaffMember): Promise<StaffRow[]> {
+export async function listStaff(store: Store, viewerId: string | null): Promise<StaffRow[]> {
   const { data, error } = await supabaseAdmin()
     .from("staff")
     .select("id, staff_code, display_name, role, active, must_change_password, last_login_at")
@@ -45,7 +47,7 @@ export async function listStaff(store: Store, manager: StaffMember): Promise<Sta
     active: row.active,
     mustChangePassword: row.must_change_password,
     lastLogin: row.last_login_at ? format.format(new Date(row.last_login_at)) : null,
-    isYou: row.id === manager.id,
+    isYou: row.id === viewerId,
   }));
 }
 
@@ -56,7 +58,7 @@ export type AddStaffResult =
 
 export async function addStaff(
   store: Store,
-  manager: StaffMember,
+  actor: StaffActor,
   input: { staffCode: string; displayName: string; role: StaffRow["role"]; password: string },
 ): Promise<AddStaffResult> {
   const issue = checkNewStaffPassword(input.password, { staffCode: input.staffCode });
@@ -76,7 +78,7 @@ export async function addStaff(
     .single();
   if (error?.code === "23505") return { ok: false, error: "codeTaken" };
   if (error) throw new Error(`Staff insert failed: ${error.message}`);
-  await audit(store, manager, "staff.added", data.id, { role: input.role });
+  await audit(store, actor, "staff.added", data.id, { role: input.role });
   return { ok: true };
 }
 
@@ -88,26 +90,26 @@ export type StaffChangeResult =
 /** Turn someone off (or back on). Turning off ends their sessions at once. */
 export async function setStaffActive(
   store: Store,
-  manager: StaffMember,
+  actor: StaffActor,
   staffId: string,
   active: boolean,
 ): Promise<StaffChangeResult> {
-  if (staffId === manager.id) return { ok: false, error: "notYourself" };
+  if (staffId === actor.id) return { ok: false, error: "notYourself" };
   const changed = await updateStaff(store, staffId, { active });
   if (!changed) return { ok: false, error: "notFound" };
   if (!active) await endSessions(staffId);
-  await audit(store, manager, active ? "staff.enabled" : "staff.disabled", staffId);
+  await audit(store, actor, active ? "staff.enabled" : "staff.disabled", staffId);
   return { ok: true };
 }
 
 /** New temporary password; their sessions end and the next login asks for a new password. */
 export async function resetStaffPassword(
   store: Store,
-  manager: StaffMember,
+  actor: StaffActor,
   staffId: string,
   password: string,
 ): Promise<StaffChangeResult> {
-  if (staffId === manager.id) return { ok: false, error: "notYourself" };
+  if (staffId === actor.id) return { ok: false, error: "notYourself" };
   if (!isUuid(staffId)) return { ok: false, error: "notFound" };
   const { data: staff } = await supabaseAdmin()
     .from("staff")
@@ -130,7 +132,7 @@ export async function resetStaffPassword(
     .delete()
     .eq("scope", "staff_login")
     .eq("key", `${store.id}:${staff.staff_code.toLowerCase()}`);
-  await audit(store, manager, "staff.password_reset", staffId);
+  await audit(store, actor, "staff.password_reset", staffId);
   return { ok: true };
 }
 
@@ -161,15 +163,15 @@ async function endSessions(staffId: string) {
 
 function audit(
   store: Store,
-  manager: StaffMember,
+  actor: StaffActor,
   action: string,
   staffId: string,
   details: Record<string, string> = {},
 ) {
   return recordAudit({
     storeId: store.id,
-    actorType: "staff",
-    actorId: manager.id,
+    actorType: actor.type,
+    actorId: actor.id,
     action,
     targetType: "staff",
     targetId: staffId,

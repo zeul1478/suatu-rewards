@@ -127,7 +127,8 @@ test.describe("customers (§11: masked, adjust with a note, release a number)", 
     await openDashboard(page);
 
     await page.goto(`/dashboard/${STORE}/customers`);
-    await page.getByLabel("Search customers").fill(phone.e164.slice(-7));
+    // All 10 digits: test numbers share "555" and only 10,000 endings, so 7 can collide.
+    await page.getByLabel("Search customers").fill(phone.e164.slice(2));
     await page.getByRole("button", { name: "Search" }).click();
     const row = page.getByRole("row", { name: new RegExp(phone.e164.slice(-4)) });
     await expect(row).toContainText(`••• ${phone.e164.slice(-4)}`);

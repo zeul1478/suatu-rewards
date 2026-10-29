@@ -14,7 +14,14 @@ import { idleForm, type FormState } from "@/lib/forms";
 type FormAction = (state: FormState, formData: FormData) => Promise<FormState>;
 
 /** Add a person (§6). The password typed here is temporary: they choose their own at first login. */
-export function AddStaffForm({ action }: { action: FormAction }) {
+export function AddStaffForm({
+  action,
+  defaultRole = "cashier",
+}: {
+  action: FormAction;
+  /** /admin sets up a store's owners, so it starts on "manager". */
+  defaultRole?: "cashier" | "manager";
+}) {
   const t = useTranslations("dashboard.staff");
   const tCommon = useTranslations("common");
   const [state, formAction] = useActionState(action, idleForm);
@@ -67,7 +74,7 @@ export function AddStaffForm({ action }: { action: FormAction }) {
                 type="radio"
                 name="role"
                 value={role}
-                defaultChecked={(values?.role ?? "cashier") === role}
+                defaultChecked={(values?.role ?? defaultRole) === role}
                 className="checkbox-input"
               />
               <span>

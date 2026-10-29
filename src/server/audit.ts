@@ -4,7 +4,7 @@ import { supabaseAdmin } from "@/server/supabase/admin";
 
 type AuditEntry = {
   storeId?: string | null;
-  actorType: "customer" | "staff" | "system";
+  actorType: "customer" | "staff" | "admin" | "system";
   actorId?: string | null;
   action: string;
   targetType?: string;

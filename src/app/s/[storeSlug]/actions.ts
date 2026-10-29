@@ -22,6 +22,7 @@ import { signUpCustomer } from "@/server/customers/signup";
 import { startRedemption } from "@/server/rewards/redemptions";
 import { clientIp, requestOrigin } from "@/server/request";
 import { getStoreOr404 } from "@/server/stores/getStore";
+import { lockedUntil, minutesLeft, recordFailure } from "@/server/throttle";
 
 /*
  * Customer form actions. Thin: parse the form, call src/server, map the result to FormState.
@@ -49,6 +50,19 @@ export async function signupAction(
   if (!parsed.success) {
     return { status: "error", fieldErrors: fieldErrorsFrom(parsed.error), values };
   }
+
+  // Sign-ups per network (§8): fake accounts and "is this number registered?" probing.
+  const ip = await clientIp();
+  const lock = await lockedUntil("signup_ip", ip);
+  if (lock) {
+    return {
+      status: "error",
+      formError: "signup.tooMany",
+      formErrorValues: { minutes: minutesLeft(lock) },
+      values,
+    };
+  }
+  await recordFailure("signup_ip", ip);
 
   const result = await signUpCustomer(store, parsed.data, { origin: await requestOrigin() });
   if (!result.ok) {

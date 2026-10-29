@@ -244,7 +244,7 @@ export async function addStaffAction(
   if (!parsed.success) {
     return { status: "error", fieldErrors: fieldErrorsFrom(parsed.error), values };
   }
-  const result = await addStaff(store, manager, parsed.data);
+  const result = await addStaff(store, { type: "staff", id: manager.id }, parsed.data);
   if (!result.ok) {
     const fieldErrors: Record<string, string> =
       result.error === "codeTaken"
@@ -265,7 +265,7 @@ export async function setStaffActiveAction(
   active: boolean,
 ): Promise<FormState> {
   const { store, manager } = await requireManager(storeSlug);
-  const result = await setStaffActive(store, manager, staffId, active);
+  const result = await setStaffActive(store, { type: "staff", id: manager.id }, staffId, active);
   if (!result.ok) return { status: "error", formError: `dashboard.staff.${result.error}` };
   refresh();
   return { status: "success" };
@@ -280,7 +280,12 @@ export async function resetStaffPasswordAction(
   const { store, manager } = await requireManager(storeSlug);
   const password = String(formData.get("password") ?? "");
   if (!password) return { status: "error", fieldErrors: { password: "password.required" } };
-  const result = await resetStaffPassword(store, manager, staffId, password);
+  const result = await resetStaffPassword(
+    store,
+    { type: "staff", id: manager.id },
+    staffId,
+    password,
+  );
   if (!result.ok) {
     return result.error === "passwordInvalid"
       ? { status: "error", fieldErrors: { password: `newPassword.${result.issue}` } }

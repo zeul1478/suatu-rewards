@@ -23,6 +23,48 @@ export type Database = {
   };
   public: {
     Tables: {
+      admin_sessions: {
+        Row: {
+          admin_id: string;
+          created_at: string;
+          expires_at: string;
+          id: string;
+          last_seen_at: string;
+          revoked_at: string | null;
+          token_hash: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          admin_id: string;
+          created_at?: string;
+          expires_at: string;
+          id?: string;
+          last_seen_at?: string;
+          revoked_at?: string | null;
+          token_hash: string;
+          updated_at?: string;
+        };
+        Update: {
+          admin_id?: string;
+          created_at?: string;
+          expires_at?: string;
+          id?: string;
+          last_seen_at?: string;
+          revoked_at?: string | null;
+          token_hash?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "admin_sessions_admin_id_fkey";
+            columns: ["admin_id"];
+            isOneToOne: false;
+            referencedRelation: "platform_admins";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       audit_log: {
         Row: {
           action: string;
@@ -293,6 +335,43 @@ export type Database = {
           },
         ];
       };
+      platform_admins: {
+        Row: {
+          active: boolean;
+          created_at: string;
+          display_name: string;
+          id: string;
+          last_login_at: string | null;
+          must_change_password: boolean;
+          password_hash: string;
+          updated_at: string;
+          username: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          active?: boolean;
+          created_at?: string;
+          display_name: string;
+          id?: string;
+          last_login_at?: string | null;
+          must_change_password?: boolean;
+          password_hash: string;
+          updated_at?: string;
+          username: string;
+        };
+        Update: {
+          active?: boolean;
+          created_at?: string;
+          display_name?: string;
+          id?: string;
+          last_login_at?: string | null;
+          must_change_password?: boolean;
+          password_hash?: string;
+          updated_at?: string;
+          username?: string;
+        };
+        Relationships: [];
+      };
       point_transactions: {
         Row: {
           amount_cents: number | null;
@@ -504,7 +583,6 @@ export type Database = {
           created_at: string;
           display_name: string;
           id: string;
-          is_platform_admin: boolean;
           last_login_at: string | null;
           must_change_password: boolean;
           password_hash: string;
@@ -519,7 +597,6 @@ export type Database = {
           created_at?: string;
           display_name: string;
           id?: string;
-          is_platform_admin?: boolean;
           last_login_at?: string | null;
           must_change_password?: boolean;
           password_hash: string;
@@ -533,7 +610,6 @@ export type Database = {
           created_at?: string;
           display_name?: string;
           id?: string;
-          is_platform_admin?: boolean;
           last_login_at?: string | null;
           must_change_password?: boolean;
           password_hash?: string;
@@ -757,6 +833,23 @@ export type Database = {
         };
         Returns: Json;
       };
+      admin_store_summaries: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          country: string;
+          created_at: string;
+          id: string;
+          last_visit_at: string;
+          locale: string;
+          members: number;
+          name: string;
+          slug: string;
+          staff: number;
+          status: string;
+          timezone: string;
+          visits_30_days: number;
+        }[];
+      };
       anonymize_customer: { Args: { p_customer_id: string }; Returns: undefined };
       auth_throttle_clear: { Args: { p_key: string; p_scope: string }; Returns: undefined };
       auth_throttle_fail: {
@@ -771,6 +864,22 @@ export type Database = {
       create_redemption: {
         Args: { p_customer_id: string; p_reward_id: string; p_store_id: string };
         Returns: Json;
+      };
+      create_store: {
+        Args: {
+          p_admin_id: string;
+          p_country: string;
+          p_currency: string;
+          p_locale: string;
+          p_name: string;
+          p_owner_code: string;
+          p_owner_name: string;
+          p_owner_password_hash: string;
+          p_points_per_visit: number;
+          p_slug: string;
+          p_timezone: string;
+        };
+        Returns: string;
       };
       dashboard_overview: { Args: { p_store_id: string }; Returns: Json };
       earn_points: {

@@ -48,6 +48,16 @@ export function TwoParts() {
               The same login opens the owner dashboard: customers, rewards, offers, staff and the
               printable counter sign
             </li>
+            <li>
+              <code>0000</code> / <code>0000</code> also opens{" "}
+              <Link
+                href="/admin"
+                className="font-semibold text-accent underline underline-offset-4"
+              >
+                Admin
+              </Link>{" "}
+              (behappy): every store, adding a store, the audit log
+            </li>
           </ul>
           <div className="mt-auto flex flex-wrap gap-3">
             <Link

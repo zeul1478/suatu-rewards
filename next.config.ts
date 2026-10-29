@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 import { lanAddresses } from "./scripts/lan-addresses.mjs";
+import { fixedSecurityHeaders } from "./src/lib/securityHeaders";
 
 const withNextIntl = createNextIntlPlugin({
   requestConfig: "./src/i18n/request.ts",
@@ -30,9 +31,14 @@ const nextConfig: NextConfig = {
   },
   // Legal documents are read from /legal at request time; ship them with the server.
   outputFileTracingIncludes: { "/**": ["./legal/*.md"] },
-  // The service worker must never be served from a cache, or app updates would be delayed.
   async headers() {
     return [
+      // Security headers (§8); the Content-Security-Policy is set per page in src/proxy.ts.
+      {
+        source: "/:path*",
+        headers: fixedSecurityHeaders(process.env.NODE_ENV === "production"),
+      },
+      // The service worker must never be served from a cache, or app updates would be delayed.
       {
         source: "/sw.js",
         headers: [

@@ -31,3 +31,19 @@ export const getStoreOr404 = cache(async (slug: string): Promise<Store> => {
     pointsPerVisit: data.points_per_visit,
   };
 });
+
+/**
+ * A store's language and time zone for the text on its screens (src/i18n/request.ts), any
+ * status, or null for an unknown slug. Unlike getStoreOr404 it never ends the request.
+ */
+export const getStoreLocale = cache(
+  async (slug: string): Promise<{ locale: string; timezone: string } | null> => {
+    const { data, error } = await supabaseAdmin()
+      .from("stores")
+      .select("locale, timezone")
+      .eq("slug", slug)
+      .maybeSingle();
+    if (error) throw new Error(`Store lookup failed: ${error.message}`);
+    return data;
+  },
+);

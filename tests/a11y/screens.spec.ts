@@ -2,7 +2,15 @@ import AxeBuilder from "@axe-core/playwright";
 import type { Page } from "@playwright/test";
 import { testCustomer, testPhone } from "../support/data";
 import { closeDb, createScratchStore, db } from "../support/db";
-import { expect, openDashboard, signUp, staffLogIn, STORE, test } from "../e2e/support/fixtures";
+import {
+  expect,
+  openAdmin,
+  openDashboard,
+  signUp,
+  staffLogIn,
+  STORE,
+  test,
+} from "../e2e/support/fixtures";
 
 /*
  * Every screen built so far: zero axe violations (WCAG 2.2 AA) and no sideways scrolling,
@@ -44,6 +52,7 @@ test.describe("accessibility and layout", () => {
     `/legal/${STORE}/program-terms`,
     `/staff/${STORE}/login`,
     `/dashboard/${STORE}/login`,
+    "/admin/login",
   ]) {
     test(`public screen ${path}`, async ({ page }) => {
       await page.goto(path);
@@ -170,5 +179,37 @@ test.describe("owner dashboard", () => {
     await page.getByRole("button", { name: "Create offer" }).click();
     await expect(page.getByText("Give the offer a title.")).toBeVisible();
     await checkScreen(page);
+  });
+});
+
+test.describe("platform admin", () => {
+  test("stores, a store, a new store with errors, and the audit log", async ({ page }) => {
+    const store = await createScratchStore();
+    await openAdmin(page);
+    await checkScreen(page);
+    for (const path of [`/stores/${store.id}`, "/audit", `/audit?store=${store.id}&area=store`]) {
+      await page.goto(`/admin${path}`);
+      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      await checkScreen(page);
+    }
+    await page.goto("/admin/stores/new");
+    await page.getByRole("button", { name: "Create store" }).click();
+    await expect(page.getByText("Enter the store's name.")).toBeVisible();
+    await checkScreen(page);
+  });
+});
+
+test.describe("a store in Romanian", () => {
+  test("sign-up, log in and the counter login", async ({ page }) => {
+    const store = await createScratchStore({ romania: true });
+    for (const path of [
+      `/s/${store.slug}/signup`,
+      `/s/${store.slug}/login`,
+      `/staff/${store.slug}/login`,
+    ]) {
+      await page.goto(path);
+      await expect(page.locator("html")).toHaveAttribute("lang", "ro");
+      await checkScreen(page);
+    }
   });
 });
