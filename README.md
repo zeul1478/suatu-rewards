@@ -79,7 +79,7 @@ The repository is private, and keys and passwords still never go into it:
 | Browser tests · 9 devices               | Playwright + axe, one job per device profile                              |
 | Production build, guards and Lighthouse | `pnpm e2e:prod` and `pnpm lighthouse`                                     |
 
-A change that only touches docs skips the slow jobs. Dependabot opens grouped library updates once a month. Screenshot comparisons (`pnpm e2e:visual`) stay a laptop check.
+Pull requests run the browser tests on all 9 devices; after merging, `main` re-checks on Desktop Chrome only (the pull request already ran the rest), which halves CI minutes. Safari's engine runs one browser at a time on CI: it's heavy on GitHub's 2-core machines. A change that only touches docs skips the slow jobs. Dependabot opens grouped library updates once a month. Screenshot comparisons (`pnpm e2e:visual`) stay a laptop check.
 
 ## Scripts
 
