@@ -338,3 +338,7 @@ In production every emailed link (password reset, email confirmation) and the co
 ### D72. First admin from the command line
 
 `pnpm admin:create <user-name> "<Display name>"` inserts a platform admin with a random 16-character temporary password, printed once, which must be replaced at the first login. Locally it uses `.env.local`; for production it takes the hosted database's `DATABASE_URL`. It refuses `0000`.
+
+### D73. GitHub: private, protected main, keys kept out by two scanners
+
+The repository is private. `main` only changes through pull requests that pass the **CI passed** check. CI is split into parallel jobs (keys, quality, unit + DB, one browser job per device, production + Lighthouse) so a pull request's answer comes in about the time of the slowest device rather than all nine in a row; docs-only changes skip the slow jobs. Keys never reach git: `.env*` and `certs/` are ignored, `scripts/check-secrets.mjs` runs on every commit (staged files) and in CI (every file), and gitleaks scans the full history in CI. Production keys live in Vercel and Supabase only. Dependabot updates are monthly and grouped to keep CI minutes down. `pnpm audit` fails CI for high-severity problems in the app's production libraries; the 7 reported at the time of writing are all inside `@lhci/cli` (Lighthouse, a dev-only tool that never ships to customers).

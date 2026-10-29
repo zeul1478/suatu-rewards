@@ -57,6 +57,30 @@ Open that address on a phone on the same Wi-Fi, or scan the QR code on the dev h
 
 Content-Security-Policy with a fresh nonce on every page (`src/proxy.ts`, `src/lib/securityHeaders.ts`), plus nosniff, no framing, referrer and permissions policies, and HSTS in production. Rate limits on logins, redemption codes, sign-ups and reset emails (`src/server/throttle.ts`). Details and what to revisit before launch: `docs/DECISIONS.md` D67.
 
+## Keys and passwords
+
+The repository is private, and keys and passwords still never go into it:
+
+- **On this laptop** they live only in `.env.local`, which git ignores. `pnpm db:env` writes it from the local Supabase.
+- **In production** they live only in Vercel's environment settings and Supabase's dashboard (`docs/DEPLOY.md`), never in code, issues or chat.
+- **CI needs none:** every job starts its own throwaway Supabase with local-only keys.
+- **Every commit is scanned:** `.husky/pre-commit` runs `scripts/check-secrets.mjs`, which refuses `.env` files, certificates, private keys and anything that looks like a Supabase, GitHub, Stripe, AWS or email-provider key, or a remote database URL with a password. CI scans every file again, and the whole history with gitleaks. Run it by hand: `pnpm secrets:check`.
+- If a key ever leaks: **rotate it first** (make a new one in Supabase/Vercel/the provider and delete the old one), then remove it from the code. Deleting it from git isn't enough once it has been pushed.
+
+## Pull requests and CI
+
+`main` is protected: changes arrive as pull requests and can merge only when **CI passed** is green. `.github/workflows/ci.yml` runs, in parallel:
+
+| Job                                     | Checks                                                                    |
+| --------------------------------------- | ------------------------------------------------------------------------- |
+| No keys or passwords                    | `scripts/check-secrets.mjs` on every file + gitleaks on the whole history |
+| Lint, types, formatting, dependencies   | ESLint, TypeScript, Prettier, `pnpm audit` of the app's own libraries     |
+| Unit and database tests                 | Vitest against a fresh Supabase; database types match the migrations      |
+| Browser tests · 9 devices               | Playwright + axe, one job per device profile                              |
+| Production build, guards and Lighthouse | `pnpm e2e:prod` and `pnpm lighthouse`                                     |
+
+A change that only touches docs skips the slow jobs. Dependabot opens grouped library updates once a month. Screenshot comparisons (`pnpm e2e:visual`) stay a laptop check.
+
 ## Scripts
 
 | Command                                             | Does                                                                                                                      |
@@ -87,5 +111,3 @@ The store's look is `src/brands/suatu.ts` (names, colours, fonts, which logo/ico
 ## Docs
 
 [Architecture](docs/ARCHITECTURE.md) · [Decisions](docs/DECISIONS.md) · [Design](docs/DESIGN.md) · [Testing](docs/TESTING.md) · [Deploying](docs/DEPLOY.md)
-
-Every push to GitHub runs the checks in `.github/workflows/ci.yml`.

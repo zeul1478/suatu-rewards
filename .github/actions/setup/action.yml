@@ -1,0 +1,28 @@
+# Shared first steps of every CI job: pnpm + Node from the repository's own pins, dependencies,
+# and (when asked) a throwaway local Supabase with the migrations and seed, plus .env.local.
+name: Set up
+description: Install pnpm, Node and dependencies; optionally start a local Supabase
+inputs:
+  supabase:
+    description: Start a local Supabase and write .env.local
+    default: "false"
+runs:
+  using: composite
+  steps:
+    # pnpm's version comes from "packageManager" in package.json, Node's from .nvmrc.
+    - uses: pnpm/action-setup@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: .nvmrc
+        cache: pnpm
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile
+    - name: Start local Supabase (migrations + seed)
+      if: inputs.supabase == 'true'
+      shell: bash
+      run: pnpm exec supabase start --exclude studio
+    - name: Write .env.local from the local Supabase (local keys only)
+      if: inputs.supabase == 'true'
+      shell: bash
+      run: pnpm db:env
