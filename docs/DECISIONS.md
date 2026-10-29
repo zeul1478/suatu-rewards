@@ -229,3 +229,7 @@ It was registered for `/s/suatu/` (trailing slash), which covers every screen ex
 ### D49. Clock-jumping tests tolerate dev live-reload
 
 Jumping Playwright's fake clock 15 minutes can make the dev server's live-reload reconnect and reload the page, restarting the app's timers. `fastForwardUntil()` jumps again in that case (each jump is a full interval, so the test still proves "not before 15 minutes"). Production builds have no live-reload.
+
+### D50. The HTTPS dev server trusts its own certificate
+
+After a server action redirects (log in, sign up, Add visit), Next.js fetches the next page from itself over HTTPS. Node ignores the Mac's trust store by default, so that fetch failed and the browser could end on a blank page. `pnpm dev:lan` now starts Next with `NODE_OPTIONS=--use-system-ca` (reaches Next's worker processes; uses the CA `mkcert -install` added) plus `NODE_EXTRA_CA_CERTS`.

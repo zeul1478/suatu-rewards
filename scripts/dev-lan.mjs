@@ -1,7 +1,7 @@
 // `pnpm dev:lan` — runs the dev server on all network interfaces so a phone on the same Wi-Fi
 // can open it, and prints the address to type on the phone. Serves HTTPS when a certificate
 // from `pnpm dev:cert` exists (needed on phones for the installable app), plain HTTP otherwise.
-import { spawn } from "node:child_process";
+import { execFileSync, spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import { lanAddresses } from "./lan-addresses.mjs";
 
@@ -30,9 +30,21 @@ if (https) {
   );
 }
 
+// Next.js fetches its own pages after a server action redirects (log in, Add visit…). By default
+// Node ignores the Mac's trust store, where `mkcert -install` put the local certificate
+// authority, and those redirects end on a blank page. --use-system-ca (Node 22.15+) fixes that;
+// NODE_OPTIONS also reaches Next's worker processes. NODE_EXTRA_CA_CERTS covers machines where
+// `mkcert -install` wasn't run.
+const env = { ...process.env, DEV_PROTOCOL: protocol };
+if (https) {
+  const caRoot = execFileSync("mkcert", ["-CAROOT"], { encoding: "utf8" }).trim();
+  env.NODE_EXTRA_CA_CERTS = `${caRoot}/rootCA.pem`;
+  env.NODE_OPTIONS = [process.env.NODE_OPTIONS, "--use-system-ca"].filter(Boolean).join(" ");
+}
+
 const child = spawn("next", args, {
   stdio: "inherit",
   shell: process.platform === "win32",
-  env: { ...process.env, DEV_PROTOCOL: protocol },
+  env,
 });
 child.on("exit", (code) => process.exit(code ?? 0));
