@@ -25,7 +25,9 @@ module.exports = {
       numberOfRuns: 3,
       // Playwright's Chrome, so nothing else needs installing.
       chromePath: chromium.executablePath(),
-      settings: { chromeFlags: "--headless=new" },
+      // GitHub's Ubuntu machines block Chrome's sandbox (AppArmor); there it only opens our own
+      // app on localhost, so running without it is safe. Laptops keep the sandbox.
+      settings: { chromeFlags: `--headless=new${process.env.CI ? " --no-sandbox" : ""}` },
     },
     assert: {
       assertions: {

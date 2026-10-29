@@ -21,11 +21,11 @@ export default async function AdminLoginPage({ searchParams }: PageProps<"/admin
 
   return (
     <main className="screen-gutter mx-auto flex w-full max-w-lg flex-col gap-6 pt-[max(var(--space-12),env(safe-area-inset-top))] pb-[var(--space-8)]">
-      <header className="flex flex-col gap-4">
+      <header className="flex flex-col items-center gap-4 text-center">
         <p className="font-display text-lg font-semibold tracking-wide text-ink-muted uppercase">
           behappy
         </p>
-        <div className="lane-stripe" aria-hidden="true" />
+        <div className="lane-stripe self-stretch" aria-hidden="true" />
         <h1 className="font-display text-5xl font-bold">{t("title")}</h1>
         <p className="text-ink-muted">{t("intro")}</p>
       </header>

@@ -12,24 +12,24 @@ test.describe("branding", () => {
     await expect(page.getByRole("img", { name: "Powered by behappy" })).toBeVisible();
 
     const head = page.locator("head");
-    await expect(head.locator('link[rel="icon"][type="image/svg+xml"]')).toHaveAttribute(
+    await expect(head.locator('link[rel="icon"][type="image/png"]')).toHaveAttribute(
       "href",
-      "/stores/suatu/svg/favicon.svg",
+      "/stores/suatu/png/complex-turistic/favicon-32.png",
     );
     await expect(head.locator('link[rel="apple-touch-icon"]')).toHaveAttribute(
       "href",
-      "/stores/suatu/png/apple-touch-icon.png",
+      "/stores/suatu/png/complex-turistic/apple-touch-icon.png",
     );
     await expect(head.locator('meta[property="og:image"]')).toHaveAttribute(
       "content",
-      /\/stores\/suatu\/png\/og-image\.png$/,
+      /\/stores\/suatu\/png\/complex-turistic\/og-image\.png$/,
     );
 
     for (const href of [
-      "/stores/suatu/svg/favicon.svg",
-      "/stores/suatu/png/favicon.ico",
-      "/stores/suatu/png/apple-touch-icon.png",
-      "/stores/suatu/png/og-image.png",
+      "/stores/suatu/png/complex-turistic/favicon-32.png",
+      "/stores/suatu/png/complex-turistic/favicon.ico",
+      "/stores/suatu/png/complex-turistic/apple-touch-icon.png",
+      "/stores/suatu/png/complex-turistic/og-image.png",
     ]) {
       expect((await request.get(href)).status(), href).toBe(200);
     }
@@ -57,12 +57,14 @@ test.describe("branding", () => {
     }
   });
 
-  test("staff screen: light wordmark and the light behappy credit", async ({ page }) => {
+  test("staff screen: the green logo for light screens and the light behappy credit", async ({
+    page,
+  }) => {
     await staffLogIn(page, "0000", "0000");
     await expect(page.getByRole("heading", { name: "Add a visit" })).toBeVisible();
     await expect(page.getByRole("img", { name: "Suatu" })).toHaveAttribute(
       "src",
-      "/stores/suatu/svg/wordmark-light.svg",
+      "/stores/suatu/png/complex-turistic/logo-on-light.png",
     );
     await expect(page.getByRole("img", { name: "Powered by behappy" })).toHaveAttribute(
       "src",

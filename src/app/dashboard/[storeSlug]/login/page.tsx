@@ -37,7 +37,7 @@ export default async function DashboardLoginPage({
 
   return (
     <main className="screen-gutter mx-auto flex w-full max-w-lg flex-col gap-6 pt-[max(var(--space-12),env(safe-area-inset-top))] pb-[var(--space-8)]">
-      <header className="flex flex-col gap-4">
+      <header className="flex flex-col items-center gap-4 text-center">
         <BrandLogo
           brand={brandFor(store.slug)}
           kind="wordmark"
@@ -45,7 +45,7 @@ export default async function DashboardLoginPage({
           height={30}
           priority
         />
-        <div className="lane-stripe" aria-hidden="true" />
+        <div className="lane-stripe self-stretch" aria-hidden="true" />
         <h1 className="font-display text-5xl font-bold">{t("title")}</h1>
         <p className="text-ink-muted">{t("intro")}</p>
       </header>

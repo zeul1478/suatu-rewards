@@ -13,11 +13,11 @@ type BrandLogoProps = {
 
 /** The store's logo, exactly as drawn in its brand kit (never redrawn). */
 export function BrandLogo({ brand, kind, theme, height, priority, className }: BrandLogoProps) {
-  const files = brand.logo[kind];
+  const { displayScale = 1, ...files } = brand.logo[kind];
   return (
     <ThemedImage
       {...files}
-      displayHeight={height}
+      displayHeight={Math.round(height * displayScale)}
       theme={theme}
       alt={brand.name}
       priority={priority}
