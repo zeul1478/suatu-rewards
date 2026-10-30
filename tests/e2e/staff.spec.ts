@@ -21,7 +21,8 @@ test.describe("staff screen (§6, §0 step 3)", () => {
     const box = await page.getByRole("button", { name: "Add visit (+5)" }).boundingBox();
     expect(box?.height).toBeGreaterThanOrEqual(56);
 
-    await page.getByRole("button", { name: "Log out" }).click();
+    // force: Linux WebKit on CI never reports the counter's buttons as "stable".
+    await page.getByRole("button", { name: "Log out" }).click({ force: true });
     await expect(page).toHaveURL(at(`/staff/${STORE}/login`));
   });
 
