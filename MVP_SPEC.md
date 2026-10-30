@@ -19,6 +19,7 @@
 > - **M7 (D54–D63):** dashboard = staff login, managers only; temporary passwords replaced at next login (also `0000` in production); phones and emails masked in dashboard and CSV; adjust with a note, never below zero; "release number" closes the account holding it; offer pictures in a private bucket served by the app; branding previewed, not edited; counter sign = notice at collection; `pnpm dev:share` temporary public link.
 > - **M8 (D64–D67):** `/admin` uses behappy's own admin accounts (`0000`/`0000` in dev), not store staff; admin lists stores, adds a store with its first owner, pauses/resumes, manages owners, reads the audit log; each store's screens follow its locale (`ro.json` is a draft for native review); CSP with nonces + fixed security headers; new limits on sign-ups per IP and reset emails per phone; mail-server errors masked in logs.
 > - **M9 (D68–D72):** clean clone starts with `pnpm db:start`; Lighthouse CI on public screens + GitHub Actions workflow; nightly retention job for idle unclaimed accounts (D5); production email links always from `APP_URL`, SMTP login for a real provider; `pnpm admin:create` for the first admin; deploy notes in `docs/DEPLOY.md`.
+> - **After M9 (D74–D76):** Suatu "complex turistic" logo, centred screen headers; CI runs all 9 devices on pull requests; Home polls every 3 s, slowing to 15 s after 2 quiet minutes.
 
 ---
 

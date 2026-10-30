@@ -33,11 +33,17 @@ export function PointsCard({
   // Each rise in the balance replays a short "pump tick" on the number (off with reduced motion).
   const [bumps, setBumps] = useState(0);
   const shownBalance = useRef(initialStatus.progress.balance);
-  usePolling<CustomerStatus>(statusUrl, 3000, (next) => {
-    if (next.progress.balance > shownBalance.current) setBumps((count) => count + 1);
-    shownBalance.current = next.progress.balance;
-    setStatus(next);
-  });
+  // Every 3 s while things happen at the counter; every 15 s after 2 quiet minutes.
+  usePolling<CustomerStatus>(
+    statusUrl,
+    3000,
+    (next) => {
+      if (next.progress.balance > shownBalance.current) setBumps((count) => count + 1);
+      shownBalance.current = next.progress.balance;
+      setStatus(next);
+    },
+    { afterMs: 120_000, intervalMs: 15_000 },
+  );
 
   const { progress, pendingRedemption, lastVisit } = status;
   const target = progress.target;
