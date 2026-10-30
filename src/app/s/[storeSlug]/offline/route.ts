@@ -15,11 +15,12 @@ export async function GET(_request: Request, { params }: RouteContext<"/s/[store
   const t = await getTranslations("offline");
   const escape = (text: string) =>
     text.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
-  // Vector logos go in as markup; pictures (PNG) as data: URLs. Either way, no extra request.
+  // Vector logos go in as markup; pictures (PNG, WebP) as data: URLs. Either way, no extra request.
   const inline = async (file: string) => {
     const bytes = await readFile(path.join(process.cwd(), "public", file));
     if (file.endsWith(".svg")) return bytes.toString("utf8");
-    return `<img src="data:image/png;base64,${bytes.toString("base64")}" alt="${escape(brand.name)}">`;
+    const type = file.endsWith(".webp") ? "image/webp" : "image/png";
+    return `<img src="data:${type};base64,${bytes.toString("base64")}" alt="${escape(brand.name)}">`;
   };
   const [logoDark, logoLight] = await Promise.all([
     inline(brand.logo.lockup.onDark),

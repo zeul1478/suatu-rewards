@@ -64,7 +64,7 @@ test.describe("branding", () => {
     await expect(page.getByRole("heading", { name: "Add a visit" })).toBeVisible();
     await expect(page.getByRole("img", { name: "Suatu" })).toHaveAttribute(
       "src",
-      "/stores/suatu/png/complex-turistic/logo-on-light.png",
+      "/stores/suatu/png/complex-turistic/logo-on-light.webp",
     );
     await expect(page.getByRole("img", { name: "Powered by behappy" })).toHaveAttribute(
       "src",

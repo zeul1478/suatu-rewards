@@ -253,7 +253,7 @@ test.describe("installable app", () => {
     const html = await response.text();
     expect(html).toContain("You're offline");
     // The logo is inside the page itself: vector markup or a data: picture.
-    expect(html).toMatch(/<svg|<img src="data:image\/png;base64,/);
+    expect(html).toMatch(/<svg|<img src="data:image\/(png|webp);base64,/);
     expect(html).not.toMatch(/<script|<link[^>]+stylesheet|src="\/_next/);
   });
 

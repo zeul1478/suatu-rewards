@@ -35,26 +35,26 @@ export const suatu: Brand = {
     },
   },
   // The "complex turistic" logo (brand/suatu/complex-turistic/, white original). Light screens
-  // get the same artwork in Forest; files made by scripts/suatu-logo.py. It's compact rather
+  // get the same artwork in Forest; files made by scripts/suatu-logo.py (WebP for screens). It's compact rather
   // than a long strip, so it's shown larger than the old wordmark (displayScale).
   logo: {
     wordmark: {
-      onDark: logo("logo-on-dark.png"),
-      onLight: logo("logo-on-light.png"),
-      width: 723,
-      height: 480,
+      onDark: logo("logo-on-dark.webp"),
+      onLight: logo("logo-on-light.webp"),
+      width: 542,
+      height: 360,
       displayScale: 2.6,
     },
     lockup: {
-      onDark: logo("logo-on-dark.png"),
-      onLight: logo("logo-on-light.png"),
-      width: 723,
-      height: 480,
+      onDark: logo("logo-on-dark.webp"),
+      onLight: logo("logo-on-light.webp"),
+      width: 542,
+      height: 360,
       displayScale: 1.6,
     },
     mark: {
-      onDark: logo("mark-on-dark.png"),
-      onLight: logo("mark-on-light.png"),
+      onDark: logo("mark-on-dark.webp"),
+      onLight: logo("mark-on-light.webp"),
       width: 189,
       height: 320,
     },

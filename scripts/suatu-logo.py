@@ -70,6 +70,14 @@ def main() -> None:
     mark.save(OUT / "mark-on-dark.png", optimize=True)
     recolour(mark, FOREST).save(OUT / "mark-on-light.png", optimize=True)
 
+    # What the screens load: WebP, 360 px tall (the largest logo on screen is about 115 px, so
+    # sharp at 3×). About half the bytes of the PNGs, which stay for print and the brand kit.
+    web = fit_height(logo, 360)
+    web.save(OUT / "logo-on-dark.webp", lossless=True, method=6)
+    recolour(web, FOREST).save(OUT / "logo-on-light.webp", lossless=True, method=6)
+    mark.save(OUT / "mark-on-dark.webp", lossless=True, method=6)
+    recolour(mark, FOREST).save(OUT / "mark-on-light.webp", lossless=True, method=6)
+
     # App icons: deer on Forest. Maskable icons keep it inside the 80 % safe circle.
     on_square(deer, 512, 0.66).save(OUT / "icon-512.png", optimize=True)
     on_square(deer, 192, 0.66).save(OUT / "icon-192.png", optimize=True)
