@@ -11,7 +11,7 @@
 | `pnpm e2e:visual` | Screenshot comparisons of key screens (macOS only: fonts render differently on Linux)                                     | `tests/visual`            |
 | `pnpm lighthouse` | Production build scored by Lighthouse as a mid-range phone on slow 4G: speed ≥ 90, accessibility 100, best practices ≥ 95 | `lighthouserc.cjs`        |
 
-**Everything at once, on the laptop:** `pnpm test:all` runs `pnpm check`, the browser tests on all 9 devices, the production guards and Lighthouse, about 20–30 minutes. This is the normal way to run the full suite: it costs no GitHub Actions minutes (the free plan has 2,000 a month and one full CI run used about 200).
+**Everything at once, on the laptop:** `pnpm test:all` runs `pnpm check`, the browser tests on all 9 devices (3 at a time, one retry for a test slowed by the load), the production guards and Lighthouse, about 20–30 minutes. This is the normal way to run the full suite: it costs no GitHub Actions minutes (the free plan has 2,000 a month and one full CI run used about 200).
 
 **CI:** `.github/workflows/ci.yml` runs the quick checks on every push and pull request (no secrets, lint, types, formatting, unit and database tests) against a fresh local Supabase inside GitHub's runner. The 9-device browser tests and production build with Lighthouse run only when started by hand: GitHub → Actions → CI → Run workflow. Do that before merging something big.
 
