@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { brandFor } from "@/brands";
 import { storeUrl } from "@/lib/storeUrl";
 import { getStoreOr404 } from "@/server/stores/getStore";
@@ -13,17 +13,23 @@ export async function GET(_request: Request, { params }: RouteContext<"/s/[store
   const store = await getStoreOr404((await params).storeSlug);
   const brand = brandFor(store.slug);
   const t = await getTranslations("offline");
-  const read = (file: string) => readFile(path.join(process.cwd(), "public", file), "utf8");
-  const [logoDark, logoLight] = await Promise.all([
-    read(brand.logo.wordmark.onDark),
-    read(brand.logo.wordmark.onLight),
-  ]);
-  const { dark, light } = brand.colors;
   const escape = (text: string) =>
     text.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
+  // Vector logos go in as markup; pictures (PNG, WebP) as data: URLs. Either way, no extra request.
+  const inline = async (file: string) => {
+    const bytes = await readFile(path.join(process.cwd(), "public", file));
+    if (file.endsWith(".svg")) return bytes.toString("utf8");
+    const type = file.endsWith(".webp") ? "image/webp" : "image/png";
+    return `<img src="data:${type};base64,${bytes.toString("base64")}" alt="${escape(brand.name)}">`;
+  };
+  const [logoDark, logoLight] = await Promise.all([
+    inline(brand.logo.lockup.onDark),
+    inline(brand.logo.lockup.onLight),
+  ]);
+  const { dark, light } = brand.colors;
 
   const html = `<!doctype html>
-<html lang="en">
+<html lang="${await getLocale()}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -37,8 +43,9 @@ export async function GET(_request: Request, { params }: RouteContext<"/s/[store
   }
   body { margin: 0; min-height: 100dvh; background: var(--page); color: var(--text);
          font: 16px/1.5 system-ui, -apple-system, sans-serif; display: flex; }
-  main { margin: auto; padding: 32px max(16px, env(safe-area-inset-left)); max-width: 420px; }
-  .logo svg { height: 28px; width: auto; }
+  main { margin: auto; padding: 32px max(16px, env(safe-area-inset-left)); max-width: 420px;
+         text-align: center; }
+  .logo svg, .logo img { height: 96px; width: auto; }
   .logo-light { display: none; }
   h1 { font-size: 2rem; line-height: 1.2; margin: 24px 0 8px; }
   p { color: var(--muted); margin: 0 0 24px; }

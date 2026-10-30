@@ -33,7 +33,9 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? "github" : "list",
   // Eight browsers on one laptop: give a busy dev server more than the default 5 s per check.
-  expect: { timeout: 10_000 },
+  // CI machines have 2 cores shared by Supabase, the dev server and the browser: twice that.
+  expect: { timeout: process.env.CI ? 20_000 : 10_000 },
+  timeout: process.env.CI ? 90_000 : 30_000,
   use: {
     baseURL,
     // The dev certificate is trusted on phones, not necessarily by Playwright's browsers.

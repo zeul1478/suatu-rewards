@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { brandThemeStyle, DEFAULT_BRAND } from "@/brands";
 import { brandMetadata } from "@/brands/metadata";
+import { HydrationMark } from "@/components/HydrationMark";
 import { fontVariables } from "./fonts";
 import "./globals.css";
 
@@ -37,6 +38,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <HydrationMark />
       </body>
     </html>
   );

@@ -1,11 +1,11 @@
 import type { Brand } from "./types";
 
 /*
- * Suatu — "The Road" (brand/suatu/README.md). Everything that makes the app look like Suatu.
+ * Suatu (brand/suatu/README.md). Everything that makes the app look like Suatu.
  * Colours from the brand kit; files copied into public/stores/suatu/ by `pnpm brand:sync`.
  */
 
-const file = (path: string) => `/stores/suatu/${path}`;
+const logo = (name: string) => `/stores/suatu/png/complex-turistic/${name}`;
 
 export const suatu: Brand = {
   slug: "suatu",
@@ -34,34 +34,39 @@ export const suatu: Brand = {
       accent: "#1E7A4F", // On light, the lane and icon details are Suatu green (brand rule)
     },
   },
+  // The "complex turistic" logo (brand/suatu/complex-turistic/, white original). Light screens
+  // get the same artwork in Forest; files made by scripts/suatu-logo.py (WebP for screens). It's compact rather
+  // than a long strip, so it's shown larger than the old wordmark (displayScale).
   logo: {
     wordmark: {
-      onDark: file("svg/wordmark-dark.svg"),
-      onLight: file("svg/wordmark-light.svg"),
-      width: 618.4,
-      height: 148,
+      onDark: logo("logo-on-dark.webp"),
+      onLight: logo("logo-on-light.webp"),
+      width: 542,
+      height: 360,
+      displayScale: 2.6,
     },
     lockup: {
-      onDark: file("svg/lockup-dark.svg"),
-      onLight: file("svg/lockup-light.svg"),
-      width: 618.4,
-      height: 224,
+      onDark: logo("logo-on-dark.webp"),
+      onLight: logo("logo-on-light.webp"),
+      width: 542,
+      height: 360,
+      displayScale: 1.6,
     },
     mark: {
-      onDark: file("svg/mark-dark.svg"),
-      onLight: file("svg/mark-light.svg"),
-      width: 160,
-      height: 160,
+      onDark: logo("mark-on-dark.webp"),
+      onLight: logo("mark-on-light.webp"),
+      width: 189,
+      height: 320,
     },
   },
   icons: {
-    favicon: file("svg/favicon.svg"),
-    faviconIco: file("png/favicon.ico"),
-    appleTouch: file("png/apple-touch-icon.png"),
-    app192: file("png/icon-192.png"),
-    app512: file("png/icon-512.png"),
-    maskable192: file("png/icon-maskable-192.png"),
-    maskable512: file("png/icon-maskable-512.png"),
+    favicon: logo("favicon-32.png"),
+    faviconIco: logo("favicon.ico"),
+    appleTouch: logo("apple-touch-icon.png"),
+    app192: logo("icon-192.png"),
+    app512: logo("icon-512.png"),
+    maskable192: logo("icon-maskable-192.png"),
+    maskable512: logo("icon-maskable-512.png"),
   },
-  socialImage: file("png/og-image.png"),
+  socialImage: logo("og-image.png"),
 };

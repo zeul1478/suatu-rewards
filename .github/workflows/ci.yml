@@ -22,8 +22,13 @@ jobs:
   changes:
     name: What changed
     runs-on: ubuntu-latest
+    # On pull requests the filter asks GitHub for the list of changed files.
+    permissions:
+      contents: read
+      pull-requests: read
     outputs:
       app: ${{ steps.filter.outputs.app }}
+      devices: ${{ steps.devices.outputs.devices }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -37,6 +42,32 @@ jobs:
               - '!**/*.md'
               - '!docs/**'
               - '!legal/**'
+      # Pull requests (and manual runs) test all 9 devices before merging. A push to main is
+      # code that already passed its pull request, so it re-checks on Desktop Chrome only.
+      # Safari's engine is heavy on Linux: one browser at a time, or the dev server starves.
+      - id: devices
+        env:
+          FULL: ${{ github.event_name != 'push' }}
+        run: |
+          if [ "$FULL" = "true" ]; then
+            devices=$(jq -c . <<'JSON'
+          [
+            {"project": "iPhone SE", "browser": "webkit", "workers": 1},
+            {"project": "iPhone 15 Pro", "browser": "webkit", "workers": 1},
+            {"project": "Pixel 7", "browser": "chromium", "workers": 2},
+            {"project": "Galaxy S9+", "browser": "chromium", "workers": 2},
+            {"project": "iPad (gen 7)", "browser": "webkit", "workers": 1},
+            {"project": "iPad (gen 7) landscape", "browser": "webkit", "workers": 1},
+            {"project": "Desktop Chrome", "browser": "chromium", "workers": 2},
+            {"project": "Desktop Safari", "browser": "webkit", "workers": 1},
+            {"project": "Desktop Firefox", "browser": "firefox", "workers": 2}
+          ]
+          JSON
+            )
+          else
+            devices='[{"project": "Desktop Chrome", "browser": "chromium", "workers": 2}]'
+          fi
+          echo "devices=$devices" >> "$GITHUB_OUTPUT"
 
   secrets:
     name: No keys or passwords
@@ -92,20 +123,11 @@ jobs:
     needs: [changes, quality]
     if: needs.changes.outputs.app == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - { project: "iPhone SE", browser: webkit }
-          - { project: "iPhone 15 Pro", browser: webkit }
-          - { project: "Pixel 7", browser: chromium }
-          - { project: "Galaxy S9+", browser: chromium }
-          - { project: "iPad (gen 7)", browser: webkit }
-          - { project: "iPad (gen 7) landscape", browser: webkit }
-          - { project: "Desktop Chrome", browser: chromium }
-          - { project: "Desktop Safari", browser: webkit }
-          - { project: "Desktop Firefox", browser: firefox }
+        include: ${{ fromJSON(needs.changes.outputs.devices) }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -114,7 +136,7 @@ jobs:
       - name: Install ${{ matrix.browser }}
         run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
       - name: End-to-end and accessibility
-        run: pnpm exec playwright test --project="${{ matrix.project }}"
+        run: pnpm exec playwright test --project="${{ matrix.project }}" --workers=${{ matrix.workers }}
       - name: Keep the report when something fails
         if: failure()
         uses: actions/upload-artifact@v4

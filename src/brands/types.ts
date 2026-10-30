@@ -24,7 +24,17 @@ export type Palette = {
 };
 
 /** A logo drawn for dark and for light backgrounds; width/height give its proportions. */
-export type LogoFiles = { onDark: string; onLight: string; width: number; height: number };
+export type LogoFiles = {
+  onDark: string;
+  onLight: string;
+  width: number;
+  height: number;
+  /**
+   * Shown this many times taller than each screen asks for. Screens size logos for a long, flat
+   * wordmark; a compact logo (taller than it is wide-ish) needs more height to stay readable.
+   */
+  displayScale?: number;
+};
 
 export type Brand = {
   slug: string;

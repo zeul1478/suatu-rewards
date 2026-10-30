@@ -112,8 +112,10 @@ test.describe("redemption codes (§4.3b)", () => {
   test("letters or a short code get a clear message", async ({ page }) => {
     await staffLogIn(page, "0000", "0000");
     await expect(page.getByRole("heading", { name: "Add a visit" })).toBeVisible();
-    await page.getByLabel("6-digit code from the customer's phone").fill("12a4");
-    await page.getByRole("button", { name: "Redeem", exact: true }).click();
+    const code = page.getByLabel("6-digit code from the customer's phone");
+    await code.fill("12a4");
+    // Enter, not a click: Linux WebKit on CI never reports the counter's buttons as "stable".
+    await code.press("Enter");
     await expect(page.getByText("Enter the 6 digits shown on the customer's phone.")).toBeVisible();
   });
 });

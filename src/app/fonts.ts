@@ -6,14 +6,17 @@ import { Inter, Space_Grotesk } from "next/font/google";
  * variable "--font-<key>" and add the key to FontKey in src/brands/types.ts.
  */
 
+// Only "latin" is preloaded: preloading latin-ext too doubled the font bytes ahead of the logo on
+// a slow phone. Every subset is still declared, so Romanian letters (ș ț ă) load when a page
+// uses them.
 const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin"],
   variable: "--font-space-grotesk",
   display: "swap",
 });
 
 const inter = Inter({
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
 });

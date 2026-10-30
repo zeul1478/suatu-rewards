@@ -252,7 +252,8 @@ test.describe("installable app", () => {
     const response = await request.get(`/s/${STORE}/offline`);
     const html = await response.text();
     expect(html).toContain("You're offline");
-    expect(html).toContain("<svg");
+    // The logo is inside the page itself: vector markup or a data: picture.
+    expect(html).toMatch(/<svg|<img src="data:image\/(png|webp);base64,/);
     expect(html).not.toMatch(/<script|<link[^>]+stylesheet|src="\/_next/);
   });
 

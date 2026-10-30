@@ -5,11 +5,26 @@ import { TEST_ADMIN, TEST_STORE } from "../../support/testStore";
 /**
  * Every test gets its own fake client IP (x-forwarded-for) so per-IP login limits behave as if
  * each test were a different device.
+ *
+ * page.goto also waits until React has taken over the page (src/components/HydrationMark.tsx).
+ * On CI's slow machines the development server can leave seconds between the HTML arriving and
+ * the page responding, and a tap in that gap was lost.
  */
 export const test = base.extend({
   context: async ({ context }, provide) => {
     await context.setExtraHTTPHeaders({ "x-forwarded-for": testIp() });
     await provide(context);
+  },
+  page: async ({ page }, provide) => {
+    const goto = page.goto.bind(page);
+    page.goto = async (url, options) => {
+      const response = await goto(url, options);
+      if (await page.locator('script[src*="/_next/"]').count()) {
+        await page.locator("html[data-hydrated]").waitFor({ state: "attached" });
+      }
+      return response;
+    };
+    await provide(page);
   },
 });
 

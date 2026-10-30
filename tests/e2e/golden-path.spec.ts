@@ -26,9 +26,15 @@ async function counter(browser: Browser, deviceOptions: object): Promise<Page> {
   return page;
 }
 
+/*
+ * The counter runs in a second window while the customer's stays open. Linux WebKit (CI) treats
+ * that window as in the background and slows its animation frames, so each click waited ~75 s
+ * for the button to look "stable". Enter submits the same form, the way a cashier with a
+ * keyboard would, without that wait. (The buttons themselves are clicked in tests/e2e/staff.spec.ts.)
+ */
 async function addVisit(staff: Page, phone: string) {
   await staff.getByLabel("Customer phone number").fill(phone);
-  await staff.getByRole("button", { name: "Add visit (+5)" }).click();
+  await staff.getByLabel("Customer phone number").press("Enter");
 }
 
 const balance = (page: Page) => page.getByTestId("points-balance");
@@ -106,7 +112,7 @@ test("§0 golden path: sign up, earn 20 visits live, redeem, unknown number, cla
 
   // 9. Staff types the code → redeemed; the phone shows it and the balance is back to 0.
   await staff.getByLabel("6-digit code from the customer's phone").fill(code);
-  await staff.getByRole("button", { name: "Redeem", exact: true }).click();
+  await staff.getByLabel("6-digit code from the customer's phone").press("Enter");
   await expect(staff.getByTestId("redeem-banner")).toHaveText(
     `Free coffee redeemed for ••• ${digits.slice(-4)}`,
   );
@@ -139,11 +145,13 @@ test("a double tap on Add visit counts once", async ({ page: staff }) => {
   await expect(staff.getByRole("heading", { name: "Add a visit" })).toBeVisible();
   const phone = testPhone();
   await staff.getByLabel("Customer phone number").fill(phone.typed);
-  await staff.getByRole("button", { name: "Add visit (+5)" }).dblclick();
+  // A real double tap, at the button's position. force: Linux WebKit on CI never reports the
+  // button as "stable" here, so the usual wait never ends (see addVisit above).
+  await staff.getByRole("button", { name: "Add visit (+5)" }).dblclick({ force: true });
   await expect(banner(staff)).toContainText("· 5 / 100");
 
   await staff.getByLabel("Customer phone number").fill(phone.typed);
-  await staff.getByRole("button", { name: "Add visit (+5)" }).click();
+  await staff.getByLabel("Customer phone number").press("Enter");
   await expect(banner(staff)).toContainText("· 10 / 100");
 });
 
@@ -151,7 +159,7 @@ test("a mistyped number is kept in the field with an explanation", async ({ page
   await staffLogIn(staff, "0000", "0000");
   await expect(staff.getByRole("heading", { name: "Add a visit" })).toBeVisible();
   await staff.getByLabel("Customer phone number").fill("12345");
-  await staff.getByRole("button", { name: "Add visit (+5)" }).click();
+  await staff.getByLabel("Customer phone number").press("Enter");
   await expect(staff.getByText(/doesn't look like a phone number/)).toBeVisible();
   await expect(staff.getByLabel("Customer phone number")).toHaveValue("12345");
 });

@@ -12,7 +12,10 @@ export function brandMetadata(brand: Brand, options: { manifest?: string } = {})
     applicationName: brand.programName,
     icons: {
       icon: [
-        { url: brand.icons.favicon, type: "image/svg+xml" },
+        {
+          url: brand.icons.favicon,
+          type: brand.icons.favicon.endsWith(".svg") ? "image/svg+xml" : "image/png",
+        },
         { url: brand.icons.faviconIco, sizes: "48x48" },
       ],
       apple: [{ url: brand.icons.appleTouch, sizes: "180x180" }],
