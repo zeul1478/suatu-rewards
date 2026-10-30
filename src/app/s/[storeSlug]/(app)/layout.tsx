@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { ViewTransition } from "react";
 import { BottomNav } from "@/components/customer/BottomNav";
 import { storeUrl } from "@/lib/storeUrl";
 import { getStoreOr404 } from "@/server/stores/getStore";
@@ -11,7 +12,8 @@ export default async function SignedInLayout({ children, params }: LayoutProps<"
 
   return (
     <>
-      {children}
+      {/* Switching tabs crossfades (depth.css sets the timing; off with reduced motion). */}
+      <ViewTransition>{children}</ViewTransition>
       <BottomNav
         label={t("label")}
         items={[

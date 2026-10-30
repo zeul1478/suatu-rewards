@@ -78,7 +78,7 @@ export function RedeemCode({ redemption, statusUrl, homeHref, newCodeAction }: R
           <span
             key={index}
             aria-hidden="true"
-            className="price-digits grid h-20 flex-1 place-items-center rounded-[var(--radius-md)] border border-line-strong bg-sunken text-5xl text-accent"
+            className="digit-tile price-digits grid h-20 flex-1 place-items-center rounded-[var(--radius-md)] border border-line-strong bg-sunken text-5xl text-accent"
           >
             {digit}
           </span>

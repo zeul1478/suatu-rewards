@@ -354,3 +354,16 @@ The first CI run showed WebKit (Safari's engine) on Linux is much heavier than o
 ### D76. Clean and fast pass (after M9)
 
 What was measured before changing anything: no unused libraries or source files; the customer home sends 143 KB of JavaScript (gzipped), of which about 125 KB is React and Next.js themselves, so there is little left to cut; offer photos are already shrunk in the browser before upload; with 10,000 customers and 200,000 visits the owner's Overview takes about 0.2 s and customer search under 0.01 s (checked inside a rolled-back transaction), so no new indexes yet. What changed: screens load the logo as a WebP sized for the largest place it's shown (25 KB instead of 55 KB; it was what the signup page's first paint waited on), and the Home screen's points check slows from every 3 s to every 15 s after 2 minutes with no change; any change, or coming back to the app, returns to 3 s. The redeem screen keeps polling every 3 s. Lighthouse thresholds stay at 0.9: GitHub's machines vary by up to 15 points between runs of the same page, so a higher bar would fail at random. Browser tests wait for `<html data-hydrated>` (set by the root layout) before tapping, since on CI's development server a tap before React woke up could be lost.
+
+### D77. The customer app feels like a phone app (depth)
+
+On the user's request the customer app (only; the counter, dashboard and admin stay flat) gets depth, all in `src/styles/depth.css` under `.app-3d` on the customer layout, from per-theme tokens (`--shadow-color`, `--shadow-soft`, `--bevel-top`, `--sheen` in `tokens.css`):
+
+- **Cards** (points, offers, rewards) sit above the page.
+- **Buttons** are raised and sink when pressed, springing back.
+- **The fuel gauge** is a recessed track with a glossy fill, and the balance glows like lit price digits.
+- **Code digits** sit in recessed windows.
+- **The tab bar** is a floating pill with a raised chip behind the current tab, plus a short vibration on Android (iPhones don't allow it from websites).
+- **Switching tabs** crossfades in 160 ms (React `<ViewTransition>`).
+
+Shadows only (no extra blur), so long lists stay smooth. Reduced motion turns the movement off but keeps the depth. The rules are unlayered so they can refine Tailwind utilities.

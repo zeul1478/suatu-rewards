@@ -51,7 +51,7 @@ export function PointsCard({
   return (
     <section
       aria-labelledby="points-heading"
-      className="flex flex-col gap-5 rounded-[var(--radius-lg)] border border-line bg-raised p-5"
+      className="card flex flex-col gap-5 rounded-[var(--radius-lg)] border border-line bg-raised p-5"
     >
       <h2
         id="points-heading"

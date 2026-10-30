@@ -44,7 +44,7 @@ export default async function RewardsPage({ params }: PageProps<"/s/[storeSlug]/
             return (
               <li
                 key={reward.id}
-                className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-line bg-raised p-5"
+                className="card flex flex-col gap-4 rounded-[var(--radius-lg)] border border-line bg-raised p-5"
               >
                 <div className="flex items-center gap-3">
                   <Icon

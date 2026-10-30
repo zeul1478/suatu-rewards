@@ -22,7 +22,7 @@ export function OfferCard({
 }: OfferCardProps) {
   const Heading = headingLevel;
   return (
-    <article className="flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-line bg-raised">
+    <article className="card flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-line bg-raised">
       {imageUrl ? (
         // eslint-disable-next-line @next/next/no-img-element -- served by our own route, already sized when uploaded
         <img

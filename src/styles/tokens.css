@@ -27,12 +27,15 @@
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
+  --radius-xl: 22px;
 
   /* Touch targets: WCAG minimum is 24px, we aim for 44px */
   --target-min: 44px;
 
   /* Motion: the "points added" fill is 300ms (spec §9) */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* A small overshoot, like a physical button springing back */
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
   --duration-fast: 120ms;
   --duration-fill: 300ms;
 }
@@ -69,6 +72,12 @@
   --glass-secondary-border: color-mix(in srgb, var(--brand-dark-text) 40%, transparent);
   --glass-highlight: rgba(255, 255, 255, 0.12);
   --glass-text: var(--brand-dark-text);
+
+  /* Depth in the customer app (depth.css): in the dark, a lit top edge and a deep shadow. */
+  --shadow-color: rgba(0, 0, 0, 0.55);
+  --shadow-soft: rgba(0, 0, 0, 0.3);
+  --bevel-top: rgba(255, 255, 255, 0.09);
+  --sheen: rgba(255, 255, 255, 0.05);
 }
 
 /* ── Light ────────────────────────────────────────────────────────────── */
@@ -99,6 +108,10 @@
   --glass-secondary-border: color-mix(in srgb, var(--brand-light-text) 45%, transparent);
   --glass-highlight: rgba(255, 255, 255, 0.6);
   --glass-text: var(--brand-light-text);
+  --shadow-color: color-mix(in srgb, var(--brand-light-text) 24%, transparent);
+  --shadow-soft: color-mix(in srgb, var(--brand-light-text) 10%, transparent);
+  --bevel-top: rgba(255, 255, 255, 0.9);
+  --sheen: rgba(255, 255, 255, 0.5);
 }
 
 @media (prefers-color-scheme: light) {
@@ -127,5 +140,9 @@
     --glass-secondary-border: color-mix(in srgb, var(--brand-light-text) 45%, transparent);
     --glass-highlight: rgba(255, 255, 255, 0.6);
     --glass-text: var(--brand-light-text);
+    --shadow-color: color-mix(in srgb, var(--brand-light-text) 24%, transparent);
+    --shadow-soft: color-mix(in srgb, var(--brand-light-text) 10%, transparent);
+    --bevel-top: rgba(255, 255, 255, 0.9);
+    --sheen: rgba(255, 255, 255, 0.5);
   }
 }
