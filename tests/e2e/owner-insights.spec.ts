@@ -4,8 +4,8 @@ import { closeDb, createScratchStore } from "../support/db";
 import { expect, openDashboard, test } from "./support/fixtures";
 
 /*
- * Stopping points cheating at the counter (DECISIONS D78). Each test changes store-wide
- * settings, so it uses a scratch store of its own.
+ * Stopping points cheating at the counter (DECISIONS D78) and the Overview's insights (D79).
+ * Each test changes store-wide settings or counts, so it uses a scratch store of its own.
  */
 
 test.afterAll(closeDb);
@@ -87,4 +87,21 @@ test("Overview: unusual activity lists a number with many visits in a day", asyn
   await expect(card.getByText("got 3 visits in one day.")).toBeVisible();
   await card.getByRole("link", { name: `••• ${phone.e164.slice(-4)}` }).click();
   await expect(page).toHaveURL(/\/customers\/[0-9a-f-]{36}$/);
+});
+
+test("Overview: the 30-day chart, come-back rate and visits per cashier", async ({ page }) => {
+  const store = await createScratchStore();
+  await openDashboard(page, store.slug);
+  await page.goto(`/staff/${store.slug}`);
+  const phone = testPhone().typed;
+  await addVisit(page, phone);
+  await expect(page.getByTestId("visit-banner")).toContainText("5 / 100");
+
+  await page.goto(`/dashboard/${store.slug}`);
+  await expect(page.getByRole("img", { name: /^1 visit in the last 30 days/ })).toBeVisible();
+  await page.getByText("Show as a table").click();
+  await expect(page.getByRole("row")).toHaveCount(31); // header + 30 days
+  const cashiers = page.getByRole("region", { name: "Visits per cashier, last 7 days" });
+  await expect(cashiers.getByText("Manager (dev)")).toBeVisible();
+  await expect(cashiers.getByText("1 visit", { exact: true })).toBeVisible();
 });

@@ -94,3 +94,40 @@ export async function getUnusualActivity(store: Store): Promise<UnusualActivity>
     })),
   };
 }
+
+export type Insights = {
+  /** Visits per day for the last 30 days, oldest first ("2026-10-01"). */
+  daily: { day: string; visits: number }[];
+  /** Customers whose last visit was 30–60, 60–90 and 90+ days ago. */
+  lapsed30: number;
+  lapsed60: number;
+  lapsed90: number;
+  /** Customers with enough points for a reward who haven't used it. */
+  rewardsWaiting: number;
+  /** Visits per cashier in the last 7 days, busiest first. */
+  cashiers: { name: string; visits: number }[];
+};
+
+/** "Is the program working?" numbers (D79): see dashboard_insights in the migrations. */
+export async function getInsights(store: Store): Promise<Insights> {
+  const { data, error } = await supabaseAdmin().rpc("dashboard_insights", {
+    p_store_id: store.id,
+  });
+  if (error) throw new Error(`dashboard_insights failed: ${error.message}`);
+  const row = data as {
+    daily: { day: string; visits: number }[];
+    lapsed_30: number;
+    lapsed_60: number;
+    lapsed_90: number;
+    rewards_waiting: number;
+    cashiers: { name: string; visits: number }[];
+  };
+  return {
+    daily: row.daily,
+    lapsed30: row.lapsed_30,
+    lapsed60: row.lapsed_60,
+    lapsed90: row.lapsed_90,
+    rewardsWaiting: row.rewards_waiting,
+    cashiers: row.cashiers,
+  };
+}

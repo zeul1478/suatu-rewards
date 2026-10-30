@@ -377,3 +377,16 @@ The research's top complaint from store owners is staff typing their own number 
 - **Overview → Unusual activity (last 7 days):** numbers credited 3+ times on one day (up to 10, linked to the customer), and cashiers with 10+ entries where more than half went to the same three numbers. Counted in Postgres (`dashboard_unusual_activity`), like the other overview numbers (D60).
 
 The research also suggested texting a receipt after each credit, so wrong credits get noticed. That needs SMS, which the user postponed to just before launch.
+
+### D79. Owner insights: is the program working?
+
+Every competitor gives owners more than counts. The Overview now also shows, all counted in Postgres (`dashboard_insights`, D60):
+
+- **Chart:** visits per day for the last 30 days. Thin bars in the brand colour, plain HTML and CSS with no chart library. Hover shows the day; screen readers get a one-line summary; "Show as a table" lists the numbers.
+- **Come back:** the share of the last 30 days' customers who came on 2+ days. It replaces the "Returning" count, whose number now appears in the detail line.
+- **Visits each:** average visits per customer.
+- **Who hasn't been back:** customers last seen 30–60, 60–90 and 90+ days ago.
+- **Rewards waiting:** a reminder when customers have enough points but haven't used their reward. The research found unused rewards are the main sign a program isn't working.
+- **Visits per cashier:** for the last 7 days.
+
+Voided visits never count. Sending "we miss you" offers to the lapsed groups is Phase 4.

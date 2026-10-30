@@ -3,10 +3,11 @@ import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { PageTitle } from "@/components/dashboard/PageTitle";
 import { StatTile } from "@/components/dashboard/StatTile";
+import { VisitsChart } from "@/components/dashboard/VisitsChart";
 import { Icon } from "@/components/ui/icons/Icon";
 import { storeUrl } from "@/lib/storeUrl";
 import { requireManager } from "@/server/dashboard/access";
-import { getOverview, getUnusualActivity } from "@/server/dashboard/overview";
+import { getInsights, getOverview, getUnusualActivity } from "@/server/dashboard/overview";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("dashboard.overview");
@@ -14,17 +15,39 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * Overview (§11): members, visits today / 7 / 30 days, returning customers, rewards redeemed, and
+ * Overview (§11): visits today / 7 / 30 days with a 30-day chart, customers (members, coming back,
+ * visits each, rewards), who hasn't been back and rewards waiting (D79), cashiers this week, and
  * unusual activity at the counter (D78).
  */
 export default async function OverviewPage({ params }: PageProps<"/dashboard/[storeSlug]">) {
   const { storeSlug } = await params;
   const { store } = await requireManager(storeSlug);
-  const [overview, unusual, t] = await Promise.all([
+  const [overview, unusual, insights, t] = await Promise.all([
     getOverview(store),
     getUnusualActivity(store),
+    getInsights(store),
     getTranslations("dashboard.overview"),
   ]);
+  const dayFormat = new Intl.DateTimeFormat(store.locale, {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC", // the days are already the store's calendar days
+  });
+  const formatDay = (day: string) => dayFormat.format(new Date(`${day}T00:00:00Z`));
+  const busiest = insights.daily.reduce(
+    (best, d) => (d.visits > best.visits ? d : best),
+    insights.daily[0] ?? { day: "", visits: 0 },
+  );
+  const comeBackRate =
+    overview.visitors30Days > 0
+      ? `${Math.round((overview.returning30Days / overview.visitors30Days) * 100)}%`
+      : "—";
+  const visitsEach =
+    overview.visitors30Days > 0
+      ? (overview.visits30Days / overview.visitors30Days).toLocaleString(store.locale, {
+          maximumFractionDigits: 1,
+        })
+      : "—";
   const anythingUnusual = unusual.numbers.length > 0 || unusual.cashiers.length > 0;
 
   return (
@@ -62,6 +85,26 @@ export default async function OverviewPage({ params }: PageProps<"/dashboard/[st
           <StatTile label={t("last7")} value={overview.visits7Days} />
           <StatTile label={t("last30")} value={overview.visits30Days} />
         </dl>
+        <div className="rounded-[var(--radius-lg)] border border-line bg-raised p-4">
+          <VisitsChart
+            days={insights.daily}
+            formatDay={formatDay}
+            title={t("chartTitle")}
+            summary={
+              busiest.visits > 0
+                ? t("chartSummary", {
+                    total: overview.visits30Days,
+                    day: formatDay(busiest.day),
+                    most: busiest.visits,
+                  })
+                : t("chartEmpty")
+            }
+            tableLabel={t("chartTable")}
+            dayHeader={t("chartDay")}
+            visitsHeader={t("chartVisits")}
+            barLabel={(visits) => t("chartBar", { visits })}
+          />
+        </div>
       </section>
 
       <section aria-labelledby="customers-heading" className="flex flex-col gap-3">
@@ -78,10 +121,14 @@ export default async function OverviewPage({ params }: PageProps<"/dashboard/[st
             detail={t("membersDetail", { signedUp: overview.signedUp })}
           />
           <StatTile
-            label={t("returning")}
-            value={overview.returning30Days}
-            detail={t("returningDetail", { visitors: overview.visitors30Days })}
+            label={t("comeBack")}
+            value={comeBackRate}
+            detail={t("comeBackDetail", {
+              returning: overview.returning30Days,
+              visitors: overview.visitors30Days,
+            })}
           />
+          <StatTile label={t("visitsEach")} value={visitsEach} detail={t("visitsEachDetail")} />
           <StatTile
             label={t("redeemed")}
             value={overview.redeemedTotal}
@@ -89,6 +136,48 @@ export default async function OverviewPage({ params }: PageProps<"/dashboard/[st
           />
         </dl>
       </section>
+
+      <section aria-labelledby="back-heading" className="flex flex-col gap-3">
+        <h2
+          id="back-heading"
+          className="font-display text-xl font-semibold tracking-wide uppercase"
+        >
+          {t("backTitle")}
+        </h2>
+        <p className="text-ink-muted">{t("backIntro")}</p>
+        <dl className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-3">
+          <StatTile label={t("lapsed30")} value={insights.lapsed30} />
+          <StatTile label={t("lapsed60")} value={insights.lapsed60} />
+          <StatTile label={t("lapsed90")} value={insights.lapsed90} />
+        </dl>
+        {insights.rewardsWaiting > 0 ? (
+          <p className="flex items-start gap-2 rounded-[var(--radius-md)] bg-sunken px-4 py-3">
+            <Icon name="gift" size={22} className="mt-0.5 shrink-0 text-accent" />
+            <span>{t("rewardsWaiting", { count: insights.rewardsWaiting })}</span>
+          </p>
+        ) : null}
+      </section>
+
+      {insights.cashiers.length > 0 ? (
+        <section aria-labelledby="cashiers-heading" className="flex flex-col gap-3">
+          <h2
+            id="cashiers-heading"
+            className="font-display text-xl font-semibold tracking-wide uppercase"
+          >
+            {t("cashiersTitle")}
+          </h2>
+          <ul className="flex flex-col divide-y divide-line rounded-[var(--radius-lg)] border border-line bg-raised">
+            {insights.cashiers.map((c) => (
+              <li key={c.name} className="flex items-baseline justify-between gap-3 px-4 py-3">
+                <span className="font-semibold">{c.name}</span>
+                <span className="price-digits text-lg">
+                  {t("cashierVisits", { visits: c.visits })}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <section
         aria-labelledby="unusual-heading"

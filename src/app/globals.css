@@ -4,6 +4,7 @@
 @import "../styles/forms.css";
 @import "../styles/points.css";
 @import "../styles/depth.css";
+@import "../styles/charts.css";
 
 @theme inline {
   --color-page: var(--surface-page);

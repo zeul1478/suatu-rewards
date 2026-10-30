@@ -887,6 +887,7 @@ export type Database = {
         };
         Returns: string;
       };
+      dashboard_insights: { Args: { p_store_id: string }; Returns: Json };
       dashboard_overview: { Args: { p_store_id: string }; Returns: Json };
       dashboard_unusual_activity: { Args: { p_days?: number; p_store_id: string }; Returns: Json };
       earn_points: {
