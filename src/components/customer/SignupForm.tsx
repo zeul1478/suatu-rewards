@@ -13,6 +13,7 @@ import { TextField } from "@/components/ui/TextField";
 import { useFocusFirstError } from "@/components/ui/useFocusFirstError";
 import { useFormText } from "@/components/ui/useFormText";
 import { idleForm, type FormState } from "@/lib/forms";
+import { latestAdultBirthday } from "@/lib/validation/customer";
 
 type LegalDoc = { title: string; html: string };
 
@@ -102,6 +103,18 @@ export function SignupForm({ action, storeName, loginHref, legal }: SignupFormPr
         enterKeyHint="next"
         required
         defaultValue={values.email}
+      />
+      {/* Optional, so no "*"; the phone's own date picker (calendar and year). */}
+      <TextField
+        name="birthday"
+        label={t("birthday")}
+        hint={t("birthdayHint")}
+        error={text.fieldError("birthday")}
+        type="date"
+        autoComplete="bday"
+        min="1900-01-01"
+        max={latestAdultBirthday()}
+        defaultValue={values.birthday}
       />
       <PasswordField
         name="password"

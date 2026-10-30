@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { type ReactNode, useRef, useState } from "react";
 import { Icon } from "@/components/ui/icons/Icon";
 import { SubmitButton } from "@/components/ui/SubmitButton";
 import type { CustomerStatus } from "@/server/customers/status";
@@ -15,10 +15,12 @@ type PointsCardProps = {
   redeemHref: string;
   pointsPerVisit: number;
   redeemAction: (rewardId: string) => Promise<void>;
+  /** The brand's mascot (Suatu: Bambi the deer), hopping in when a reward is unlocked. */
+  mascot?: ReactNode;
 };
 
 /**
- * The customer's balance as a fuel-price sign plus fuel gauge, kept live by polling (§0 step 5).
+ * The customer's balance inside a round fuel gauge (E to F), kept live by polling (§0 step 5).
  * Fixed-width digits and reserved space mean the layout doesn't move when the number changes.
  */
 export function PointsCard({
@@ -27,6 +29,7 @@ export function PointsCard({
   redeemHref,
   pointsPerVisit,
   redeemAction,
+  mascot,
 }: PointsCardProps) {
   const t = useTranslations("home");
   const [status, setStatus] = useState(initialStatus);
@@ -61,34 +64,47 @@ export function PointsCard({
         {t("yourPoints")}
       </h2>
 
-      <p className="flex items-baseline gap-2" aria-live="polite" aria-atomic="true">
-        <span
-          key={bumps}
-          data-testid="points-balance"
-          className={`price-digits text-7xl leading-none text-accent ${bumps ? "points-bump" : ""}`}
-        >
-          {progress.balance}
-        </span>
+      {/* The dial with the balance in its open bottom, like a car's fuel gauge. */}
+      <div className="mx-auto flex w-full max-w-[18rem] flex-col items-center">
         {target ? (
-          <span className="price-digits text-3xl text-ink-muted">
-            <span aria-hidden="true">/ </span>
-            <span className="sr-only">{t("outOf")} </span>
-            {target.costPoints}
-          </span>
+          <FuelGauge percent={progress.percent} label={t("gaugeLabel", { reward: target.name })} />
         ) : null}
-      </p>
-
-      {target ? (
-        <FuelGauge percent={progress.percent} label={t("gaugeLabel", { reward: target.name })} />
-      ) : null}
+        <p
+          className={`flex flex-col items-center ${target ? "-mt-[18%]" : ""}`}
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <span
+            key={bumps}
+            data-testid="points-balance"
+            className={`price-digits text-6xl leading-none text-accent ${bumps ? "points-bump" : ""}`}
+          >
+            {progress.balance}
+          </span>
+          {target ? (
+            <span className="price-digits text-2xl text-ink-muted">
+              <span aria-hidden="true">/ </span>
+              <span className="sr-only">{t("outOf")} </span>
+              {target.costPoints}
+            </span>
+          ) : null}
+        </p>
+      </div>
 
       <div className="min-h-[var(--target-min)]">
         {progress.unlocked && target ? (
           <div className="flex flex-col gap-3">
-            <p className="flex items-center gap-2 font-display text-2xl font-bold text-accent">
-              <Icon name="coffee" size={28} />
-              {t("unlocked", { reward: target.name })}
-            </p>
+            <div className="flex items-center gap-3">
+              {mascot ? (
+                <span aria-hidden="true" className="mascot-hop shrink-0">
+                  {mascot}
+                </span>
+              ) : null}
+              <p className="flex items-center gap-2 font-display text-2xl font-bold text-accent">
+                <Icon name="coffee" size={28} />
+                {t("unlocked", { reward: target.name })}
+              </p>
+            </div>
             {pendingRedemption ? (
               <Link href={redeemHref} className="glass glass-primary glass-large w-full">
                 {t("showCode")}

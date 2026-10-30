@@ -9,6 +9,7 @@ import { AddVisitForm } from "@/components/staff/AddVisitForm";
 import { IdleLogout } from "@/components/staff/IdleLogout";
 import { RecentEntries } from "@/components/staff/RecentEntries";
 import { RedeemCodeForm } from "@/components/staff/RedeemCodeForm";
+import { AppHeader } from "@/components/ui/AppHeader";
 import { Icon } from "@/components/ui/icons/Icon";
 import { LogoutButton } from "@/components/ui/LogoutButton";
 import { storeUrl } from "@/lib/storeUrl";
@@ -44,8 +45,8 @@ export default async function StaffPage({ params }: PageProps<"/staff/[storeSlug
         logout={staffLogoutAction.bind(null, store.slug, "idle")}
       />
 
-      <header className="screen-gutter flex flex-wrap items-center justify-between gap-3 border-b border-line bg-raised pt-[max(var(--space-3),env(safe-area-inset-top))] pb-3">
-        <div className="flex flex-col gap-1">
+      <AppHeader
+        logo={
           <BrandLogo
             brand={brandFor(store.slug)}
             kind="wordmark"
@@ -53,25 +54,24 @@ export default async function StaffPage({ params }: PageProps<"/staff/[storeSlug
             height={26}
             priority
           />
-          <p className="flex items-center gap-1.5 text-sm text-ink-muted">
-            <Icon name="user" size={20} />
-            {t("signedInAs", { name: staff.displayName })}
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {staff.role === "manager" ? (
-            <Link href={storeUrl(store.slug, "", "dashboard")} className="glass">
-              <Icon name="chart" size={22} />
-              {t("dashboardLink")}
-            </Link>
-          ) : null}
-          <LogoutButton
-            action={staffLogoutAction.bind(null, store.slug, undefined)}
-            label={tCommon("logOut")}
-            pendingLabel={tCommon("loggingOut")}
-          />
-        </div>
-      </header>
+        }
+        signedInAs={t("signedInAs", { name: staff.displayName })}
+        actions={
+          <>
+            {staff.role === "manager" ? (
+              <Link href={storeUrl(store.slug, "", "dashboard")} className="glass">
+                <Icon name="chart" size={22} />
+                {t("dashboardLink")}
+              </Link>
+            ) : null}
+            <LogoutButton
+              action={staffLogoutAction.bind(null, store.slug, undefined)}
+              label={tCommon("logOut")}
+              pendingLabel={tCommon("loggingOut")}
+            />
+          </>
+        }
+      />
 
       <main className="screen-gutter mx-auto grid w-full max-w-6xl flex-1 content-start gap-6 py-6 md:grid-cols-[3fr_2fr] md:gap-8">
         <section

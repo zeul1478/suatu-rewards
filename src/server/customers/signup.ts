@@ -88,6 +88,16 @@ export async function signUpCustomer(
     throw new Error(`Customer registration failed for ${maskPhone(input.phone)}`);
   }
 
+  if (input.birthday) {
+    // Optional and not part of the account itself: if saving it fails, the customer can add
+    // it on Account, so sign-up carries on.
+    const { error } = await admin
+      .from("customers")
+      .update({ birthday: input.birthday })
+      .eq("id", customerId);
+    if (error) console.error("Birthday not saved at sign-up", { customerId, error: error.code });
+  }
+
   const supabase = await supabaseForCustomer();
   const { error: signInError } = await supabase.auth.signInWithPassword({
     phone: input.phone,

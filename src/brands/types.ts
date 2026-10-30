@@ -36,6 +36,21 @@ export type LogoFiles = {
   displayScale?: number;
 };
 
+/** A place the customer can visit (shown on Home), with what the brand's own site says. */
+export type Place = {
+  /** Opening hours as written by the store, e.g. "06:30–23:00". */
+  hours: string;
+  address: string;
+  /** What to search for in Google Maps / Waze. */
+  mapsQuery: string;
+  /** International format, e.g. "+40770781826". */
+  phone: string;
+  /** Same number on WhatsApp, if the store uses it. */
+  whatsapp?: boolean;
+  /** A few things to try there, in the store's own words. */
+  highlights?: string[];
+};
+
 export type Brand = {
   slug: string;
   name: string;
@@ -56,4 +71,6 @@ export type Brand = {
     maskable512: string;
   };
   socialImage: string;
+  /** Optional "Visit us" cards on the customer's Home: the station and a sister restaurant. */
+  places?: { station?: Place; restaurant?: Place };
 };

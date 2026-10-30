@@ -7,7 +7,13 @@ import type { CurrentCustomer } from "./currentCustomer";
 import { sendEmailVerification } from "./emailVerification";
 import { redactPii } from "@/lib/mask";
 
-export type ProfileInput = { firstName: string; lastName: string; email: string };
+export type ProfileInput = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  /** "YYYY-MM-DD", or null when not given. */
+  birthday: string | null;
+};
 
 export type ProfileResult =
   { ok: true; emailChanged: boolean } | { ok: false; error: "emailTaken" };
@@ -16,6 +22,7 @@ export type ProfileResult =
  * Edit name and email (spec §4.4). A new email must be unique, is marked unconfirmed, and gets
  * a confirmation link; the login (Supabase Auth) gets the new email too, so password resets go
  * there. The phone number can't be changed here: it identifies the customer at the counter.
+ * The optional birthday (for birthday rewards) is saved with the rest.
  */
 export async function updateProfile(input: {
   store: Store;
@@ -52,6 +59,7 @@ export async function updateProfile(input: {
       first_name: profile.firstName,
       last_name: profile.lastName,
       email: profile.email,
+      birthday: profile.birthday,
       ...(emailChanged ? { email_verified_at: null } : {}),
     })
     .eq("id", customer.id);
@@ -65,7 +73,10 @@ export async function updateProfile(input: {
     actorType: "customer",
     actorId: customer.id,
     action: "customer.profile_updated",
-    details: { email_changed: emailChanged },
+    details: {
+      email_changed: emailChanged,
+      birthday_changed: profile.birthday !== customer.birthday,
+    },
   });
 
   if (emailChanged) {

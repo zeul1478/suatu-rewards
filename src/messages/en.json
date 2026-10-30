@@ -8,7 +8,8 @@
     "loggingOut": "Logging out…",
     "fixFields": "Please fix the highlighted fields.",
     "somethingWentWrong": "Something went wrong on our side. Please try again.",
-    "demoBanner": "Demo app — fictional data only"
+    "demoBanner": "Demo app — fictional data only",
+    "loading": "Loading…"
   },
   "errors": {
     "phone": {
@@ -135,6 +136,10 @@
     },
     "timezone": {
       "required": "Choose where the store is."
+    },
+    "birthday": {
+      "invalid": "Enter a real date, or leave it empty.",
+      "tooYoung": "This date says you're under 18. The program is for adults."
     }
   },
   "signup": {
@@ -159,7 +164,9 @@
     "createdButNotSignedIn": "Your account was created. Please log in.",
     "readTerms": "Read them first:",
     "accountDeleted": "Your account was deleted. You can create a new one any time.",
-    "tooMany": "Too many sign-ups from this network. Try again in {minutes, plural, one {# minute} other {# minutes}}."
+    "tooMany": "Too many sign-ups from this network. Try again in {minutes, plural, one {# minute} other {# minutes}}.",
+    "birthday": "Birthday",
+    "birthdayHint": "Optional — for birthday rewards."
   },
   "login": {
     "metaTitle": "Log in",
@@ -219,7 +226,16 @@
     "lastVisit": "Last visit: {date}",
     "noVisitsYet": "Give your phone number at the counter: {points} points every visit.",
     "offersTitle": "Offers",
-    "offerUntil": "Until {date}"
+    "offerUntil": "Until {date}",
+    "visitTitle": "Visit us",
+    "stationTitle": "Gas station",
+    "restaurantTitle": "Restaurant",
+    "openDaily": "Open daily {hours}",
+    "tryHere": "Try: {items}",
+    "directions": "Directions",
+    "waze": "Waze",
+    "call": "Call",
+    "whatsapp": "WhatsApp"
   },
   "account": {
     "metaTitle": "Account",
@@ -258,7 +274,9 @@
     "deleteExplain": "This erases your name, phone number and email, and logs you out everywhere. Your points can't be recovered. Points history stays only as anonymous numbers for the store's accounts.",
     "deletePassword": "Your password, to confirm",
     "deleteConfirm": "Delete my account for good",
-    "deleting": "Deleting…"
+    "deleting": "Deleting…",
+    "birthdayHint": "For birthday rewards.",
+    "birthdayPrompt": "Add your birthday to get a birthday reward."
   },
   "legal": {
     "programTerms": "Program Terms",

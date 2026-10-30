@@ -12,6 +12,8 @@ export type CurrentCustomer = {
   email: string;
   phoneE164: string;
   emailVerified: boolean;
+  /** "YYYY-MM-DD", or null when the customer hasn't given it (it's optional). */
+  birthday: string | null;
 };
 
 /**
@@ -28,7 +30,7 @@ export const getCurrentCustomer = cache(async (): Promise<CurrentCustomer | null
   // RLS: this client can only read the customer's own row.
   const { data } = await supabase
     .from("customers")
-    .select("id, first_name, last_name, email, phone_e164, email_verified_at")
+    .select("id, first_name, last_name, email, phone_e164, email_verified_at, birthday")
     .eq("auth_user_id", user.id)
     .eq("status", "active")
     .maybeSingle();
@@ -42,6 +44,7 @@ export const getCurrentCustomer = cache(async (): Promise<CurrentCustomer | null
     email: data.email,
     phoneE164: data.phone_e164,
     emailVerified: data.email_verified_at !== null,
+    birthday: data.birthday,
   };
 });
 

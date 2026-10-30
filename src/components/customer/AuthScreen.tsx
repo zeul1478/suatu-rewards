@@ -18,6 +18,7 @@ export function AuthScreen({ brand, title, intro, children }: AuthScreenProps) {
     <main className="screen-gutter mx-auto flex w-full max-w-md flex-col gap-6 pt-[max(var(--space-8),env(safe-area-inset-top))] pb-[var(--space-8)]">
       <header className="flex flex-col items-center gap-5 text-center">
         <BrandLogo brand={brand} kind="lockup" theme="system" height={64} priority />
+        <p className="-mt-2 font-display text-lg text-ink-muted italic">{brand.tagline}</p>
         <div className="lane-stripe self-stretch" aria-hidden="true" />
         <h1 className="font-display text-4xl leading-tight font-bold tracking-tight text-ink">
           {title}

@@ -85,6 +85,7 @@ export default async function AccountPage({ params }: PageProps<"/s/[storeSlug]/
             firstName: customer.firstName,
             lastName: customer.lastName,
             email: customer.email,
+            birthday: customer.birthday,
           }}
         />
       </AccountSection>

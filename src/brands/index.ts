@@ -39,4 +39,4 @@ function fontVar(key: FontKey): string {
   return `var(--font-${key})`;
 }
 
-export type { Brand } from "./types";
+export type { Brand, Place } from "./types";

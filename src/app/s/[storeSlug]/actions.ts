@@ -34,6 +34,7 @@ const SIGNUP_ECHO = [
   "firstName",
   "lastName",
   "email",
+  "birthday",
   "acceptTerms",
   "confirmAdult",
   "marketingEmail",
@@ -196,7 +197,7 @@ export async function updateProfileAction(
 ): Promise<FormState> {
   const store = await getStoreOr404(storeSlug);
   const customer = await requireCustomer(store.slug);
-  const values = safeValues(formData, ["firstName", "lastName", "email"]);
+  const values = safeValues(formData, ["firstName", "lastName", "email", "birthday"]);
   const parsed = profileSchema.safeParse(formDataObject(formData));
   if (!parsed.success) {
     return { status: "error", fieldErrors: fieldErrorsFrom(parsed.error), values };

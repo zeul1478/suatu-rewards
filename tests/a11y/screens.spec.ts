@@ -18,9 +18,12 @@ import {
  */
 
 async function checkScreen(page: Page) {
-  // Measure the settled screen, not a fade-in halfway through.
+  // Measure the settled screen, not a fade-in halfway through. An animation that is cancelled
+  // (the loading placeholder's pulse when the screen arrives) counts as settled.
   await page.evaluate(() =>
-    Promise.all(document.getAnimations().map((animation) => animation.finished)),
+    Promise.all(
+      document.getAnimations().map((animation) => animation.finished.catch(() => undefined)),
+    ),
   );
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

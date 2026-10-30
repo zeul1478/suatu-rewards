@@ -390,3 +390,32 @@ Every competitor gives owners more than counts. The Overview now also shows, all
 - **Visits per cashier:** for the last 7 days.
 
 Voided visits never count. Sending "we miss you" offers to the lapsed groups is Phase 4.
+
+### D80. Optional birthday, for birthday rewards
+
+Every competitor rewards birthdays (Phase 4). The app now asks for it, never requiring it:
+
+- **Sign-up:** "Birthday" with no `*` and a small "Optional — for birthday rewards." The phone's own date picker (wheels on iPhone, calendar with years on Android). Saved after the account is created; if that fails, sign-up still succeeds and the customer can add it later.
+- **Account → Your details:** the birthday can be added or changed. While it's empty, a ★ box says "Add your birthday to get a birthday reward."
+- **Rules:** a real date from 1900, and 18 or older (matching the sign-up checkbox). Only month and day will matter for the reward; the picker asks for the year anyway.
+- **Privacy:** erased with the other details when the account is deleted (`anonymize_customer`), included in "Download my data". The Privacy Policy must mention it before launch (legal review).
+
+The reward itself (what, and when it's given) is Phase 4.
+
+### D81. Suatu feel: round fuel gauge, raised logos, "Visit us", real rewards
+
+From the user's feedback on their phones and suatu.ro (the owner's complex next to the station):
+
+- **Points as a round fuel gauge:** a 240° dial from E to F with a tick per visit; the needle swings and the arc fills behind it; the balance sits in the dial's open bottom. Coordinates are rounded to hundredths so the server's HTML and the phone match (a hydration warning otherwise).
+- **Logos look raised:** every store logo gets a two-layer drop shadow in the theme's shadow colour (flat when printed).
+- **Tagline** "Un colțișor de rai la 30 minute de Cluj" under the logo on sign-up and login (from suatu.ro; kept in Romanian as a slogan).
+- **Bambi:** the deer from the logo hops in when a reward is unlocked (the complex's resident deer).
+- **"Visit us" on Home:** the gas station (06:30–23:00) and the restaurant (10:00–22:00, wood-fired pizza, ciorbă de burtă, goulash) with Directions, Waze, Call and WhatsApp. From an optional `places` in the brand file, so other stores show nothing until they fill it in. suatu.ro also says the station isn't open yet: confirm with the owner before launch.
+- **Rewards named after real products** (seed and local data): Free Suatu coffee (100), Snack and drink from our shop (150), Wood-fired pizza at our restaurant (300). Owners can rename them in Dashboard → Rewards.
+
+### D82. Screens: one header, menu in a box, instant taps
+
+- **Counter, dashboard and admin share one header** (`AppHeader`): the logo always centred; on a phone, logo, name and buttons stack; on wider screens, name left, logo centre, buttons right.
+- **Dashboard menu in a rounded box:** on a phone it swipes sideways inside the box only (the page stays still) and the current section scrolls into view.
+- **Tab bar no longer blinks** when switching tabs: only the page content takes part in the crossfade; the bar is its own still layer (a snapshot can't show its backdrop blur).
+- **Loading placeholder** (`loading.tsx` for signed-in customer screens): grey shapes appear the moment a tab is tapped. It also lets production prefetch the tabs (dynamic routes aren't prefetched without one).

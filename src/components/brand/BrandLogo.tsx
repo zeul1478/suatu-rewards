@@ -11,7 +11,7 @@ type BrandLogoProps = {
   className?: string;
 };
 
-/** The store's logo, exactly as drawn in its brand kit (never redrawn). */
+/** The store's logo, exactly as drawn in its brand kit (never redrawn), with a raised shadow. */
 export function BrandLogo({ brand, kind, theme, height, priority, className }: BrandLogoProps) {
   const { displayScale = 1, ...files } = brand.logo[kind];
   return (
@@ -21,7 +21,7 @@ export function BrandLogo({ brand, kind, theme, height, priority, className }: B
       theme={theme}
       alt={brand.name}
       priority={priority}
-      className={className}
+      className={`brand-logo ${className ?? ""}`}
     />
   );
 }

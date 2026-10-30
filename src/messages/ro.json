@@ -8,7 +8,8 @@
     "loggingOut": "Se iese din cont…",
     "fixFields": "Corectează câmpurile marcate.",
     "somethingWentWrong": "Ceva n-a mers bine la noi. Te rugăm să încerci din nou.",
-    "demoBanner": "Aplicație demo — doar date fictive"
+    "demoBanner": "Aplicație demo — doar date fictive",
+    "loading": "Se încarcă…"
   },
   "errors": {
     "phone": {
@@ -135,6 +136,10 @@
     },
     "timezone": {
       "required": "Alege unde se află magazinul."
+    },
+    "birthday": {
+      "invalid": "Introdu o dată reală sau lasă câmpul gol.",
+      "tooYoung": "Această dată arată că ai sub 18 ani. Programul este pentru adulți."
     }
   },
   "signup": {
@@ -159,7 +164,9 @@
     "createdButNotSignedIn": "Contul a fost creat. Te rugăm să intri în cont.",
     "readTerms": "Citește-i mai întâi:",
     "accountDeleted": "Contul tău a fost șters. Poți crea unul nou oricând.",
-    "tooMany": "Prea multe înscrieri din această rețea. Încearcă din nou peste {minutes, plural, one {# minut} few {# minute} other {# de minute}}."
+    "tooMany": "Prea multe înscrieri din această rețea. Încearcă din nou peste {minutes, plural, one {# minut} few {# minute} other {# de minute}}.",
+    "birthday": "Ziua de naștere",
+    "birthdayHint": "Opțional — pentru recompense de ziua ta."
   },
   "login": {
     "metaTitle": "Intră în cont",
@@ -219,7 +226,16 @@
     "lastVisit": "Ultima vizită: {date}",
     "noVisitsYet": "Spune-ți numărul de telefon la casă: {points} puncte la fiecare vizită.",
     "offersTitle": "Oferte",
-    "offerUntil": "Până la {date}"
+    "offerUntil": "Până la {date}",
+    "visitTitle": "Vizitează-ne",
+    "stationTitle": "Benzinărie",
+    "restaurantTitle": "Restaurant",
+    "openDaily": "Deschis zilnic {hours}",
+    "tryHere": "Încearcă: {items}",
+    "directions": "Traseu",
+    "waze": "Waze",
+    "call": "Sună",
+    "whatsapp": "WhatsApp"
   },
   "account": {
     "metaTitle": "Cont",
@@ -258,7 +274,9 @@
     "deleteExplain": "Îți șterge numele, numărul de telefon și emailul și te scoate din cont peste tot. Punctele nu mai pot fi recuperate. Istoricul punctelor rămâne doar ca cifre anonime pentru evidența magazinului.",
     "deletePassword": "Parola ta, pentru confirmare",
     "deleteConfirm": "Șterge contul definitiv",
-    "deleting": "Se șterge…"
+    "deleting": "Se șterge…",
+    "birthdayHint": "Pentru recompense de ziua ta.",
+    "birthdayPrompt": "Adaugă ziua ta de naștere ca să primești o recompensă de ziua ta."
   },
   "legal": {
     "programTerms": "Termenii programului",

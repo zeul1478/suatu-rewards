@@ -13,7 +13,10 @@ test.afterAll(closeDb);
 
 async function settle(page: Page) {
   await page.evaluate(() => document.fonts.ready);
-  await page.evaluate(() => Promise.all(document.getAnimations().map((a) => a.finished)));
+  // A cancelled animation (the loading placeholder's pulse) counts as finished.
+  await page.evaluate(() =>
+    Promise.all(document.getAnimations().map((a) => a.finished.catch(() => undefined))),
+  );
 }
 
 async function customerWithPoints(page: Page, visits: number) {

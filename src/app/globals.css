@@ -64,6 +64,19 @@
     letter-spacing: -0.01em;
   }
 
+  /* Store logos sit slightly raised: a tight shadow for the edge, a soft one for the lift.
+     Shadow colour follows the theme (tokens.css). Flat on paper (the printed counter sign). */
+  .brand-logo {
+    filter: drop-shadow(0 2px 1px var(--shadow-color)) drop-shadow(0 3px 2px var(--shadow-color))
+      drop-shadow(0 8px 10px var(--shadow-color));
+  }
+
+  @media print {
+    .brand-logo {
+      filter: none;
+    }
+  }
+
   /* Brand icons keep a 2px line at every size (icons README). */
   .icon * {
     vector-effect: non-scaling-stroke;

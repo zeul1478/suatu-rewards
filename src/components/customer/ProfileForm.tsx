@@ -8,20 +8,24 @@ import { TextField } from "@/components/ui/TextField";
 import { useFocusFirstError } from "@/components/ui/useFocusFirstError";
 import { useFormText } from "@/components/ui/useFormText";
 import { idleForm, type FormState } from "@/lib/forms";
+import { latestAdultBirthday } from "@/lib/validation/customer";
 
 type ProfileFormProps = {
   action: (state: FormState, formData: FormData) => Promise<FormState>;
-  current: { firstName: string; lastName: string; email: string };
+  current: { firstName: string; lastName: string; email: string; birthday: string | null };
 };
 
-/** Edit name and email. The phone number isn't editable: it identifies the customer at the counter. */
+/**
+ * Edit name, email and the optional birthday. The phone number isn't editable: it identifies the
+ * customer at the counter. A missing birthday gets a ★ prompt (birthday rewards).
+ */
 export function ProfileForm({ action, current }: ProfileFormProps) {
   const t = useTranslations("account");
   const tSignup = useTranslations("signup");
   const [state, formAction] = useActionState(action, idleForm);
   const text = useFormText(state);
   const formRef = useFocusFirstError(state.status, state);
-  const values = state.values ?? current;
+  const values = state.values ?? { ...current, birthday: current.birthday ?? "" };
 
   return (
     <form
@@ -65,6 +69,25 @@ export function ProfileForm({ action, current }: ProfileFormProps) {
         autoCapitalize="off"
         required
         defaultValue={values.email}
+      />
+      {current.birthday ? null : (
+        <p className="flex items-start gap-2 rounded-[var(--radius-md)] border border-accent bg-sunken px-4 py-3 font-semibold text-ink">
+          <span aria-hidden="true" className="text-accent">
+            ★
+          </span>
+          {t("birthdayPrompt")}
+        </p>
+      )}
+      <TextField
+        name="birthday"
+        label={tSignup("birthday")}
+        hint={t("birthdayHint")}
+        error={text.fieldError("birthday")}
+        type="date"
+        autoComplete="bday"
+        min="1900-01-01"
+        max={latestAdultBirthday()}
+        defaultValue={values.birthday}
       />
       <SubmitButton icon="check" variant="secondary" pendingLabel={t("saving")}>
         {t("saveDetails")}

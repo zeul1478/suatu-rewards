@@ -199,6 +199,7 @@ export type Database = {
       customers: {
         Row: {
           auth_user_id: string | null;
+          birthday: string | null;
           created_at: string;
           deleted_at: string | null;
           email: string | null;
@@ -214,6 +215,7 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           auth_user_id?: string | null;
+          birthday?: string | null;
           created_at?: string;
           deleted_at?: string | null;
           email?: string | null;
@@ -228,6 +230,7 @@ export type Database = {
         };
         Update: {
           auth_user_id?: string | null;
+          birthday?: string | null;
           created_at?: string;
           deleted_at?: string | null;
           email?: string | null;
