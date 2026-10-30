@@ -1,5 +1,7 @@
-# Every pull request and every push to main runs the same checks as the laptop
-# (docs/TESTING.md). Each job starts its own throwaway Supabase inside GitHub's runner, so CI
+# Every pull request and every push to main runs the quick checks: no secrets, lint, types,
+# formatting, unit and database tests. The 9-device browser tests and the production build with
+# Lighthouse run only when started by hand (Actions → CI → Run workflow), to stay inside the
+# free Actions minutes; day to day they run on the laptop with `pnpm test:all` (docs/TESTING.md). Each job starts its own throwaway Supabase inside GitHub's runner, so CI
 # never needs or sees a real key, password or customer. Branch protection requires
 # "CI passed", the last job, before anything can merge into main.
 name: CI
@@ -42,12 +44,11 @@ jobs:
               - '!**/*.md'
               - '!docs/**'
               - '!legal/**'
-      # Pull requests (and manual runs) test all 9 devices before merging. A push to main is
-      # code that already passed its pull request, so it re-checks on Desktop Chrome only.
-      # Safari's engine is heavy on Linux: one browser at a time, or the dev server starves.
+      # A manual run tests all 9 devices (the browser jobs only run then). Safari's engine is
+      # heavy on Linux: one browser at a time, or the dev server starves.
       - id: devices
         env:
-          FULL: ${{ github.event_name != 'push' }}
+          FULL: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           if [ "$FULL" = "true" ]; then
             devices=$(jq -c . <<'JSON'
@@ -121,7 +122,7 @@ jobs:
   e2e:
     name: Browser tests · ${{ matrix.project }}
     needs: [changes, quality]
-    if: needs.changes.outputs.app == 'true'
+    if: needs.changes.outputs.app == 'true' && github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
@@ -150,7 +151,7 @@ jobs:
   production:
     name: Production build, guards and Lighthouse
     needs: [changes, quality]
-    if: needs.changes.outputs.app == 'true'
+    if: needs.changes.outputs.app == 'true' && github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -172,7 +173,7 @@ jobs:
           retention-days: 7
 
   # The one check branch protection requires: green only when every job above passed (or was
-  # skipped because only docs changed).
+  # skipped: only docs changed, or the browser and Lighthouse jobs on an automatic run).
   ci-passed:
     name: CI passed
     if: always()
