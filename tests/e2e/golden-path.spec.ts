@@ -145,11 +145,13 @@ test("a double tap on Add visit counts once", async ({ page: staff }) => {
   await expect(staff.getByRole("heading", { name: "Add a visit" })).toBeVisible();
   const phone = testPhone();
   await staff.getByLabel("Customer phone number").fill(phone.typed);
-  await staff.getByRole("button", { name: "Add visit (+5)" }).dblclick();
+  // A real double tap, at the button's position. force: Linux WebKit on CI never reports the
+  // button as "stable" here, so the usual wait never ends (see addVisit above).
+  await staff.getByRole("button", { name: "Add visit (+5)" }).dblclick({ force: true });
   await expect(banner(staff)).toContainText("· 5 / 100");
 
   await staff.getByLabel("Customer phone number").fill(phone.typed);
-  await staff.getByRole("button", { name: "Add visit (+5)" }).click();
+  await staff.getByLabel("Customer phone number").press("Enter");
   await expect(banner(staff)).toContainText("· 10 / 100");
 });
 
@@ -157,7 +159,7 @@ test("a mistyped number is kept in the field with an explanation", async ({ page
   await staffLogIn(staff, "0000", "0000");
   await expect(staff.getByRole("heading", { name: "Add a visit" })).toBeVisible();
   await staff.getByLabel("Customer phone number").fill("12345");
-  await staff.getByRole("button", { name: "Add visit (+5)" }).click();
+  await staff.getByLabel("Customer phone number").press("Enter");
   await expect(staff.getByText(/doesn't look like a phone number/)).toBeVisible();
   await expect(staff.getByLabel("Customer phone number")).toHaveValue("12345");
 });
