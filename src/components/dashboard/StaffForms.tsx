@@ -176,3 +176,62 @@ export function ResetStaffPasswordForm({
     </details>
   );
 }
+
+/** A staff member's own phone number: the counter won't credit it (D78). Empty removes it. */
+export function StaffPhoneForm({
+  action,
+  name,
+  phone,
+  idPrefix,
+}: {
+  action: FormAction;
+  name: string;
+  /** Masked number on file, or null. */
+  phone: string | null;
+  idPrefix: string;
+}) {
+  const t = useTranslations("dashboard.staff");
+  const [state, formAction] = useActionState(action, idleForm);
+  const text = useFormText(state);
+  const formRef = useFocusFirstError(state.status, state);
+
+  return (
+    // Stays open after saving, so the confirmation is seen.
+    <details className="group" open={state.status !== "idle" || undefined}>
+      <summary className="flex min-h-[var(--target-min)] w-fit cursor-pointer list-none items-center gap-2 font-semibold text-accent">
+        <Icon name="phone" size={20} />
+        {phone ? t("phoneOnFile", { name, phone }) : t("phoneTitle", { name })}
+      </summary>
+      <form
+        suppressHydrationWarning
+        ref={formRef}
+        action={formAction}
+        noValidate
+        className="mt-2 flex flex-col gap-3"
+      >
+        {state.status === "success" ? (
+          <FormAlert tone="success">
+            {state.formErrorValues?.removed
+              ? t("phoneRemoved", { name })
+              : t("phoneSaved", { name })}
+          </FormAlert>
+        ) : null}
+        {text.formError ? <FormAlert tone="error">{text.formError}</FormAlert> : null}
+        <TextField
+          idPrefix={idPrefix}
+          name="phone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="off"
+          label={t("phoneLabel")}
+          hint={t("phoneHint")}
+          error={text.fieldError("phone")}
+          defaultValue={state.status === "error" ? state.values?.phone : undefined}
+        />
+        <SubmitButton variant="secondary" pendingLabel={t("saving")}>
+          {t("phoneSave")}
+        </SubmitButton>
+      </form>
+    </details>
+  );
+}

@@ -367,3 +367,13 @@ On the user's request the customer app (only; the counter, dashboard and admin s
 - **Switching tabs** crossfades in 160 ms (React `<ViewTransition>`).
 
 Shadows only (no extra blur), so long lists stay smooth. Reduced motion turns the movement off but keeps the depth. The rules are unlayered so they can refine Tailwind utilities.
+
+### D78. Stopping points cheating at the counter
+
+The research's top complaint from store owners is staff typing their own number on other customers' purchases (one Toast restaurant found an account with ~50,000 points). The counter still never asks for proof, so the defences are limits and visibility, all off until the owner sets them:
+
+- **Settings → Limits at the counter.** "Most visits per customer per day" (1–50) and "Minutes between two visits of the same customer" (1–1440). Leave a box empty for no limit, which is the default, so §0 step 6 still works out of the box. `stores.daily_earn_cap` counted points, which breaks when points per visit change, so it became `max_visits_per_day`. Voided visits don't count towards either limit. The counter says why a visit was refused, and for the time limit, when the next one counts.
+- **A staff member's own phone number** (Staff page, optional; masked everywhere, never in the audit log). The counter refuses to credit it while that person is active, whoever is at the register.
+- **Overview → Unusual activity (last 7 days):** numbers credited 3+ times on one day (up to 10, linked to the customer), and cashiers with 10+ entries where more than half went to the same three numbers. Counted in Postgres (`dashboard_unusual_activity`), like the other overview numbers (D60).
+
+The research also suggested texting a receipt after each credit, so wrong credits get noticed. That needs SMS, which the user postponed to just before launch.

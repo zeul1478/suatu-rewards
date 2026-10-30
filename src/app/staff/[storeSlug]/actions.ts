@@ -106,6 +106,8 @@ export type AddVisitState = {
   /** Idempotency key for the next submission; a fresh one after every success (§0). */
   nextKey: string;
   error?: string;
+  /** Numbers the error message needs, e.g. { minutes: 12 }. */
+  errorValues?: Record<string, number>;
   /** What was typed, kept in the field after an error. */
   phone?: string;
   banner?: VisitBanner;
@@ -129,10 +131,17 @@ export async function addVisitAction(
 
   const result = await addVisit({ store, staff, phone, idempotencyKey });
   if (!result.ok) {
+    const error = {
+      phoneInvalid: "errors.phone.invalid",
+      dailyCapReached: "staff.dailyCapReached",
+      staffOwnNumber: "staff.staffOwnNumber",
+      tooSoon: "staff.tooSoon",
+    }[result.error];
     return {
       status: "error",
       nextKey: previous.nextKey,
-      error: result.error === "phoneInvalid" ? "errors.phone.invalid" : "staff.dailyCapReached",
+      error,
+      errorValues: result.error === "tooSoon" ? { minutes: result.minutesLeft } : undefined,
       phone,
     };
   }

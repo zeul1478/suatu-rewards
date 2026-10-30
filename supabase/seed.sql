@@ -3,7 +3,7 @@
 
 insert into public.stores
   (slug, name, country, timezone, currency, locale, reward_mode, points_per_visit,
-   daily_earn_cap, repeat_entry_warning_seconds, address, branding)
+   max_visits_per_day, repeat_entry_warning_seconds, address, branding)
 values
   ('suatu', 'Suatu', 'US', 'America/New_York',
    'USD', 'en-US', 'visits', 5, null, null, '[MAILING ADDRESS]',

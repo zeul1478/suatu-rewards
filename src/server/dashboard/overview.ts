@@ -1,4 +1,6 @@
 import "server-only";
+import { displayName } from "@/lib/progress";
+import { maskPhone } from "@/lib/phone";
 import type { Store } from "@/server/stores/getStore";
 import { supabaseAdmin } from "@/server/supabase/admin";
 
@@ -41,5 +43,54 @@ export async function getOverview(store: Store): Promise<Overview> {
     returning30Days: row.returning_30_days,
     redeemedTotal: row.redeemed_total,
     redeemed30Days: row.redeemed_30_days,
+  };
+}
+
+export type UnusualActivity = {
+  /** Numbers credited 3+ times on one day in the last 7 days, worst first (at most 10). */
+  numbers: {
+    customerId: string;
+    /** "Ana E." for signed-up customers, otherwise the masked number. */
+    label: string;
+    mostInADay: number;
+    days: number;
+  }[];
+  /** Cashiers with 10+ entries this week, more than half of them to the same three numbers. */
+  cashiers: { staffId: string; name: string; visits: number; topThree: number }[];
+};
+
+/** The "Unusual activity" card (D78): see dashboard_unusual_activity in the migrations. */
+export async function getUnusualActivity(store: Store): Promise<UnusualActivity> {
+  const { data, error } = await supabaseAdmin().rpc("dashboard_unusual_activity", {
+    p_store_id: store.id,
+  });
+  if (error) throw new Error(`dashboard_unusual_activity failed: ${error.message}`);
+  const row = data as {
+    numbers: {
+      customer_id: string;
+      phone: string | null;
+      first_name: string | null;
+      last_name: string | null;
+      status: string;
+      most_in_a_day: number;
+      days: number;
+    }[];
+    cashiers: { staff_id: string; name: string; visits: number; top_three: number }[];
+  };
+  return {
+    numbers: row.numbers.map((n) => ({
+      customerId: n.customer_id,
+      label:
+        (n.status === "active" ? displayName(n.first_name, n.last_name) : null) ??
+        (n.phone ? maskPhone(n.phone) : "—"),
+      mostInADay: n.most_in_a_day,
+      days: n.days,
+    })),
+    cashiers: row.cashiers.map((c) => ({
+      staffId: c.staff_id,
+      name: c.name,
+      visits: c.visits,
+      topThree: c.top_three,
+    })),
   };
 }

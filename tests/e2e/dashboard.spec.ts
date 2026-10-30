@@ -337,7 +337,7 @@ test.describe("rewards, offers, settings (each test in a store of its own)", () 
     await expect(page.getByText("Enter a whole number from 1 to 100.")).toBeVisible();
     await page.getByLabel("Points per visit").fill("10");
     await page.getByRole("button", { name: "Save", exact: true }).click();
-    await expect(page.getByText(/Saved. New visits earn the new amount./)).toBeVisible();
+    await expect(page.getByText(/Saved. Changes count from the next visit./)).toBeVisible();
     await expect(page.getByText("100 pts · 10 visits")).toBeVisible();
 
     await page.getByRole("link", { name: "Counter screen" }).click();

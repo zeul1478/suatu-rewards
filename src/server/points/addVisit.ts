@@ -27,7 +27,8 @@ export type AddVisitResult =
       phoneLast4: string;
       progress: Progress;
     }
-  | { ok: false; error: "phoneInvalid" | "dailyCapReached" };
+  | { ok: false; error: "phoneInvalid" | "dailyCapReached" | "staffOwnNumber" }
+  | { ok: false; error: "tooSoon"; minutesLeft: number };
 
 /**
  * Staff "Add visit" (§0 steps 4, 6, 10): +points for the typed number, creating the customer if
@@ -48,7 +49,11 @@ export async function addVisit(input: {
     p_staff_id: input.staff.id,
     p_idempotency_key: input.idempotencyKey,
   });
+  // The owner's limits and the staff-number rule (D78), raised by earn_points.
   if (error?.message === "daily_cap_reached") return { ok: false, error: "dailyCapReached" };
+  if (error?.message === "staff_own_number") return { ok: false, error: "staffOwnNumber" };
+  const tooSoon = error?.message.match(/^too_soon:(\d+)$/);
+  if (tooSoon) return { ok: false, error: "tooSoon", minutesLeft: Number(tooSoon[1]) };
   if (error || !data) throw new Error(`earn_points failed: ${error?.message}`);
 
   const row = data as unknown as EarnRow;

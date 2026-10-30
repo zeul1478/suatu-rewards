@@ -5,10 +5,16 @@ import {
   AddStaffForm,
   ResetStaffPasswordForm,
   StaffActiveButton,
+  StaffPhoneForm,
 } from "@/components/dashboard/StaffForms";
 import { requireManager } from "@/server/dashboard/access";
 import { listStaff } from "@/server/dashboard/staffAdmin";
-import { addStaffAction, resetStaffPasswordAction, setStaffActiveAction } from "../../actions";
+import {
+  addStaffAction,
+  resetStaffPasswordAction,
+  setStaffActiveAction,
+  setStaffPhoneAction,
+} from "../../actions";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("dashboard.staff");
@@ -55,6 +61,12 @@ export default async function StaffPage({ params }: PageProps<"/dashboard/[store
                       ? t("lastLogin", { when: person.lastLogin })
                       : t("neverLoggedIn")}
               </p>
+              <StaffPhoneForm
+                action={setStaffPhoneAction.bind(null, store.slug, person.id)}
+                name={person.displayName}
+                phone={person.phone}
+                idPrefix={`phone-${person.id.slice(0, 8)}`}
+              />
               {person.isYou ? null : (
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   {person.active ? (

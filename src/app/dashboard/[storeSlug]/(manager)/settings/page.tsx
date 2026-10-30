@@ -17,7 +17,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * Settings (§11): points per visit, reward costs (edited on Rewards), branding preview. The look
+ * Settings (§11): points per visit, limits at the counter (D78), reward costs (edited on
+ * Rewards), branding preview. The look
  * itself lives in code (src/brands/<store>.ts, DECISIONS D33), so here it's shown, not edited.
  */
 export default async function SettingsPage({
@@ -55,6 +56,8 @@ export default async function SettingsPage({
         <SettingsForm
           action={saveSettingsAction.bind(null, store.slug)}
           pointsPerVisit={store.pointsPerVisit}
+          maxVisitsPerDay={store.maxVisitsPerDay}
+          minMinutesBetweenVisits={store.minMinutesBetweenVisits}
         />
       </section>
 

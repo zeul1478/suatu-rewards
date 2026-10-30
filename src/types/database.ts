@@ -586,6 +586,7 @@ export type Database = {
           last_login_at: string | null;
           must_change_password: boolean;
           password_hash: string;
+          phone_e164: string | null;
           role: string;
           staff_code: string;
           store_id: string;
@@ -600,6 +601,7 @@ export type Database = {
           last_login_at?: string | null;
           must_change_password?: boolean;
           password_hash: string;
+          phone_e164?: string | null;
           role: string;
           staff_code: string;
           store_id: string;
@@ -613,6 +615,7 @@ export type Database = {
           last_login_at?: string | null;
           must_change_password?: boolean;
           password_hash?: string;
+          phone_e164?: string | null;
           role?: string;
           staff_code?: string;
           store_id?: string;
@@ -760,10 +763,11 @@ export type Database = {
           country: string;
           created_at: string;
           currency: string;
-          daily_earn_cap: number | null;
           id: string;
           locale: string;
           max_amount_per_transaction_cents: number | null;
+          max_visits_per_day: number | null;
+          min_minutes_between_visits: number | null;
           name: string;
           points_per_currency_unit: number | null;
           points_per_visit: number;
@@ -781,10 +785,11 @@ export type Database = {
           country: string;
           created_at?: string;
           currency: string;
-          daily_earn_cap?: number | null;
           id?: string;
           locale: string;
           max_amount_per_transaction_cents?: number | null;
+          max_visits_per_day?: number | null;
+          min_minutes_between_visits?: number | null;
           name: string;
           points_per_currency_unit?: number | null;
           points_per_visit?: number;
@@ -801,10 +806,11 @@ export type Database = {
           country?: string;
           created_at?: string;
           currency?: string;
-          daily_earn_cap?: number | null;
           id?: string;
           locale?: string;
           max_amount_per_transaction_cents?: number | null;
+          max_visits_per_day?: number | null;
+          min_minutes_between_visits?: number | null;
           name?: string;
           points_per_currency_unit?: number | null;
           points_per_visit?: number;
@@ -882,6 +888,7 @@ export type Database = {
         Returns: string;
       };
       dashboard_overview: { Args: { p_store_id: string }; Returns: Json };
+      dashboard_unusual_activity: { Args: { p_days?: number; p_store_id: string }; Returns: Json };
       earn_points: {
         Args: {
           p_idempotency_key: string;

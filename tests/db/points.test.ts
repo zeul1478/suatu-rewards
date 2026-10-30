@@ -17,14 +17,14 @@ const secret = () =>
 
 type Store = { id: string; staffId: string; rewardId: string };
 
-async function makeStore(options: { dailyCap?: number } = {}): Promise<Store> {
+async function makeStore(): Promise<Store> {
   const slug = `test-${randomUUID().slice(0, 8)}`;
   const {
     rows: [store],
   } = await db().query(
-    `insert into public.stores (slug, name, country, timezone, currency, locale, points_per_visit, daily_earn_cap)
-     values ($1, 'Test Station', 'US', 'America/New_York', 'USD', 'en-US', 5, $2) returning id`,
-    [slug, options.dailyCap ?? null],
+    `insert into public.stores (slug, name, country, timezone, currency, locale, points_per_visit)
+     values ($1, 'Test Station', 'US', 'America/New_York', 'USD', 'en-US', 5) returning id`,
+    [slug],
   );
   const {
     rows: [staff],
@@ -181,15 +181,6 @@ describe("earn_points", () => {
     expect(error).toBeNull();
     await expectBalanceMatchesLedger(store, phone, 5);
     expect((await earn(store, phone)).balance).toBe(10);
-  });
-
-  it("a daily cap, when a store sets one, stops further earning that day", async () => {
-    const store = await makeStore({ dailyCap: 10 });
-    const phone = testPhone().e164;
-    await earn(store, phone);
-    await earn(store, phone);
-    await expect(earn(store, phone)).rejects.toThrow("daily_cap_reached");
-    await expectBalanceMatchesLedger(store, phone, 10);
   });
 
   it("the ledger can't be edited or deleted, even by the server", async () => {

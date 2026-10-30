@@ -118,6 +118,12 @@
     "pointsPerVisit": {
       "invalid": "Enter a whole number from 1 to 100."
     },
+    "maxVisitsPerDay": {
+      "invalid": "Enter a whole number from 1 to 50, or leave it empty for no limit."
+    },
+    "minMinutesBetweenVisits": {
+      "invalid": "Enter minutes from 1 to 1440 (a day), or leave it empty for no limit."
+    },
     "storeName": {
       "required": "Enter the store's name.",
       "tooLong": "Use 60 characters or fewer."
@@ -297,7 +303,9 @@
     "visitsToGo": "{visits, plural, one {# more visit} other {# more visits}} to a {reward}",
     "rewardAvailable": "Reward available: {reward}",
     "duplicate": "Already counted — that entry was added once.",
-    "dailyCapReached": "This customer has reached today's points limit.",
+    "dailyCapReached": "This customer has reached today's visit limit.",
+    "tooSoon": "Already counted a moment ago. The next visit for this number counts in {minutes, plural, one {# minute} other {# minutes}}.",
+    "staffOwnNumber": "That's a staff member's own number. Ask a manager to add the visit if it's a real purchase.",
     "redeeming": "Redeeming…",
     "redeemed": "{reward} redeemed for ••• {last4}",
     "codeFormat": "Enter the 6 digits shown on the customer's phone.",
@@ -406,7 +414,13 @@
       "returning": "Returning",
       "returningDetail": "came on 2 or more days, of {visitors} visitors in the last 30 days",
       "redeemed": "Rewards redeemed",
-      "redeemedDetail": "{last30} in the last 30 days"
+      "redeemedDetail": "{last30} in the last 30 days",
+      "unusualTitle": "Unusual activity (last 7 days)",
+      "unusualNone": "Nothing unusual: no number got 3 or more visits in one day, and no cashier keeps adding visits to the same few numbers.",
+      "unusualIntro": "These may be honest regulars, or someone collecting points on other people's purchases. Worth a look.",
+      "unusualNumber": "got {most} visits in one day{days, plural, one {} other { (on # days)}}.",
+      "unusualCashier": "added {visits} visits; {topThree} went to the same 3 numbers.",
+      "unusualWhatToDo": "To stop it, set limits in <settings>Settings</settings>, or add staff members' own numbers on the Staff page."
     },
     "customers": {
       "metaTitle": "Customers",
@@ -575,6 +589,13 @@
       "resetHint": "They'll be logged out and must choose their own at the next login.",
       "resetSubmit": "Set temporary password",
       "resetDone": "Done. Give {name} the temporary password.",
+      "phoneTitle": "Add {name}'s own phone number",
+      "phoneOnFile": "{name}'s phone: {phone}",
+      "phoneLabel": "Their own phone number",
+      "phoneHint": "The counter won't add visits to this number, so nobody can collect points on other people's purchases. Leave empty to remove it.",
+      "phoneSave": "Save phone number",
+      "phoneSaved": "Saved. Visits to {name}'s number are now refused at the counter.",
+      "phoneRemoved": "Removed {name}'s phone number.",
       "addTitle": "Add a person",
       "displayName": "Name",
       "displayNameHint": "Shown on the counter screen, e.g. “Maria”.",
@@ -598,7 +619,13 @@
       "pointsPerVisitHint": "Counts from the next visit. Balances already earned don't change.",
       "save": "Save",
       "saving": "Saving…",
-      "saved": "Saved. New visits earn the new amount.",
+      "saved": "Saved. Changes count from the next visit.",
+      "limitsTitle": "Limits at the counter",
+      "limitsIntro": "Stops points being added too often to the same number, for example by someone typing their own. Leave a box empty for no limit.",
+      "maxVisitsPerDay": "Most visits per customer per day",
+      "maxVisitsPerDayHint": "For example 2. Voided visits don't count.",
+      "minMinutesBetweenVisits": "Minutes between two visits of the same customer",
+      "minMinutesBetweenVisitsHint": "For example 30. The counter says when the next visit can count.",
       "costsTitle": "Reward costs",
       "cost": "{points} pts · {visits, plural, one {# visit} other {# visits}}",
       "editRewards": "Edit rewards",

@@ -118,6 +118,12 @@
     "pointsPerVisit": {
       "invalid": "Introdu un număr întreg între 1 și 100."
     },
+    "maxVisitsPerDay": {
+      "invalid": "Introdu un număr întreg între 1 și 50 sau lasă gol pentru nicio limită."
+    },
+    "minMinutesBetweenVisits": {
+      "invalid": "Introdu minute între 1 și 1440 (o zi) sau lasă gol pentru nicio limită."
+    },
     "storeName": {
       "required": "Scrie numele magazinului.",
       "tooLong": "Folosește cel mult 60 de caractere."
@@ -297,7 +303,9 @@
     "visitsToGo": "Încă {visits, plural, one {# vizită} few {# vizite} other {# de vizite}} până la {reward}",
     "rewardAvailable": "Recompensă disponibilă: {reward}",
     "duplicate": "Deja înregistrat — vizita a fost adăugată o singură dată.",
-    "dailyCapReached": "Clientul a atins limita de puncte pentru azi.",
+    "dailyCapReached": "Clientul a atins limita de vizite pentru azi.",
+    "tooSoon": "Vizita a fost înregistrată adineauri. Următoarea vizită pentru acest număr contează peste {minutes, plural, one {# minut} few {# minute} other {# de minute}}.",
+    "staffOwnNumber": "Acesta este numărul unui angajat. Cereți unui manager să adauge vizita dacă e o cumpărătură reală.",
     "redeeming": "Se validează…",
     "redeemed": "{reward} validat pentru ••• {last4}",
     "codeFormat": "Introdu cele 6 cifre de pe telefonul clientului.",
@@ -406,7 +414,13 @@
       "returning": "Revin",
       "returningDetail": "au venit în 2 sau mai multe zile, din {visitors} vizitatori în ultimele 30 de zile",
       "redeemed": "Recompense folosite",
-      "redeemedDetail": "{last30} în ultimele 30 de zile"
+      "redeemedDetail": "{last30} în ultimele 30 de zile",
+      "unusualTitle": "Activitate neobișnuită (ultimele 7 zile)",
+      "unusualNone": "Nimic neobișnuit: niciun număr nu a primit 3 sau mai multe vizite într-o zi și niciun casier nu adaugă mereu vizite acelorași câteva numere.",
+      "unusualIntro": "Pot fi clienți fideli cinstiți sau cineva care strânge puncte din cumpărăturile altora. Merită verificat.",
+      "unusualNumber": "a primit {most} vizite într-o zi{days, plural, one {} few { (în # zile)} other { (în # de zile)}}.",
+      "unusualCashier": "a adăugat {visits} vizite; {topThree} au mers la aceleași 3 numere.",
+      "unusualWhatToDo": "Pentru a opri asta, setează limite în <settings>Setări</settings> sau adaugă numerele angajaților pe pagina Personal."
     },
     "customers": {
       "metaTitle": "Clienți",
@@ -575,6 +589,13 @@
       "resetHint": "Va fi scos din cont și își va alege o parolă nouă la următoarea autentificare.",
       "resetSubmit": "Setează parola temporară",
       "resetDone": "Gata. Dă-i lui {name} parola temporară.",
+      "phoneTitle": "Adaugă numărul de telefon al lui {name}",
+      "phoneOnFile": "Telefonul lui {name}: {phone}",
+      "phoneLabel": "Numărul lor de telefon",
+      "phoneHint": "Casa nu va adăuga vizite pe acest număr, așa că nimeni nu poate strânge puncte din cumpărăturile altora. Lasă gol pentru a-l șterge.",
+      "phoneSave": "Salvează numărul",
+      "phoneSaved": "Salvat. Vizitele pe numărul lui {name} sunt acum refuzate la casă.",
+      "phoneRemoved": "Numărul lui {name} a fost șters.",
       "addTitle": "Adaugă o persoană",
       "displayName": "Nume",
       "displayNameHint": "Apare pe ecranul casei, de ex. „Maria”.",
@@ -598,7 +619,13 @@
       "pointsPerVisitHint": "Se aplică de la următoarea vizită. Punctele deja câștigate nu se schimbă.",
       "save": "Salvează",
       "saving": "Se salvează…",
-      "saved": "Salvat. Vizitele noi primesc noua valoare.",
+      "saved": "Salvat. Schimbările contează de la următoarea vizită.",
+      "limitsTitle": "Limite la casă",
+      "limitsIntro": "Împiedică adăugarea prea deasă a punctelor pe același număr, de exemplu de cineva care își introduce propriul număr. Lasă o căsuță goală pentru nicio limită.",
+      "maxVisitsPerDay": "Cele mai multe vizite pe client pe zi",
+      "maxVisitsPerDayHint": "De exemplu 2. Vizitele anulate nu se numără.",
+      "minMinutesBetweenVisits": "Minute între două vizite ale aceluiași client",
+      "minMinutesBetweenVisitsHint": "De exemplu 30. Casa arată când poate conta următoarea vizită.",
       "costsTitle": "Costul recompenselor",
       "cost": "{points} pct · {visits, plural, one {# vizită} few {# vizite} other {# de vizite}}",
       "editRewards": "Editează recompensele",
