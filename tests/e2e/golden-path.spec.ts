@@ -13,9 +13,7 @@ test.afterAll(closeDb);
 
 /** The app polls every 3 s (§0 step 5); the rest is slack for a laptop running 8 browsers. */
 const LIVE_UPDATE_MS = 10_000;
-// Twenty visits plus live updates: 2 minutes on a laptop. Linux WebKit on CI's 2-core machines
-// needs longer (D75).
-test.setTimeout(process.env.CI ? 300_000 : 120_000);
+test.setTimeout(120_000);
 
 async function counter(browser: Browser, deviceOptions: object): Promise<Page> {
   const context = await browser.newContext({
@@ -28,9 +26,15 @@ async function counter(browser: Browser, deviceOptions: object): Promise<Page> {
   return page;
 }
 
+/*
+ * The counter runs in a second window while the customer's stays open. Linux WebKit (CI) treats
+ * that window as in the background and slows its animation frames, so each click waited ~75 s
+ * for the button to look "stable". Enter submits the same form, the way a cashier with a
+ * keyboard would, without that wait. (The buttons themselves are clicked in tests/e2e/staff.spec.ts.)
+ */
 async function addVisit(staff: Page, phone: string) {
   await staff.getByLabel("Customer phone number").fill(phone);
-  await staff.getByRole("button", { name: "Add visit (+5)" }).click();
+  await staff.getByLabel("Customer phone number").press("Enter");
 }
 
 const balance = (page: Page) => page.getByTestId("points-balance");
@@ -108,7 +112,7 @@ test("§0 golden path: sign up, earn 20 visits live, redeem, unknown number, cla
 
   // 9. Staff types the code → redeemed; the phone shows it and the balance is back to 0.
   await staff.getByLabel("6-digit code from the customer's phone").fill(code);
-  await staff.getByRole("button", { name: "Redeem", exact: true }).click();
+  await staff.getByLabel("6-digit code from the customer's phone").press("Enter");
   await expect(staff.getByTestId("redeem-banner")).toHaveText(
     `Free coffee redeemed for ••• ${digits.slice(-4)}`,
   );
