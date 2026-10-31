@@ -59,7 +59,11 @@ test("Void undoes a mistaken visit; the customer's phone shows it", async ({ pag
   await expect(row.getByRole("button")).toHaveCount(0);
 
   await expect(customerPage.getByTestId("points-balance")).toHaveText("5", { timeout: 10_000 });
-  await customerPage.goto(`/s/${STORE}/history`);
+  // Through the tab, as a customer would: the preloaded History is refreshed by the change.
+  await customerPage
+    .getByRole("navigation")
+    .getByRole("link", { name: "History", exact: true })
+    .click();
   await expect(customerPage.getByText("Visit cancelled by the store")).toBeVisible();
   await customerPage.context().close();
 });
