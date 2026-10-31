@@ -467,3 +467,13 @@ The user wants the company to stay in the background: no BeHappy logo anywhere i
 - "BeHappy" is set in its own serif italic (Instrument Serif, self-hosted by next/font, not preloaded), different from every store's fonts so it never reads as the store's brand. It uses the screen's muted ink, so it suits light and dark screens.
 - The badge images are no longer served: `public/platform/` is gone and `pnpm brand:sync` no longer copies `brand/behappy/` (the originals there stay untouched).
 - Supersedes the badge part of §5 and D-notes that mention `powered-by-dark.svg` / `powered-by-light.svg`.
+
+### D86. Dashboard and counter install like apps
+
+Added to an iPhone home screen, the customer app opened full screen but the owner dashboard opened in Safari with the address bar.
+
+- The dashboard and the counter now have web app manifests of their own (`/dashboard/<slug>/manifest.webmanifest`, `/staff/<slug>/manifest.webmanifest`), built with the customer app's by one helper, `storeManifest` (src/brands/manifest.ts).
+- Names under the icon: "Suatu Owner" and "Suatu Counter" (the customer app stays "Suatu"). They use the same store icon and the light theme colour.
+- Scope "/", so the dashboard's "Counter screen" button stays inside the app.
+- On these light screens the iPhone status bar is "default" (dark clock); the dark customer app keeps "black-translucent".
+- A home-screen app keeps its own login, separate from Safari, so it asks to log in once. An icon added before this change must be removed and added again.

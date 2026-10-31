@@ -1,7 +1,7 @@
 import { testCustomer } from "../support/data";
 import { closeDb, createScratchStore } from "../support/db";
 import { latestEmailText } from "../support/mailpit";
-import { expect, openDashboard, signUp, test } from "./support/fixtures";
+import { expect, newDevice, openDashboard, signUp, test } from "./support/fixtures";
 
 /*
  * Messages (DECISIONS D84): the owner turns an automatic message on and words it, a visit sends
@@ -33,7 +33,7 @@ test("an automatic email goes out with the owner's wording when a visit is added
   await expect(visit.locator("summary")).toContainText("Email on");
 
   const customer = testCustomer();
-  const phone = await browser.newPage();
+  const phone = await (await newDevice(browser)).newPage();
   await signUp(phone, customer, { store: store.slug });
   await phone.close();
 
@@ -60,7 +60,7 @@ test("a special message reaches only customers who agreed to offers", async ({ p
     [fan, true],
     [quiet, false],
   ] as const) {
-    const phone = await browser.newPage();
+    const phone = await (await newDevice(browser)).newPage();
     await signUp(phone, customer, { store: store.slug, marketing });
     await phone.close();
   }

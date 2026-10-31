@@ -5,6 +5,7 @@ import {
   at,
   expect,
   logOut,
+  newDevice,
   signUp,
   STORE,
   submitLogin,
@@ -163,7 +164,7 @@ test.describe("change password (§4.3b)", () => {
     await signUp(page, customer);
 
     // A second device, logged in to the same account.
-    const otherDevice = await browser.newContext();
+    const otherDevice = await newDevice(browser);
     const otherPage = await otherDevice.newPage();
     await submitLogin(otherPage, customer.phone.typed, customer.password);
     await expect(

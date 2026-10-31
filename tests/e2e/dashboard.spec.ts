@@ -6,6 +6,7 @@ import {
   at,
   dashboardLogIn,
   expect,
+  newDevice,
   openDashboard,
   signUp,
   staffLogIn,
@@ -276,7 +277,7 @@ test.describe("rewards, offers, settings (each test in a store of its own)", () 
     );
 
     // A customer of this store sees it under their points, picture included.
-    const customerContext = await browser.newContext();
+    const customerContext = await newDevice(browser);
     const customerPage = await customerContext.newPage();
     await signUp(customerPage, testCustomer(), { store: store.slug });
     const offers = customerPage.getByRole("region", { name: "Offers" });
@@ -397,7 +398,7 @@ test.describe("staff management (§6: the owner never knows a working password)"
   test("turn someone off and back on; reset their password", async ({ page, browser }) => {
     const code = tempCode();
     await createTempStaff(code, "counter password 8");
-    const cashierContext = await browser.newContext();
+    const cashierContext = await newDevice(browser);
     const cashier = await cashierContext.newPage();
     await staffLogIn(cashier, code, "counter password 8");
     await expect(cashier.getByText("Signed in as Test cashier")).toBeVisible();

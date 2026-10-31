@@ -1,7 +1,8 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { brands } from "@/brands";
+import { brandFor, brands } from "@/brands";
+import { storeManifest } from "@/brands/manifest";
 import { iconPaths } from "@/components/ui/icons/iconPaths";
 import { contrastRatio } from "@/lib/color/contrast";
 import { platform } from "@/lib/platform";
@@ -52,6 +53,23 @@ describe.each(Object.values(brands))("brand $slug", (brand) => {
         );
       }
     });
+  });
+});
+
+describe("home-screen apps (D86)", () => {
+  it("every app opens full screen with the store's four icons", () => {
+    const brand = brandFor("suatu");
+    const manifest = storeManifest(brand, {
+      name: "Suatu Counter",
+      shortName: "Suatu Counter",
+      startUrl: "/staff/suatu",
+      scope: "/",
+      color: brand.colors.light.page,
+    });
+    expect(manifest).toMatchObject({ display: "standalone", start_url: "/staff/suatu" });
+    expect(manifest.icons).toHaveLength(4);
+    for (const icon of manifest.icons)
+      expect(existsSync(publicFile(icon.src)), icon.src).toBe(true);
   });
 });
 
