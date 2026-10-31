@@ -99,3 +99,35 @@ test.describe("performance budgets (production build, slow phone)", () => {
     expect(js).toBeLessThan(JS_BUDGET_BYTES);
   });
 });
+
+test.describe("instant screens (D87)", () => {
+  test("tabs open from memory: no waiting for the server on a tap", async ({ page }) => {
+    await signUp(page, testCustomer());
+    // Home preloads the other tabs in the background.
+    await expect
+      .poll(() => page.evaluate(() => performance.getEntriesByType("resource").length), {
+        timeout: 10_000,
+      })
+      .toBeGreaterThan(0);
+    await page.waitForTimeout(2_000);
+
+    for (const tab of ["Rewards", "History", "Account", "Home"]) {
+      // A tap that had to ask the server would send a non-prefetch request for the screen.
+      const waits: string[] = [];
+      const onRequest = (request: { url(): string; headers(): Record<string, string> }) => {
+        if (request.url().includes("_rsc=") && !request.headers()["next-router-prefetch"]) {
+          waits.push(request.url());
+        }
+      };
+      page.on("request", onRequest);
+      await page.getByRole("navigation").getByRole("link", { name: tab, exact: true }).click();
+      await expect(page.getByRole("link", { name: tab, exact: true })).toHaveAttribute(
+        "aria-current",
+        "page",
+      );
+      page.off("request", onRequest);
+      expect(waits, `${tab} came from the server`).toEqual([]);
+      await page.waitForTimeout(1_000);
+    }
+  });
+});

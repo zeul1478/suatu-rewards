@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Icon, type IconName } from "@/components/ui/icons/Icon";
+import { useWarmRoutes } from "@/components/layout/useWarmRoutes";
 
 type BottomNavProps = {
   items: { href: string; label: string; icon: IconName }[];
@@ -23,6 +24,8 @@ function tapFeedback() {
 
 export function BottomNav({ items, label }: BottomNavProps) {
   const pathname = usePathname();
+  // Every tab ready in memory, so a tap shows it at once (D87).
+  useWarmRoutes(items.map((item) => item.href));
   // Home is the shortest path, so match the longest href that the current page starts with.
   const active = [...items]
     .sort((a, b) => b.href.length - a.href.length)
@@ -41,6 +44,8 @@ export function BottomNav({ items, label }: BottomNavProps) {
             <li key={item.href}>
               <Link
                 href={item.href}
+                // Preloaded and kept fresh by useWarmRoutes instead.
+                prefetch={false}
                 aria-current={current ? "page" : undefined}
                 data-lit={lit || undefined}
                 onClick={(event) => {

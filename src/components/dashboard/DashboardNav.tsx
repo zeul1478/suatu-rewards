@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Icon, type IconName } from "@/components/ui/icons/Icon";
+import { useWarmRoutes } from "@/components/layout/useWarmRoutes";
 
 export type DashboardNavItem = { href: string; label: string; icon: IconName };
 
@@ -17,6 +18,8 @@ export type DashboardNavItem = { href: string; label: string; icon: IconName };
  */
 export function DashboardNav({ items, label }: { items: DashboardNavItem[]; label: string }) {
   const pathname = usePathname();
+  // Every section ready in memory, so a click shows it at once (D87).
+  useWarmRoutes(items.map((item) => item.href));
   const [home] = items;
   const isCurrent = (href: string) =>
     href === home?.href ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
@@ -48,6 +51,8 @@ export function DashboardNav({ items, label }: { items: DashboardNavItem[]; labe
             <li key={item.href} className="shrink-0 snap-start">
               <Link
                 href={item.href}
+                // Preloaded and kept fresh by useWarmRoutes instead.
+                prefetch={false}
                 aria-current={current ? "page" : undefined}
                 onClick={(event) => {
                   // A new tab or window (Cmd/Ctrl-click) leaves this page as it is.

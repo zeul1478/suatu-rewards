@@ -477,3 +477,18 @@ Added to an iPhone home screen, the customer app opened full screen but the owne
 - Scope "/", so the dashboard's "Counter screen" button stays inside the app.
 - On these light screens the iPhone status bar is "default" (dark clock); the dark customer app keeps "black-translucent".
 - A home-screen app keeps its own login, separate from Safari, so it asks to log in once. An icon added before this change must be removed and added again.
+
+### D87. Instant screens: other tabs ready in memory
+
+The user found changing tabs slow (about 0.8 s: the server prepares the screen, then the phone fetches its code, then draws it) and asked for screens to be ready before the tap, kept fresh, without storing data in the app.
+
+- `useWarmRoutes` (src/components/layout) is used by the customer tab bar and the dashboard menu. It fetches every other screen in full in the background (`router.prefetch`, kind "full"), into the page's memory only: nothing is written to the phone.
+- **When it fetches:**
+  - 2 s after the app opens, when the phone is idle, so the first screen isn't slowed (performance budget);
+  - again after every screen change;
+  - every 15 s for copies older than 30 s (`staleTimes.static: 30` in next.config.ts);
+  - straight away when Home sees the points change or a code is redeemed (`announceDataChanged`).
+- Paused while the app is in the background; coming back refreshes everything.
+- The menu links don't prefetch on their own (`prefetch={false}`), so nothing is fetched twice.
+- **Measured on a production build:** a tab tap went from about 820 ms to 65–115 ms. A visit added at the counter showed in History as soon as Home noticed it (within 3 s). `tests/prod/performance.spec.ts` checks that a tab tap sends no request to the server.
+- Development mode doesn't prefetch, so the laptop's Wi-Fi version still waits; the online version is instant.

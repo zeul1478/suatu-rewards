@@ -8,6 +8,7 @@ import { SubmitButton } from "@/components/ui/SubmitButton";
 import type { CustomerStatus } from "@/server/customers/status";
 import { FuelGauge } from "./FuelGauge";
 import { usePolling } from "./usePolling";
+import { announceDataChanged } from "@/components/layout/useWarmRoutes";
 
 type PointsCardProps = {
   initialStatus: CustomerStatus;
@@ -42,6 +43,8 @@ export function PointsCard({
     3000,
     (next) => {
       if (next.progress.balance > shownBalance.current) setBumps((count) => count + 1);
+      // History and Rewards change too: refresh their preloaded copies (useWarmRoutes).
+      if (next.progress.balance !== shownBalance.current) announceDataChanged();
       shownBalance.current = next.progress.balance;
       setStatus(next);
     },
