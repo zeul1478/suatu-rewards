@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { PageTitle } from "@/components/dashboard/PageTitle";
+import { Section } from "@/components/layout";
 import { StatTile } from "@/components/dashboard/StatTile";
 import { VisitsChart } from "@/components/dashboard/VisitsChart";
 import { Icon } from "@/components/ui/icons/Icon";
@@ -73,19 +74,13 @@ export default async function OverviewPage({ params }: PageProps<"/dashboard/[st
         }
       />
 
-      <section aria-labelledby="visits-heading" className="flex flex-col gap-3">
-        <h2
-          id="visits-heading"
-          className="font-display text-xl font-semibold tracking-wide uppercase"
-        >
-          {t("visitsTitle")}
-        </h2>
+      <Section id="visits" title={t("visitsTitle")}>
         <dl className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-3">
           <StatTile label={t("today")} value={overview.visitsToday} />
           <StatTile label={t("last7")} value={overview.visits7Days} />
           <StatTile label={t("last30")} value={overview.visits30Days} />
         </dl>
-        <div className="rounded-[var(--radius-lg)] border border-line bg-raised p-4">
+        <div className="panel panel-pad">
           <VisitsChart
             days={insights.daily}
             formatDay={formatDay}
@@ -105,15 +100,9 @@ export default async function OverviewPage({ params }: PageProps<"/dashboard/[st
             barLabel={(visits) => t("chartBar", { visits })}
           />
         </div>
-      </section>
+      </Section>
 
-      <section aria-labelledby="customers-heading" className="flex flex-col gap-3">
-        <h2
-          id="customers-heading"
-          className="font-display text-xl font-semibold tracking-wide uppercase"
-        >
-          {t("customersTitle")}
-        </h2>
+      <Section id="customers" title={t("customersTitle")}>
         <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <StatTile
             label={t("members")}
@@ -135,15 +124,9 @@ export default async function OverviewPage({ params }: PageProps<"/dashboard/[st
             detail={t("redeemedDetail", { last30: overview.redeemed30Days })}
           />
         </dl>
-      </section>
+      </Section>
 
-      <section aria-labelledby="back-heading" className="flex flex-col gap-3">
-        <h2
-          id="back-heading"
-          className="font-display text-xl font-semibold tracking-wide uppercase"
-        >
-          {t("backTitle")}
-        </h2>
+      <Section id="back" title={t("backTitle")}>
         <p className="text-ink-muted">{t("backIntro")}</p>
         <dl className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-3">
           <StatTile label={t("lapsed30")} value={insights.lapsed30} />
@@ -156,17 +139,11 @@ export default async function OverviewPage({ params }: PageProps<"/dashboard/[st
             <span>{t("rewardsWaiting", { count: insights.rewardsWaiting })}</span>
           </p>
         ) : null}
-      </section>
+      </Section>
 
       {insights.cashiers.length > 0 ? (
-        <section aria-labelledby="cashiers-heading" className="flex flex-col gap-3">
-          <h2
-            id="cashiers-heading"
-            className="font-display text-xl font-semibold tracking-wide uppercase"
-          >
-            {t("cashiersTitle")}
-          </h2>
-          <ul className="flex flex-col divide-y divide-line rounded-[var(--radius-lg)] border border-line bg-raised">
+        <Section id="cashiers" title={t("cashiersTitle")}>
+          <ul className="panel flex flex-col divide-y divide-line">
             {insights.cashiers.map((c) => (
               <li key={c.name} className="flex items-baseline justify-between gap-3 px-4 py-3">
                 <span className="font-semibold">{c.name}</span>
@@ -176,17 +153,11 @@ export default async function OverviewPage({ params }: PageProps<"/dashboard/[st
               </li>
             ))}
           </ul>
-        </section>
+        </Section>
       ) : null}
 
-      <section
-        aria-labelledby="unusual-heading"
-        className="flex flex-col gap-3 rounded-[var(--radius-lg)] border border-line bg-raised p-5"
-      >
-        <h2
-          id="unusual-heading"
-          className="flex items-center gap-2 font-display text-xl font-semibold tracking-wide uppercase"
-        >
+      <section aria-labelledby="unusual-heading" className="panel panel-pad flex flex-col gap-3">
+        <h2 id="unusual-heading" className="section-heading">
           <Icon name={anythingUnusual ? "alert" : "check"} size={22} />
           {t("unusualTitle")}
         </h2>

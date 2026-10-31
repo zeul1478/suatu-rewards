@@ -58,7 +58,11 @@ export async function submitSignup(
   await page.getByRole("button", { name: "Create account" }).click();
 }
 
-export async function signUp(page: Page, customer: TestCustomer, options: { store?: string } = {}) {
+export async function signUp(
+  page: Page,
+  customer: TestCustomer,
+  options: { store?: string; marketing?: boolean } = {},
+) {
   await submitSignup(page, customer, options);
   await expect(page.getByRole("heading", { name: `Hi, ${customer.firstName}` })).toBeVisible();
 }

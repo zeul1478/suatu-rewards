@@ -94,6 +94,8 @@ export const signupSchema = z.object({
   acceptTerms: checked("acceptTerms.required"),
   confirmAdult: checked("confirmAdult.required"),
   marketingEmail: z.literal("on").optional(),
+  smsUpdates: z.literal("on").optional(),
+  smsMarketing: z.literal("on").optional(),
 });
 
 export const loginSchema = z.object({

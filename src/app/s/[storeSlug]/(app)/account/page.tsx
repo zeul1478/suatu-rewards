@@ -1,24 +1,23 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import type { ReactNode } from "react";
-import { brandFor } from "@/brands";
 import { ChangePasswordForm } from "@/components/customer/ChangePasswordForm";
 import { DeleteAccountForm } from "@/components/customer/DeleteAccountForm";
 import { InstallHelper } from "@/components/customer/InstallHelper";
 import { ProfileForm } from "@/components/customer/ProfileForm";
-import { ScreenHeader } from "@/components/customer/ScreenHeader";
-import { Icon, type IconName } from "@/components/ui/icons/Icon";
+import { Section, TabPage } from "@/components/layout";
+import { Icon } from "@/components/ui/icons/Icon";
 import { LogoutButton } from "@/components/ui/LogoutButton";
 import { SubmitButton } from "@/components/ui/SubmitButton";
 import { storeUrl } from "@/lib/storeUrl";
 import { requireCustomer } from "@/server/customers/currentCustomer";
-import { getMarketingConsent } from "@/server/customers/profile";
+import { getMarketingConsent, getSmsConsents } from "@/server/customers/profile";
 import { getStoreOr404 } from "@/server/stores/getStore";
 import {
   changePasswordAction,
   deleteAccountAction,
   logoutAction,
   marketingConsentAction,
+  smsConsentAction,
   updateProfileAction,
 } from "../../actions";
 
@@ -27,47 +26,22 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("metaTitle") };
 }
 
-function AccountSection({
-  id,
-  icon,
-  title,
-  children,
-}: {
-  id: string;
-  icon: IconName;
-  title: string;
-  children: ReactNode;
-}) {
-  return (
-    <section aria-labelledby={`${id}-heading`} className="flex flex-col gap-4">
-      <h2
-        id={`${id}-heading`}
-        className="flex items-center gap-2 font-display text-xl font-semibold tracking-wide uppercase"
-      >
-        <Icon name={icon} />
-        {title}
-      </h2>
-      {children}
-    </section>
-  );
-}
-
-// Account (§4.4): details, offer emails, password, my data, install, log out, delete.
+// Account (§4.4): details, offer emails, text messages (D84), password, my data, install, log out,
+// delete.
 export default async function AccountPage({ params }: PageProps<"/s/[storeSlug]/account">) {
   const { storeSlug } = await params;
   const store = await getStoreOr404(storeSlug);
   const customer = await requireCustomer(store.slug);
-  const [marketing, t, tCommon] = await Promise.all([
+  const [marketing, texts, t, tCommon] = await Promise.all([
     getMarketingConsent(store, customer),
+    getSmsConsents(store, customer),
     getTranslations("account"),
     getTranslations("common"),
   ]);
 
   return (
-    <main className="screen-gutter mx-auto flex w-full max-w-md flex-col gap-10 pt-[max(var(--space-8),env(safe-area-inset-top))] pb-[var(--space-8)]">
-      <ScreenHeader brand={brandFor(store.slug)} title={t("title")} />
-
-      <AccountSection id="details" icon="user" title={t("details")}>
+    <TabPage gap="loose" title={t("title")}>
+      <Section id="details" icon="user" title={t("details")}>
         <div className="flex items-center gap-3 rounded-[var(--radius-md)] bg-sunken px-4 py-3">
           <Icon name="phone" className="text-ink-muted" />
           <div className="flex flex-col">
@@ -88,9 +62,9 @@ export default async function AccountPage({ params }: PageProps<"/s/[storeSlug]/
             birthday: customer.birthday,
           }}
         />
-      </AccountSection>
+      </Section>
 
-      <AccountSection id="offers" icon="mail" title={t("offersTitle")}>
+      <Section id="offers" icon="mail" title={t("offersTitle")}>
         <p className="text-ink-muted">
           {t(marketing ? "offersOn" : "offersOff", { store: store.name })}
         </p>
@@ -102,13 +76,35 @@ export default async function AccountPage({ params }: PageProps<"/s/[storeSlug]/
             {t(marketing ? "offersTurnOff" : "offersTurnOn")}
           </SubmitButton>
         </form>
-      </AccountSection>
+      </Section>
 
-      <AccountSection id="password" icon="lock" title={t("changePassword")}>
+      <Section id="texts" icon="phone" title={t("textsTitle")}>
+        <p className="text-ink-muted">{t("textsExplain", { store: store.name })}</p>
+        {(
+          [
+            ["sms_updates", texts.updates, "smsUpdates"],
+            ["sms_marketing", texts.marketing, "smsMarketing"],
+          ] as const
+        ).map(([kind, on, key]) => (
+          <div key={kind} className="flex flex-col gap-2">
+            <p className="text-ink-muted">{t(on ? `${key}On` : `${key}Off`)}</p>
+            <form
+              suppressHydrationWarning
+              action={smsConsentAction.bind(null, store.slug, kind, !on)}
+            >
+              <SubmitButton variant="secondary" pendingLabel={t("saving")}>
+                {t(on ? `${key}TurnOff` : `${key}TurnOn`)}
+              </SubmitButton>
+            </form>
+          </div>
+        ))}
+      </Section>
+
+      <Section id="password" icon="lock" title={t("changePassword")}>
         <ChangePasswordForm action={changePasswordAction.bind(null, store.slug)} />
-      </AccountSection>
+      </Section>
 
-      <AccountSection id="data" icon="download" title={t("dataTitle")}>
+      <Section id="data" icon="download" title={t("dataTitle")}>
         <p className="text-ink-muted">{t("dataExplain")}</p>
         <a
           href={`/api${storeUrl(store.slug, "/account/export")}`}
@@ -118,11 +114,11 @@ export default async function AccountPage({ params }: PageProps<"/s/[storeSlug]/
           <Icon name="download" />
           {t("dataDownload")}
         </a>
-      </AccountSection>
+      </Section>
 
-      <AccountSection id="install" icon="install" title={t("installTitle")}>
+      <Section id="install" icon="install" title={t("installTitle")}>
         <InstallHelper />
-      </AccountSection>
+      </Section>
 
       <LogoutButton
         action={logoutAction.bind(null, store.slug)}
@@ -131,6 +127,6 @@ export default async function AccountPage({ params }: PageProps<"/s/[storeSlug]/
       />
 
       <DeleteAccountForm action={deleteAccountAction.bind(null, store.slug)} />
-    </main>
+    </TabPage>
   );
 }

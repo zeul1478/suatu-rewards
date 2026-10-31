@@ -55,10 +55,10 @@ describe.each(Object.values(brands))("brand $slug", (brand) => {
   });
 });
 
-describe("company credit (behappy)", () => {
-  it("both badges are in public/", () => {
-    expect(existsSync(publicFile(platform.poweredBy.onDark))).toBe(true);
-    expect(existsSync(publicFile(platform.poweredBy.onLight))).toBe(true);
+describe("company credit", () => {
+  it("is text only: no company logo is served", () => {
+    expect(platform.name).toBe("BeHappy");
+    expect(existsSync(publicFile("/platform"))).toBe(false);
   });
 });
 

@@ -140,6 +140,28 @@
     "birthday": {
       "invalid": "Enter a real date, or leave it empty.",
       "tooYoung": "This date says you're under 18. The program is for adults."
+    },
+    "bonusPoints": {
+      "invalid": "Enter a whole number from 1 to 10,000, or leave it empty."
+    },
+    "doubleMultiplier": {
+      "invalid": "Enter 2, 3, 4 or 5, or leave it empty."
+    },
+    "doubleDates": {
+      "invalid": "Pick a start and an end date (the end on or after the start)."
+    },
+    "expireMonths": {
+      "invalid": "Enter a number of months from 3 to 36, or leave it empty."
+    },
+    "messageBody": {
+      "required": "Write the message.",
+      "tooLong": "Keep it under 1,000 characters."
+    },
+    "subject": {
+      "tooLong": "Keep the subject under 120 characters."
+    },
+    "confirmSend": {
+      "required": "Tick “Yes, send it” to confirm."
     }
   },
   "signup": {
@@ -166,7 +188,10 @@
     "accountDeleted": "Your account was deleted. You can create a new one any time.",
     "tooMany": "Too many sign-ups from this network. Try again in {minutes, plural, one {# minute} other {# minutes}}.",
     "birthday": "Birthday",
-    "birthdayHint": "Optional — for birthday rewards."
+    "birthdayHint": "Optional — for birthday rewards.",
+    "smsUpdates": "Text me about my points (visits and rewards)",
+    "smsMarketing": "Text me {store} offers (optional)",
+    "smsLegal": "Up to 1 text a day. Message and data rates may apply. Reply STOP to cancel, HELP for help."
   },
   "login": {
     "metaTitle": "Log in",
@@ -276,7 +301,17 @@
     "deleteConfirm": "Delete my account for good",
     "deleting": "Deleting…",
     "birthdayHint": "For birthday rewards.",
-    "birthdayPrompt": "Add your birthday to get a birthday reward."
+    "birthdayPrompt": "Add your birthday to get a birthday reward.",
+    "textsTitle": "Text messages",
+    "textsExplain": "Choose which texts {store} may send you. Reply STOP to any text to stop them all.",
+    "smsUpdatesOn": "You get texts about your points.",
+    "smsUpdatesOff": "You don't get texts about your points.",
+    "smsUpdatesTurnOn": "Text me about my points",
+    "smsUpdatesTurnOff": "Stop point texts",
+    "smsMarketingOn": "You get offer texts.",
+    "smsMarketingOff": "You don't get offer texts.",
+    "smsMarketingTurnOn": "Text me offers",
+    "smsMarketingTurnOff": "Stop offer texts"
   },
   "legal": {
     "programTerms": "Program Terms",
@@ -342,7 +377,8 @@
       "alreadyVoided": "Already voided.",
       "pointsAlreadyUsed": "Can't void: the customer already used these points for a reward. Ask the manager."
     },
-    "dashboardLink": "Owner dashboard"
+    "dashboardLink": "Owner dashboard",
+    "askReminder": "Ask every customer: “Do you have {program}?”"
   },
   "redeem": {
     "title": "Your code",
@@ -414,7 +450,8 @@
       "offers": "Offers",
       "staff": "Staff",
       "settings": "Settings",
-      "sign": "Counter sign"
+      "sign": "Counter sign",
+      "messages": "Messages"
     },
     "overview": {
       "metaTitle": "Overview",
@@ -673,7 +710,24 @@
         "text": "Text",
         "lightBrand": "Green on light"
       },
-      "brandHowToChange": "Logo, colours and fonts are set up by behappy for each store. Ask us to change them."
+      "brandHowToChange": "Logo, colours and fonts are set up by behappy for each store. Ask us to change them.",
+      "rulesTitle": "Rewards rules",
+      "rulesIntro": "Extra ways to earn and keep points. Leave a box empty to turn that rule off.",
+      "welcomeBonus": "Welcome bonus (points)",
+      "welcomeBonusHint": "Given once, when someone signs up.",
+      "birthdayBonus": "Birthday bonus (points)",
+      "birthdayBonusHint": "Given on the customer's birthday, if they added it.",
+      "doubleTitle": "Double-points days",
+      "doubleIntro": "Each visit counts more between two dates, for example during a promotion.",
+      "doubleMultiplier": "Times the points",
+      "doubleMultiplierHint": "2 to 5. 2 = double.",
+      "doubleFrom": "From",
+      "doubleTo": "To (included)",
+      "expiryTitle": "Points expiry",
+      "expiryIntro": "Points run out after a long time without a visit. Customers get a reminder 14 days before, if their messages are on.",
+      "expireAfterMonths": "Months without a visit",
+      "expireAfterMonthsHint": "3 to 36. Empty = points never expire.",
+      "saveRules": "Save rules"
     },
     "sign": {
       "metaTitle": "Counter sign",
@@ -688,6 +742,102 @@
       "step2": "2. At the register, tell the cashier your phone number.",
       "step3": "3. Get {points} points every visit. Watch them on your phone.",
       "notice": "When you give your phone number at the register, {store} saves it with your points, even before you sign up. Points have no cash value. Program terms and privacy: {terms}"
+    },
+    "messages": {
+      "metaTitle": "Messages",
+      "title": "Messages",
+      "intro": "What customers get by text and email, and special messages to a group. Customers only get what they agreed to; texts go out between 9:00 and 20:00, at most one automatic text a day.",
+      "automaticTitle": "Automatic messages",
+      "automaticIntro": "Open one to turn it on and change the words. '{first_name}' and the other words in braces are filled in for each customer.",
+      "events": {
+        "welcome": {
+          "name": "Welcome",
+          "when": "Right after someone signs up."
+        },
+        "visit_added": {
+          "name": "Visit added",
+          "when": "Each time the counter adds a visit."
+        },
+        "reward_unlocked": {
+          "name": "Reward ready",
+          "when": "When their points reach a reward."
+        },
+        "reward_used": {
+          "name": "Reward used",
+          "when": "When the counter accepts their code."
+        },
+        "birthday": {
+          "name": "Birthday",
+          "when": "On their birthday, at 9:00 (offer: needs their opt-in)."
+        },
+        "we_miss_you": {
+          "name": "We miss you",
+          "when": "30, 60 and 90 days after their last visit (offer: needs their opt-in)."
+        },
+        "points_expiring": {
+          "name": "Points expiring",
+          "when": "14 days before their points expire (only if expiry is on)."
+        }
+      },
+      "textOn": "Text on",
+      "textOff": "Text off",
+      "emailOn": "Email on",
+      "emailOff": "Email off",
+      "byText": "By text",
+      "byEmail": "By email",
+      "sendText": "Send this text",
+      "sendEmail": "Send this email",
+      "subject": "Email subject",
+      "wording": "Message",
+      "blanksHint": "Blanks you can use: '{first_name} {store} {points} {points_added} {reward} {points_to_go} {bonus} {days} {link}'",
+      "preview": "Preview (sample customer)",
+      "smsLength": "{characters} characters · {parts, plural, one {1 text} other {# texts}} per customer",
+      "saving": "Saving…",
+      "save": "Save",
+      "saved": "Saved.",
+      "testTitle": "Send a test",
+      "testPhone": "Send a test to this phone",
+      "testEmail": "Send a test to this email",
+      "sendTest": "Send test",
+      "testQueued": "Test on its way. It shows in “Sent” below.",
+      "fixWording": "Fix the message first, then send the test.",
+      "specialTitle": "Send a message",
+      "specialIntro": "A one-off message to a group, like a promotion or news. Only customers who agreed to offers get it.",
+      "audience": "Who gets it",
+      "audiences": {
+        "all": "Everyone who agreed to offers",
+        "lapsed_30": "Not seen in 30+ days",
+        "reward_waiting": "Has a reward waiting",
+        "birthday_month": "Birthday this month"
+      },
+      "channel": "How",
+      "channels": {
+        "sms": "Text",
+        "email": "Email"
+      },
+      "reach": "{count, plural, =0 {Nobody in this group has agreed to this yet.} one {1 person will get it.} other {# people will get it.}}",
+      "confirmSend": "{count, plural, one {Yes, send it to 1 person} other {Yes, send it to # people}}",
+      "send": "Send message",
+      "sending": "Sending…",
+      "broadcastSent": "{count, plural, =0 {Nobody to send to.} one {On its way to 1 person.} other {On its way to # people.}}",
+      "sentTitle": "Sent",
+      "sentEmpty": "Nothing sent yet.",
+      "specialMessage": "Special message",
+      "testMessage": "Test",
+      "status": {
+        "queued": "Waiting",
+        "sending": "Sending",
+        "sent": "Sent",
+        "failed": "Failed",
+        "skipped": "Not sent"
+      },
+      "skipped": {
+        "noAccount": "no account",
+        "noAddress": "no phone or email",
+        "turnedOff": "turned off",
+        "oneADay": "already texted today",
+        "removed": "removed"
+      }
     }
   },
   "adminLogin": {

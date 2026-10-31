@@ -158,7 +158,7 @@ Chosen by the owner to match the brand kit: the SUATU wordmark is drawn in Space
 ### D33. Brand settings live in the app; brand/ keeps the originals
 
 - `brand/` is the owner's folder of original files. The app never moves or edits it.
-- `pnpm brand:sync` copies what's served into `public/stores/<slug>/` (logo, icons, OG image) and `public/platform/behappy/` (badges). The copies are committed so a deploy needs no extra step.
+- `pnpm brand:sync` copies what's served into `public/stores/<slug>/` (logo, icons, OG image) (the company credit is text only, D85). The copies are committed so a deploy needs no extra step.
 - Each store's look is one typed file, `src/brands/<slug>.ts`: names, both colour palettes, fonts, logo and icon paths. Colours reach the screens only through CSS variables (`brandThemeStyle` → `src/styles/tokens.css`), so a new store, or another app built from this code, is a new brand file, not new components.
 - `tests/unit/brands.test.ts` fails if a brand points at a missing file or a colour pair drops below WCAG AA.
 
@@ -419,3 +419,51 @@ From the user's feedback on their phones and suatu.ro (the owner's complex next 
 - **Dashboard menu in a rounded box:** on a phone it swipes sideways inside the box only (the page stays still) and the current section scrolls into view.
 - **Tab bar no longer blinks** when switching tabs: only the page content takes part in the crossfade; the bar is its own still layer (a snapshot can't show its backdrop blur).
 - **Loading placeholder** (`loading.tsx` for signed-in customer screens): grey shapes appear the moment a tab is tapped. It also lets production prefetch the tabs (dynamic routes aren't prefetched without one).
+
+### D83. One set of building blocks for every screen
+
+The user asked for every screen to line up the same way on phone, tablet and desktop, built from one shared template. Each screen used to set its own width, margins and heading styles, so they drifted apart. Now `src/components/layout/` (imported from `@/components/layout`) holds the pieces every screen is made of:
+
+- **Screen:** the page frame. Same gutters and top/bottom space everywhere. One width for single-column screens (customer app and every login), one for wide screens (counter, dashboard, admin), one for reading (legal pages).
+- **BrandHeader:** centred logo, lane stripe, title and intro, with an optional back link (customer screens, logins, legal pages; ScreenHeader and AuthScreen are thin wrappers).
+- **AppHeader** (top bar) and **SidebarLayout** (top bar + section menu + page) for the counter, dashboard and admin.
+- **PageTitle:** a dashboard/admin page's title with its buttons on the same line (after the explanation on a phone).
+- **Section:** a titled block with one heading style.
+- **ColumnSkeleton / PageSkeleton:** the grey loading shapes (customer tabs; dashboard and admin sections).
+- **Shared styles** in `globals.css`: `.section-heading`, `.panel` / `.panel-pad`, `.list-divided`, `.data-table` (with `.num` for number columns).
+- **Small shared parts:** `BackLink`, `FieldError`.
+
+The dashboard menu marks a clicked section at once, presses in, and its focus ring sits inside the box. Changing section crossfades only the page area. Settings and the counter sign now follow the same width and left edge as the other pages (the sign is centred only on paper, in the brand's light colours).
+
+Still to share later (found in the same audit): date formatting helpers (`lib/format.ts`) and a `parseForm` helper for server actions. They change behaviour-sensitive code (time zones, form errors), so they get their own step with tests.
+
+### D84. Messages: automatic texts and emails, special messages, reward rules
+
+The user wants the app to really talk to customers. Every message is the owner's choice and the customer's choice.
+
+- **Owner, Dashboard → Messages:**
+  - **Automatic messages.** For welcome, visit added, reward ready, reward used, birthday, we miss you (30/60/90 days) and points expiring, a Text and an Email switch each. Wording uses blanks ({first_name} {points} {reward} {points_to_go} {link}…), with a live preview on a sample customer, the text length and parts, and "send a test" to a phone or email.
+  - **Send a message.** A one-off to everyone who agreed to offers, people not seen in 30+ days, people with a reward waiting, or birthdays this month. It shows how many it will reach, needs a "Yes, send it" tick, and clears itself after sending.
+  - **Sent log.** Shows when, what, channel, recipient masked, and status ("not sent: turned off / already texted today / no account").
+  - All events start off.
+- **Owner, Settings → Rewards rules:** welcome bonus, birthday bonus, double-points days (2–5×, between two dates, applied in `earn_points`), and points expiry after 3–36 months without a visit, with a reminder 14 days before. All off by default. Bonuses are `adjust` entries with a note, so they never count as visits.
+- **Customer:** two text opt-ins, at sign-up and in Account: "Text me about my points" and "Text me offers". Each is recorded as a consent event. Sign-up carries the US carrier disclosure ("up to 1 text a day… Reply STOP… HELP"). Offer emails keep their existing opt-in. Offers (birthday, we miss you, special messages) need the marketing opt-in; news about the customer's own points needs the updates opt-in for texts, and nothing extra for email.
+- **Rules for texts:**
+  - only 9:00–20:00 store time (otherwise they wait for the morning);
+  - one automatic text per customer per day;
+  - offers end with "Reply STOP to opt out." (Twilio handles STOP and HELP).
+- **How it works:**
+  - **Queuing.** Database triggers (balance and visit changes, completed redemptions), `customer_joined` after sign-up, and an hourly `run_daily_messages` (each store's 9 o'clock hour) put "intents" in `messages`.
+  - **Sending.** The app writes the words at send time from the current template, so a change applies to anything still waiting and nothing is sent to a deleted account. It sends by email (existing SMTP, Resend in production) or text (Twilio over HTTPS, no SDK), and records the result, keeping the recipient only masked.
+  - **When it runs.** Right after the action that queued it, when the owner opens Messages, and from a secret-protected `/api/cron/outbox`.
+  - **Without Twilio settings** texts stay on the laptop (`/dev/texts`, development only).
+- **Counter:** "Ask every customer: Do you have Suatu Rewards?" under Add a visit. Staff forgetting to ask is the main reason programs fade.
+
+### D85. Company credit: text only, "Powered by BeHappy"
+
+The user wants the company to stay in the background: no BeHappy logo anywhere in the app.
+
+- Every screen's footer (customer app, counter, dashboard, admin) shows one small line, "Powered by BeHappy", from the shared `PoweredBy` component.
+- "BeHappy" is set in its own serif italic (Instrument Serif, self-hosted by next/font, not preloaded), different from every store's fonts so it never reads as the store's brand. It uses the screen's muted ink, so it suits light and dark screens.
+- The badge images are no longer served: `public/platform/` is gone and `pnpm brand:sync` no longer copies `brand/behappy/` (the originals there stay untouched).
+- Supersedes the badge part of §5 and D-notes that mention `powered-by-dark.svg` / `powered-by-light.svg`.

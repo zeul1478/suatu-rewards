@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { Brand } from "@/brands";
 import { BrandLogo } from "@/components/brand/BrandLogo";
+import { BrandHeader, Screen } from "@/components/layout";
 
 type AuthScreenProps = {
   brand: Brand;
@@ -10,22 +11,19 @@ type AuthScreenProps = {
 };
 
 /**
- * Shared frame for sign-up, log-in and password screens: logo, lane stripe and title centred
- * above one column. The form below stays left-aligned (labels are easier to scan that way).
+ * Sign-up, log-in and password screens: the shared Screen and BrandHeader, with the store's full
+ * logo and tagline above one column.
  */
 export function AuthScreen({ brand, title, intro, children }: AuthScreenProps) {
   return (
-    <main className="screen-gutter mx-auto flex w-full max-w-md flex-col gap-6 pt-[max(var(--space-8),env(safe-area-inset-top))] pb-[var(--space-8)]">
-      <header className="flex flex-col items-center gap-5 text-center">
-        <BrandLogo brand={brand} kind="lockup" theme="system" height={64} priority />
-        <p className="-mt-2 font-display text-lg text-ink-muted italic">{brand.tagline}</p>
-        <div className="lane-stripe self-stretch" aria-hidden="true" />
-        <h1 className="font-display text-4xl leading-tight font-bold tracking-tight text-ink">
-          {title}
-        </h1>
-        {intro ? <p className="text-ink-muted">{intro}</p> : null}
-      </header>
+    <Screen>
+      <BrandHeader
+        logo={<BrandLogo brand={brand} kind="lockup" theme="system" height={64} priority />}
+        tagline={brand.tagline}
+        title={title}
+        intro={intro}
+      />
       {children}
-    </main>
+    </Screen>
   );
 }

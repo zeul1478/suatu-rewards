@@ -5,7 +5,7 @@ import { BrandLogo } from "@/components/brand/BrandLogo";
 import { OfferCard } from "@/components/customer/OfferCard";
 import { PlaceCard } from "@/components/customer/PlaceCard";
 import { PointsCard } from "@/components/customer/PointsCard";
-import { ScreenHeader } from "@/components/customer/ScreenHeader";
+import { Section, TabPage } from "@/components/layout";
 import { FormAlert } from "@/components/ui/FormAlert";
 import { storeUrl } from "@/lib/storeUrl";
 import { requireCustomer } from "@/server/customers/currentCustomer";
@@ -45,9 +45,7 @@ export default async function CustomerHomePage({
   });
 
   return (
-    <main className="screen-gutter mx-auto flex w-full max-w-md flex-col gap-6 pt-[max(var(--space-8),env(safe-area-inset-top))] pb-[var(--space-8)]">
-      <ScreenHeader brand={brand} title={t("greeting", { name: customer.firstName })} />
-
+    <TabPage title={t("greeting", { name: customer.firstName })}>
       {passwordChanged ? <FormAlert tone="success">{tLogin("passwordChanged")}</FormAlert> : null}
 
       <PointsCard
@@ -60,13 +58,7 @@ export default async function CustomerHomePage({
       />
 
       {offers.length > 0 ? (
-        <section aria-labelledby="offers-heading" className="flex flex-col gap-3">
-          <h2
-            id="offers-heading"
-            className="font-display text-lg font-semibold tracking-[0.18em] text-ink-muted uppercase"
-          >
-            {t("offersTitle")}
-          </h2>
+        <Section id="offers" title={t("offersTitle")}>
           {offers.map((offer) => (
             <OfferCard
               key={offer.id}
@@ -82,17 +74,11 @@ export default async function CustomerHomePage({
               }
             />
           ))}
-        </section>
+        </Section>
       ) : null}
 
       {brand.places ? (
-        <section aria-labelledby="visit-heading" className="flex flex-col gap-3">
-          <h2
-            id="visit-heading"
-            className="font-display text-lg font-semibold tracking-[0.18em] text-ink-muted uppercase"
-          >
-            {t("visitTitle")}
-          </h2>
+        <Section id="visit" title={t("visitTitle")}>
           {(
             [
               ["station", brand.places.station, "fuel"],
@@ -118,8 +104,8 @@ export default async function CustomerHomePage({
               />
             ) : null,
           )}
-        </section>
+        </Section>
       ) : null}
-    </main>
+    </TabPage>
   );
 }

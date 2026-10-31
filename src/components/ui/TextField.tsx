@@ -1,5 +1,6 @@
 import type { InputHTMLAttributes, Ref } from "react";
 import { RequiredMark } from "./RequiredMark";
+import { FieldError } from "./FieldError";
 
 type TextFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, "id"> & {
   name: string;
@@ -58,11 +59,7 @@ export function TextField({
         className={`field-input ${variant === "large" ? "field-input-large" : ""} ${className}`}
         {...inputProps}
       />
-      {error ? (
-        <p id={errorId} className="text-sm font-semibold text-danger">
-          {error}
-        </p>
-      ) : null}
+      <FieldError id={errorId ?? ""} message={error} />
     </div>
   );
 }

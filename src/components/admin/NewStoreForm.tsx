@@ -10,6 +10,7 @@ import { TextField } from "@/components/ui/TextField";
 import { useFocusFirstError } from "@/components/ui/useFocusFirstError";
 import { useFormText } from "@/components/ui/useFormText";
 import { idleForm, type FormState } from "@/lib/forms";
+import { FieldError } from "@/components/ui/FieldError";
 
 export type TimezoneGroup = { label: string; zones: { value: string; label: string }[] };
 
@@ -43,9 +44,7 @@ export function NewStoreForm({
       {text.formError ? <FormAlert tone="error">{text.formError}</FormAlert> : null}
 
       <fieldset className="flex flex-col gap-4">
-        <legend className="mb-3 font-display text-xl font-semibold tracking-wide uppercase">
-          {t("storeTitle")}
-        </legend>
+        <legend className="section-heading mb-3">{t("storeTitle")}</legend>
         <div className="grid gap-4 sm:grid-cols-2">
           <TextField
             name="name"
@@ -106,11 +105,7 @@ export function NewStoreForm({
                 </optgroup>
               ))}
             </select>
-            {timezoneError ? (
-              <p id="field-timezone-error" className="text-sm font-semibold text-danger">
-                {timezoneError}
-              </p>
-            ) : null}
+            <FieldError id="field-timezone-error" message={timezoneError} />
           </div>
           <TextField
             name="pointsPerVisit"
@@ -127,9 +122,7 @@ export function NewStoreForm({
       </fieldset>
 
       <fieldset className="flex flex-col gap-4">
-        <legend className="mb-3 font-display text-xl font-semibold tracking-wide uppercase">
-          {t("ownerTitle")}
-        </legend>
+        <legend className="section-heading mb-3">{t("ownerTitle")}</legend>
         <p className="text-ink-muted">{t("ownerIntro")}</p>
         <div className="grid gap-4 sm:grid-cols-2">
           <TextField

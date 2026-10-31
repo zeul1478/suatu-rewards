@@ -30,6 +30,21 @@ import {
   type OfferInput,
 } from "@/server/offers/offers";
 import { endStaffSession } from "@/server/staff/session";
+import {
+  BONUS_POINTS_MAX,
+  DOUBLE_MULTIPLIER_MAX,
+  DOUBLE_MULTIPLIER_MIN,
+  EXPIRE_MONTHS_MAX,
+  EXPIRE_MONTHS_MIN,
+  updateRewardRules,
+} from "@/server/dashboard/rewardRules";
+import { MESSAGE_EVENTS, type MessageChannel, type MessageEvent } from "@/lib/messages";
+import {
+  AUDIENCES,
+  saveEventWording,
+  sendBroadcast,
+  sendTestMessage,
+} from "@/server/dashboard/messages";
 
 /*
  * Owner dashboard actions (§11). Each one checks the manager session first (requireManager);
@@ -366,4 +381,150 @@ export async function saveSettingsAction(
   await updateSettings(store, manager, parsed.data);
   refresh();
   return { status: "success", values };
+}
+
+/* ───────────── reward rules (D84) ───────────── */
+
+const optionalDate = z.preprocess(
+  (value) => (typeof value === "string" && value.trim() === "" ? null : value),
+  z.iso.date("doubleDates.invalid").nullable(),
+);
+
+const rewardRulesSchema = z
+  .object({
+    welcomeBonus: optionalLimit(BONUS_POINTS_MAX, "bonusPoints.invalid"),
+    birthdayBonus: optionalLimit(BONUS_POINTS_MAX, "bonusPoints.invalid"),
+    doubleMultiplier: optionalLimit(DOUBLE_MULTIPLIER_MAX, "doubleMultiplier.invalid").refine(
+      (value) => value === null || value >= DOUBLE_MULTIPLIER_MIN,
+      "doubleMultiplier.invalid",
+    ),
+    doubleFrom: optionalDate,
+    doubleTo: optionalDate,
+    expireAfterMonths: optionalLimit(EXPIRE_MONTHS_MAX, "expireMonths.invalid").refine(
+      (value) => value === null || value >= EXPIRE_MONTHS_MIN,
+      "expireMonths.invalid",
+    ),
+  })
+  .superRefine((rules, ctx) => {
+    if (rules.doubleMultiplier === null) return;
+    if (!rules.doubleFrom || !rules.doubleTo || rules.doubleFrom > rules.doubleTo) {
+      ctx.addIssue({ code: "custom", path: ["doubleTo"], message: "doubleDates.invalid" });
+    }
+  });
+
+export async function saveRewardRulesAction(
+  storeSlug: string,
+  _previous: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const { store, manager } = await requireManager(storeSlug);
+  const values = safeValues(formData, [
+    "welcomeBonus",
+    "birthdayBonus",
+    "doubleMultiplier",
+    "doubleFrom",
+    "doubleTo",
+    "expireAfterMonths",
+  ]);
+  const parsed = rewardRulesSchema.safeParse(formDataObject(formData));
+  if (!parsed.success) {
+    return { status: "error", fieldErrors: fieldErrorsFrom(parsed.error), values };
+  }
+  await updateRewardRules(store, manager, parsed.data);
+  refresh();
+  return { status: "success", values };
+}
+
+/* ───────────── messages (D84) ───────────── */
+
+const wordingSchema = z.object({
+  enabled: z.literal("on").optional(),
+  subject: z.string().trim().max(120, "subject.tooLong").optional().default(""),
+  body: z.string().trim().min(1, "messageBody.required").max(1000, "messageBody.tooLong"),
+});
+
+function isEvent(value: string): value is MessageEvent {
+  return (MESSAGE_EVENTS as readonly string[]).includes(value);
+}
+
+export async function saveMessageWordingAction(
+  storeSlug: string,
+  event: string,
+  channel: MessageChannel,
+  _previous: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const { store, manager } = await requireManager(storeSlug);
+  if (!isEvent(event)) return { status: "error", formError: "form.invalid" };
+  const values = safeValues(formData, ["subject", "body"]);
+  const parsed = wordingSchema.safeParse(formDataObject(formData));
+  if (!parsed.success) {
+    return { status: "error", fieldErrors: fieldErrorsFrom(parsed.error), values };
+  }
+  await saveEventWording(store, manager, {
+    event,
+    channel,
+    enabled: parsed.data.enabled === "on",
+    subject: parsed.data.subject,
+    body: parsed.data.body,
+  });
+  refresh();
+  return { status: "success", values };
+}
+
+/** "Send me a test": the wording on screen, to the phone or email typed under it. */
+export async function sendTestMessageAction(
+  storeSlug: string,
+  event: string,
+  channel: MessageChannel,
+  _previous: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const { store, manager } = await requireManager(storeSlug);
+  const values = safeValues(formData, ["to"]);
+  const parsed = wordingSchema.safeParse(formDataObject(formData));
+  if (!parsed.success)
+    return { status: "error", formError: "dashboard.messages.fixWording", values };
+  const typed = String(formData.get("to") ?? "").trim();
+  let to: string | null;
+  if (channel === "sms") {
+    to = normalizePhone(typed);
+    if (!to) return { status: "error", fieldErrors: { to: "phone.invalid" }, values };
+  } else {
+    const email = z.email().safeParse(typed.toLowerCase());
+    if (!email.success) return { status: "error", fieldErrors: { to: "email.invalid" }, values };
+    to = email.data;
+  }
+  await sendTestMessage(store, manager, {
+    channel,
+    to,
+    subject: parsed.data.subject,
+    body: parsed.data.body,
+    event,
+  });
+  return { status: "success", values };
+}
+
+const broadcastSchema = z.object({
+  audience: z.enum(AUDIENCES, "form.invalid"),
+  channel: z.enum(["sms", "email"], "form.invalid"),
+  subject: z.string().trim().max(120, "subject.tooLong").optional().default(""),
+  body: z.string().trim().min(1, "messageBody.required").max(1000, "messageBody.tooLong"),
+  confirm: z.literal("on", "confirmSend.required"),
+});
+
+export async function sendBroadcastAction(
+  storeSlug: string,
+  _previous: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const { store, manager } = await requireManager(storeSlug);
+  const values = safeValues(formData, ["audience", "channel", "subject", "body"]);
+  const parsed = broadcastSchema.safeParse(formDataObject(formData));
+  if (!parsed.success) {
+    return { status: "error", fieldErrors: fieldErrorsFrom(parsed.error), values };
+  }
+  const recipients = await sendBroadcast(store, manager, parsed.data);
+  refresh();
+  return { status: "success", formErrorValues: { count: recipients } };
 }

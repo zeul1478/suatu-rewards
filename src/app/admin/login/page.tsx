@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
+import { BrandHeader, Screen } from "@/components/layout";
 import { StaffLoginForm } from "@/components/staff/StaffLoginForm";
 import { getCurrentAdmin } from "@/server/admin/session";
 import { adminLoginAction } from "../actions";
@@ -20,19 +21,20 @@ export default async function AdminLoginPage({ searchParams }: PageProps<"/admin
   ]);
 
   return (
-    <main className="screen-gutter mx-auto flex w-full max-w-lg flex-col gap-6 pt-[max(var(--space-12),env(safe-area-inset-top))] pb-[var(--space-8)]">
-      <header className="flex flex-col items-center gap-4 text-center">
-        <p className="font-display text-lg font-semibold tracking-wide text-ink-muted uppercase">
-          behappy
-        </p>
-        <div className="lane-stripe self-stretch" aria-hidden="true" />
-        <h1 className="font-display text-5xl font-bold">{t("title")}</h1>
-        <p className="text-ink-muted">{t("intro")}</p>
-      </header>
+    <Screen>
+      <BrandHeader
+        logo={
+          <p className="font-display text-lg font-semibold tracking-wide text-ink-muted uppercase">
+            behappy
+          </p>
+        }
+        title={t("title")}
+        intro={t("intro")}
+      />
       <StaffLoginForm
         action={adminLoginAction}
         notice={reason === "idle" ? tStaff("loggedOutIdle") : undefined}
       />
-    </main>
+    </Screen>
   );
 }

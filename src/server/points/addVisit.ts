@@ -5,6 +5,7 @@ import { getActiveRewards } from "@/server/rewards/activeRewards";
 import type { StaffMember } from "@/server/staff/session";
 import type { Store } from "@/server/stores/getStore";
 import { supabaseAdmin } from "@/server/supabase/admin";
+import { sendQueuedSoon } from "@/server/messages/outbox";
 
 type EarnRow = {
   duplicate: boolean;
@@ -56,6 +57,8 @@ export async function addVisit(input: {
   if (tooSoon) return { ok: false, error: "tooSoon", minutesLeft: Number(tooSoon[1]) };
   if (error || !data) throw new Error(`earn_points failed: ${error?.message}`);
 
+  // A visit or bonus may have queued a text or email (D84).
+  sendQueuedSoon();
   const row = data as unknown as EarnRow;
   const rewards = await getActiveRewards(input.store.id);
   return {

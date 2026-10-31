@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import { getTranslations } from "next-intl/server";
 import QRCode from "qrcode";
 import { brandFor } from "@/brands";
@@ -50,7 +51,14 @@ export default async function SignPage({ params }: PageProps<"/dashboard/[storeS
 
       <article
         aria-label={t("signLabel")}
-        className="counter-sign mx-auto flex w-full max-w-[34rem] flex-col items-center gap-6 rounded-[var(--radius-lg)] border border-line bg-white p-8 text-center text-[#07231A] print:max-w-none print:border-0 print:p-0"
+        className="counter-sign flex w-full max-w-[34rem] flex-col items-center gap-6 rounded-[var(--radius-lg)] border border-line bg-white p-8 text-center text-[var(--sign-ink)] print:mx-auto print:max-w-none print:border-0 print:p-0"
+        // Printed on white: the brand's light-theme colours, whatever the screen's theme.
+        style={
+          {
+            "--sign-ink": brand.colors.light.text,
+            "--sign-muted": brand.colors.light.muted,
+          } as CSSProperties
+        }
       >
         <BrandLogo brand={brand} kind="lockup" theme="light" height={72} />
         <div className="lane-stripe w-full" aria-hidden="true" />
@@ -76,8 +84,8 @@ export default async function SignPage({ params }: PageProps<"/dashboard/[storeS
           <li>{t("step2")}</li>
           <li>{t("step3", { points: store.pointsPerVisit })}</li>
         </ol>
-        <p className="text-sm break-all text-[#3D5C4E]">{signupUrl}</p>
-        <p className="text-xs text-[#3D5C4E]">
+        <p className="text-sm break-all text-[var(--sign-muted)]">{signupUrl}</p>
+        <p className="text-xs text-[var(--sign-muted)]">
           {t("notice", { store: store.name, terms: termsUrl })}
         </p>
       </article>

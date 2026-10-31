@@ -1,12 +1,11 @@
 import { randomUUID } from "node:crypto";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdjustPointsForm } from "@/components/dashboard/AdjustPointsForm";
 import { PageTitle } from "@/components/dashboard/PageTitle";
 import { ReleaseNumberForm } from "@/components/dashboard/ReleaseNumberForm";
-import { Icon } from "@/components/ui/icons/Icon";
+import { BackLink } from "@/components/ui/BackLink";
 import { storeUrl } from "@/lib/storeUrl";
 import { requireManager } from "@/server/dashboard/access";
 import { getCustomerDetail, type LedgerEntry } from "@/server/dashboard/customers";
@@ -33,27 +32,15 @@ export default async function CustomerPage({
 
   return (
     <>
-      <Link
-        href={storeUrl(store.slug, "/customers", "dashboard")}
-        className="-ml-2 flex min-h-[var(--target-min)] w-fit items-center gap-1 px-2 font-semibold text-accent"
-      >
-        <Icon name="chevron-left" size={20} />
-        {t("back")}
-      </Link>
+      <BackLink href={storeUrl(store.slug, "/customers", "dashboard")}>{t("back")}</BackLink>
       <PageTitle
         title={customer.name ?? t("notSignedUp")}
         intro={customer.status === "unclaimed" ? t("unclaimedIntro") : undefined}
       />
 
       <div className="grid gap-6 lg:grid-cols-[3fr_2fr]">
-        <section
-          aria-labelledby="details-heading"
-          className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-line bg-raised p-5"
-        >
-          <h2
-            id="details-heading"
-            className="font-display text-xl font-semibold tracking-wide uppercase"
-          >
+        <section aria-labelledby="details-heading" className="panel panel-pad flex flex-col gap-4">
+          <h2 id="details-heading" className="section-heading">
             {t("detailsTitle")}
           </h2>
           <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2">
@@ -86,14 +73,8 @@ export default async function CustomerPage({
           <p className="text-sm text-ink-muted">{t("maskedNote")}</p>
         </section>
 
-        <section
-          aria-labelledby="adjust-heading"
-          className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-line bg-raised p-5"
-        >
-          <h2
-            id="adjust-heading"
-            className="font-display text-xl font-semibold tracking-wide uppercase"
-          >
+        <section aria-labelledby="adjust-heading" className="panel panel-pad flex flex-col gap-4">
+          <h2 id="adjust-heading" className="section-heading">
             {t("adjustTitle")}
           </h2>
           <AdjustPointsForm
@@ -104,16 +85,13 @@ export default async function CustomerPage({
       </div>
 
       <section aria-labelledby="history-heading" className="flex flex-col gap-3">
-        <h2
-          id="history-heading"
-          className="font-display text-xl font-semibold tracking-wide uppercase"
-        >
+        <h2 id="history-heading" className="section-heading">
           {t("historyTitle")}
         </h2>
         {customer.history.length === 0 ? (
           <p className="text-ink-muted">{t("historyEmpty")}</p>
         ) : (
-          <ul className="flex flex-col divide-y divide-line border-y border-line">
+          <ul className="list-divided">
             {customer.history.map((entry) => (
               <li
                 key={entry.id}

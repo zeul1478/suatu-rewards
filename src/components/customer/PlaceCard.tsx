@@ -36,7 +36,7 @@ export function PlaceCard({ place, title, icon, labels }: PlaceCardProps) {
   ];
 
   return (
-    <article className="card flex flex-col gap-3 rounded-[var(--radius-lg)] border border-line bg-raised p-4">
+    <article className="card panel panel-pad flex flex-col gap-3">
       <h3 className="flex items-center gap-2 font-display text-xl font-bold">
         <Icon name={icon} size={24} className="shrink-0" />
         {title}

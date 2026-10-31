@@ -29,10 +29,7 @@ export default async function RewardsPage({ params }: PageProps<"/dashboard/[sto
       <ul className="flex flex-col gap-4">
         {rewards.map((reward) => (
           <li key={reward.id}>
-            <section
-              aria-label={reward.name}
-              className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-line bg-raised p-5"
-            >
+            <section aria-label={reward.name} className="panel panel-pad flex flex-col gap-4">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h2 className="font-display text-2xl font-bold">{reward.name}</h2>
                 <p className="text-sm text-ink-muted">
@@ -68,10 +65,7 @@ export default async function RewardsPage({ params }: PageProps<"/dashboard/[sto
         aria-labelledby="add-reward-heading"
         className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-dashed border-line-strong p-5"
       >
-        <h2
-          id="add-reward-heading"
-          className="font-display text-xl font-semibold tracking-wide uppercase"
-        >
+        <h2 id="add-reward-heading" className="section-heading">
           {t("addTitle")}
         </h2>
         <RewardForm action={saveRewardAction.bind(null, store.slug, null)} />

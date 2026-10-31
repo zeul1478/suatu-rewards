@@ -9,6 +9,7 @@ import { legalVersions } from "@/server/legal/documents";
 import type { Store } from "@/server/stores/getStore";
 import { supabaseAdmin } from "@/server/supabase/admin";
 import { supabaseForCustomer } from "@/server/supabase/session";
+import { sendQueuedSoon } from "@/server/messages/outbox";
 import { sendEmailVerification } from "./emailVerification";
 import { redactPii } from "@/lib/mask";
 
@@ -23,7 +24,8 @@ export type SignupResult =
  * Creates a customer account (§4.1): Supabase Auth user (phone pre-confirmed — no SMS), then the
  * customer row, store membership and consent records in one database transaction. A phone number
  * that staff already entered (status 'unclaimed') is claimed with its points instead of rejected.
- * Then signs the customer in on this device and, after responding, emails a verification link.
+ * Then records the text opt-ins, gives the welcome bonus and queues the welcome message (D84),
+ * signs the customer in on this device and, after responding, emails a verification link.
  */
 export async function signUpCustomer(
   store: Store,
@@ -97,6 +99,28 @@ export async function signUpCustomer(
       .eq("id", customerId);
     if (error) console.error("Birthday not saved at sign-up", { customerId, error: error.code });
   }
+
+  // Text opt-ins (D84), each recorded as a consent event; then the welcome bonus and message.
+  for (const [kind, on] of [
+    ["sms_updates", input.smsUpdates === "on"],
+    ["sms_marketing", input.smsMarketing === "on"],
+  ] as const) {
+    if (!on) continue;
+    const { error } = await admin.rpc("set_sms_consent", {
+      p_store_id: store.id,
+      p_customer_id: customerId,
+      p_kind: kind,
+      p_granted: true,
+      p_source: "signup",
+    });
+    if (error) console.error("Text opt-in not saved at sign-up", { customerId, error: error.code });
+  }
+  const { error: joinedError } = await admin.rpc("customer_joined", {
+    p_store_id: store.id,
+    p_customer_id: customerId,
+  });
+  if (joinedError) console.error("Welcome not queued", { customerId, error: joinedError.code });
+  sendQueuedSoon();
 
   const supabase = await supabaseForCustomer();
   const { error: signInError } = await supabase.auth.signInWithPassword({

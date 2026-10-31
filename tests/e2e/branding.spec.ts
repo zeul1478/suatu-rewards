@@ -3,13 +3,14 @@ import { expect, staffLogIn, STORE, test } from "./support/fixtures";
 /* The brand kit wired into the app (brand/suatu/README.md, spec §5/§9). */
 
 test.describe("branding", () => {
-  test("customer screens: logo, favicon, home-screen icon, link preview, behappy credit", async ({
+  test("customer screens: logo, favicon, home-screen icon, link preview, the company credit", async ({
     page,
     request,
   }) => {
     await page.goto(`/s/${STORE}/login`);
     await expect(page.getByRole("img", { name: "Suatu" }).first()).toBeVisible();
-    await expect(page.getByRole("img", { name: "Powered by behappy" })).toBeVisible();
+    await expect(page.getByText("Powered by BeHappy")).toBeVisible();
+    await expect(page.getByRole("img", { name: /behappy/i })).toHaveCount(0);
 
     const head = page.locator("head");
     await expect(head.locator('link[rel="icon"][type="image/png"]')).toHaveAttribute(
@@ -57,7 +58,7 @@ test.describe("branding", () => {
     }
   });
 
-  test("staff screen: the green logo for light screens and the light behappy credit", async ({
+  test("staff screen: the green logo for light screens and the text-only company credit", async ({
     page,
   }) => {
     await staffLogIn(page, "0000", "0000");
@@ -66,10 +67,7 @@ test.describe("branding", () => {
       "src",
       "/stores/suatu/png/complex-turistic/logo-on-light.webp",
     );
-    await expect(page.getByRole("img", { name: "Powered by behappy" })).toHaveAttribute(
-      "src",
-      "/platform/behappy/powered-by-light.svg",
-    );
+    await expect(page.getByText("Powered by BeHappy")).toBeVisible();
   });
 
   test("brand icons follow the theme: lime details on dark", async ({ page }) => {

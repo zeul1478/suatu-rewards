@@ -32,34 +32,28 @@ export default async function AdminStoresPage() {
       {stores.length === 0 ? (
         <p className="text-ink-muted">{t("empty")}</p>
       ) : (
-        <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-line bg-raised">
-          <table className="w-full min-w-[40rem] text-left">
-            <thead className="border-b border-line text-sm text-ink-muted">
+        <div className="panel overflow-x-auto">
+          <table className="data-table min-w-[40rem]">
+            <thead>
               <tr>
-                <th scope="col" className="px-4 py-3 font-semibold">
-                  {t("colStore")}
-                </th>
-                <th scope="col" className="px-4 py-3 font-semibold">
-                  {t("colStatus")}
-                </th>
-                <th scope="col" className="px-4 py-3 text-right font-semibold">
+                <th scope="col">{t("colStore")}</th>
+                <th scope="col">{t("colStatus")}</th>
+                <th scope="col" className="num">
                   {t("colMembers")}
                 </th>
-                <th scope="col" className="px-4 py-3 text-right font-semibold">
+                <th scope="col" className="num">
                   {t("colVisits")}
                 </th>
-                <th scope="col" className="px-4 py-3 text-right font-semibold">
+                <th scope="col" className="num">
                   {t("colStaff")}
                 </th>
-                <th scope="col" className="px-4 py-3 font-semibold">
-                  {t("colLastVisit")}
-                </th>
+                <th scope="col">{t("colLastVisit")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-line">
+            <tbody>
               {stores.map((store) => (
                 <tr key={store.id}>
-                  <td className="px-4 py-2">
+                  <td>
                     <Link
                       href={`/admin/stores/${store.id}`}
                       className="flex min-h-[var(--target-min)] flex-col justify-center font-semibold text-accent underline-offset-4 hover:underline"
@@ -70,13 +64,11 @@ export default async function AdminStoresPage() {
                       </span>
                     </Link>
                   </td>
-                  <td className="px-4 py-2">{t(`status.${store.status}`)}</td>
-                  <td className="price-digits px-4 py-2 text-right">{store.members}</td>
-                  <td className="price-digits px-4 py-2 text-right">{store.visits30Days}</td>
-                  <td className="price-digits px-4 py-2 text-right">{store.staff}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-ink-muted">
-                    {store.lastVisit ?? "—"}
-                  </td>
+                  <td>{t(`status.${store.status}`)}</td>
+                  <td className="price-digits num">{store.members}</td>
+                  <td className="price-digits num">{store.visits30Days}</td>
+                  <td className="price-digits num">{store.staff}</td>
+                  <td className="whitespace-nowrap text-ink-muted">{store.lastVisit ?? "—"}</td>
                 </tr>
               ))}
             </tbody>

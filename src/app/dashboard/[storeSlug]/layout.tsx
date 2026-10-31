@@ -34,7 +34,7 @@ export default async function DashboardLayout({
     >
       <div className="flex flex-1 flex-col">{children}</div>
       <div className="print:hidden">
-        <PoweredBy theme="light" />
+        <PoweredBy />
       </div>
     </div>
   );

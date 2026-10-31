@@ -52,10 +52,7 @@ export function PointsCard({
   const target = progress.target;
 
   return (
-    <section
-      aria-labelledby="points-heading"
-      className="card flex flex-col gap-5 rounded-[var(--radius-lg)] border border-line bg-raised p-5"
-    >
+    <section aria-labelledby="points-heading" className="card panel panel-pad flex flex-col gap-5">
       <h2
         id="points-heading"
         className="flex items-center gap-2 font-display text-lg font-semibold tracking-[0.18em] text-ink-muted uppercase"

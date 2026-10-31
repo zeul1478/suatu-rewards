@@ -10,7 +10,7 @@ export function StatTile({
   detail?: string;
 }) {
   return (
-    <div className="flex flex-col gap-1 rounded-[var(--radius-lg)] border border-line bg-raised p-4">
+    <div className="panel panel-pad flex flex-col gap-1">
       <dt className="text-sm font-semibold tracking-wide text-ink-muted uppercase">{label}</dt>
       <dd className="price-digits text-4xl text-ink">
         {typeof value === "number" ? value.toLocaleString("en-US") : value}

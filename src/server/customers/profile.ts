@@ -127,3 +127,39 @@ export async function setMarketingConsent(
   });
   if (error) throw new Error(`Consent update failed: ${error.message}`);
 }
+
+export type SmsConsents = { updates: boolean; marketing: boolean };
+
+/** The customer's two text opt-ins at this store (D84). */
+export async function getSmsConsents(
+  store: Store,
+  customer: CurrentCustomer,
+): Promise<SmsConsents> {
+  const { data } = await supabaseAdmin()
+    .from("store_customers")
+    .select("sms_updates_consent, sms_marketing_consent")
+    .eq("store_id", store.id)
+    .eq("customer_id", customer.id)
+    .maybeSingle();
+  return {
+    updates: data?.sms_updates_consent ?? false,
+    marketing: data?.sms_marketing_consent ?? false,
+  };
+}
+
+/** Point texts or offer texts on/off; recorded as a consent event from the Account screen. */
+export async function setSmsConsent(
+  store: Store,
+  customer: CurrentCustomer,
+  kind: "sms_updates" | "sms_marketing",
+  granted: boolean,
+): Promise<void> {
+  const { error } = await supabaseAdmin().rpc("set_sms_consent", {
+    p_store_id: store.id,
+    p_customer_id: customer.id,
+    p_kind: kind,
+    p_granted: granted,
+    p_source: "account",
+  });
+  if (error) throw new Error(`Text consent update failed: ${error.message}`);
+}

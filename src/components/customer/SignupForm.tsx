@@ -153,6 +153,13 @@ export function SignupForm({ action, storeName, loginHref, legal }: SignupFormPr
         <Checkbox name="marketingEmail" defaultChecked={values.marketingEmail === "on"}>
           {t("marketingEmail", { store: storeName })}
         </Checkbox>
+        <Checkbox name="smsUpdates" defaultChecked={values.smsUpdates === "on"}>
+          {t("smsUpdates")}
+        </Checkbox>
+        <Checkbox name="smsMarketing" defaultChecked={values.smsMarketing === "on"}>
+          {t("smsMarketing", { store: storeName })}
+        </Checkbox>
+        <p className="pl-9 text-sm text-ink-muted">{t("smsLegal")}</p>
       </fieldset>
 
       <SubmitButton pendingLabel={t("submitting")}>{t("submit")}</SubmitButton>

@@ -1,4 +1,4 @@
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Instrument_Serif, Inter, Space_Grotesk } from "next/font/google";
 
 /*
  * Every font a brand can pick (src/brands/<slug>.ts → fonts). Self-hosted by next/font: no
@@ -21,5 +21,18 @@ const inter = Inter({
   display: "swap",
 });
 
+/**
+ * The company credit's own quiet serif italic ("Powered by BeHappy"), different from every
+ * store's fonts so it never reads as part of the store's brand. Not preloaded: it's a footnote.
+ */
+const credit = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: "italic",
+  variable: "--font-credit",
+  display: "swap",
+  preload: false,
+});
+
 /** Class names that define every registered font's CSS variable; put on <html>. */
-export const fontVariables = [spaceGrotesk.variable, inter.variable].join(" ");
+export const fontVariables = [spaceGrotesk.variable, inter.variable, credit.variable].join(" ");

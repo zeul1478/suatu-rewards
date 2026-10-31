@@ -2,9 +2,9 @@ import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { brandFor } from "@/brands";
 import { BrandLogo } from "@/components/brand/BrandLogo";
-import { DashboardNav, type DashboardNavItem } from "@/components/dashboard/DashboardNav";
+import type { DashboardNavItem } from "@/components/dashboard/DashboardNav";
+import { AppHeader, SidebarLayout } from "@/components/layout";
 import { IdleLogout } from "@/components/staff/IdleLogout";
-import { AppHeader } from "@/components/ui/AppHeader";
 import { Icon } from "@/components/ui/icons/Icon";
 import { LogoutButton } from "@/components/ui/LogoutButton";
 import { storeUrl } from "@/lib/storeUrl";
@@ -26,6 +26,7 @@ export default async function ManagerLayout({
     { href: url("/customers"), label: t("nav.customers"), icon: "users" },
     { href: url("/rewards"), label: t("nav.rewards"), icon: "rewards" },
     { href: url("/offers"), label: t("nav.offers"), icon: "offer" },
+    { href: url("/messages"), label: t("nav.messages"), icon: "mail" },
     { href: url("/staff"), label: t("nav.staff"), icon: "staff" },
     { href: url("/settings"), label: t("nav.settings"), icon: "settings" },
     { href: url("/sign"), label: t("nav.sign"), icon: "print" },
@@ -38,39 +39,43 @@ export default async function ManagerLayout({
         logout={dashboardLogoutAction.bind(null, store.slug, "idle")}
       />
 
-      <AppHeader
-        logo={
-          <>
-            <BrandLogo
-              brand={brandFor(store.slug)}
-              kind="wordmark"
-              theme="light"
-              height={26}
-              priority
-            />
-            <span className="font-display text-lg font-semibold text-ink-muted">{t("title")}</span>
-          </>
+      <SidebarLayout
+        nav={{ items, label: t("nav.label") }}
+        header={
+          <AppHeader
+            logo={
+              <>
+                <BrandLogo
+                  brand={brandFor(store.slug)}
+                  kind="wordmark"
+                  theme="light"
+                  height={26}
+                  priority
+                />
+                <span className="font-display text-lg font-semibold text-ink-muted">
+                  {t("title")}
+                </span>
+              </>
+            }
+            signedInAs={t("signedInAs", { name: manager.displayName })}
+            actions={
+              <>
+                <Link href={storeUrl(store.slug, "", "staff")} className="glass">
+                  <Icon name="station" size={22} />
+                  {t("counterScreen")}
+                </Link>
+                <LogoutButton
+                  action={dashboardLogoutAction.bind(null, store.slug, undefined)}
+                  label={tCommon("logOut")}
+                  pendingLabel={tCommon("loggingOut")}
+                />
+              </>
+            }
+          />
         }
-        signedInAs={t("signedInAs", { name: manager.displayName })}
-        actions={
-          <>
-            <Link href={storeUrl(store.slug, "", "staff")} className="glass">
-              <Icon name="station" size={22} />
-              {t("counterScreen")}
-            </Link>
-            <LogoutButton
-              action={dashboardLogoutAction.bind(null, store.slug, undefined)}
-              label={tCommon("logOut")}
-              pendingLabel={tCommon("loggingOut")}
-            />
-          </>
-        }
-      />
-
-      <div className="screen-gutter mx-auto grid w-full max-w-6xl flex-1 grid-cols-[minmax(0,1fr)] content-start gap-4 py-4 md:grid-cols-[12rem_minmax(0,1fr)] md:gap-8 md:py-8">
-        <DashboardNav items={items} label={t("nav.label")} />
-        <main className="flex min-w-0 flex-col gap-6">{children}</main>
-      </div>
+      >
+        {children}
+      </SidebarLayout>
     </div>
   );
 }

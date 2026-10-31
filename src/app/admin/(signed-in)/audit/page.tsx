@@ -91,40 +91,30 @@ export default async function AuditPage({ searchParams }: PageProps<"/admin/audi
           tabIndex={0}
           role="region"
           aria-label={t("tableLabel")}
-          className="overflow-x-auto rounded-[var(--radius-lg)] border border-line bg-raised"
+          className="panel overflow-x-auto"
         >
-          <table className="w-full min-w-[48rem] text-left text-sm">
-            <thead className="border-b border-line text-ink-muted">
+          <table className="data-table min-w-[48rem] text-sm">
+            <thead>
               <tr>
-                <th scope="col" className="px-4 py-3 font-semibold">
-                  {t("colTime")}
-                </th>
-                <th scope="col" className="px-4 py-3 font-semibold">
-                  {t("colStore")}
-                </th>
-                <th scope="col" className="px-4 py-3 font-semibold">
-                  {t("colWho")}
-                </th>
-                <th scope="col" className="px-4 py-3 font-semibold">
-                  {t("colAction")}
-                </th>
-                <th scope="col" className="px-4 py-3 font-semibold">
-                  {t("colDetails")}
-                </th>
+                <th scope="col">{t("colTime")}</th>
+                <th scope="col">{t("colStore")}</th>
+                <th scope="col">{t("colWho")}</th>
+                <th scope="col">{t("colAction")}</th>
+                <th scope="col">{t("colDetails")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-line">
+            <tbody>
               {rows.map((row) => (
                 <tr key={row.id} className="align-top">
-                  <td className="px-4 py-2 whitespace-nowrap text-ink-muted">{row.time}</td>
-                  <td className="px-4 py-2">{row.store ?? t("platform")}</td>
-                  <td className="px-4 py-2">
+                  <td className="whitespace-nowrap text-ink-muted">{row.time}</td>
+                  <td>{row.store ?? t("platform")}</td>
+                  <td>
                     {row.actorName
                       ? t("actorNamed", { type: t(`actors.${row.actorType}`), name: row.actorName })
                       : t(`actors.${row.actorType}`)}
                   </td>
-                  <td className="px-4 py-2 font-mono whitespace-nowrap">{row.action}</td>
-                  <td className="px-4 py-2 text-ink-muted">
+                  <td className="font-mono whitespace-nowrap">{row.action}</td>
+                  <td className="text-ink-muted">
                     {[row.target, row.details].filter(Boolean).join(" · ") || "—"}
                   </td>
                 </tr>

@@ -6,6 +6,7 @@ import { recordAudit } from "@/server/audit";
 import type { StaffMember } from "@/server/staff/session";
 import type { Store } from "@/server/stores/getStore";
 import { supabaseAdmin } from "@/server/supabase/admin";
+import { sendQueuedSoon } from "@/server/messages/outbox";
 
 /*
  * Customers in the owner dashboard (§11). Contact details are always masked here (§14): the
@@ -200,6 +201,8 @@ export async function adjustPoints(input: {
     if (known) return { ok: false, error: known };
     throw new Error(`adjust_points failed: ${error.message}`);
   }
+  // A visit or bonus may have queued a text or email (D84).
+  sendQueuedSoon();
   const row = data as { points: number; balance: number };
   return { ok: true, points: row.points, balance: row.balance };
 }

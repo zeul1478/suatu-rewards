@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { brandFor } from "@/brands";
-import { ScreenHeader } from "@/components/customer/ScreenHeader";
+import { TabPage } from "@/components/layout";
 import { Icon, type IconName } from "@/components/ui/icons/Icon";
 import { requireCustomer } from "@/server/customers/currentCustomer";
 import { getHistory, type HistoryEntry } from "@/server/customers/history";
@@ -28,13 +27,11 @@ export default async function HistoryPage({ params }: PageProps<"/s/[storeSlug]/
   const [entries, t] = await Promise.all([getHistory(store, customer), getTranslations("history")]);
 
   return (
-    <main className="screen-gutter mx-auto flex w-full max-w-md flex-col gap-6 pt-[max(var(--space-8),env(safe-area-inset-top))] pb-[var(--space-8)]">
-      <ScreenHeader brand={brandFor(store.slug)} title={t("title")} />
-
+    <TabPage title={t("title")}>
       {entries.length === 0 ? (
         <p className="text-ink-muted">{t("empty", { points: store.pointsPerVisit })}</p>
       ) : (
-        <ul className="flex flex-col divide-y divide-line border-y border-line">
+        <ul className="list-divided">
           {entries.map((entry) => (
             <li key={entry.id} className="flex items-center gap-3 py-3">
               <Icon name={icons[entry.type]} className="text-ink-muted" />
@@ -53,6 +50,6 @@ export default async function HistoryPage({ params }: PageProps<"/s/[storeSlug]/
           ))}
         </ul>
       )}
-    </main>
+    </TabPage>
   );
 }

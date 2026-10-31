@@ -41,7 +41,7 @@ export default async function CustomerLayout({ children, params }: LayoutProps<"
     >
       <ServiceWorker storeSlug={store.slug} scope={storeUrl(store.slug)} />
       <div className="flex-1">{children}</div>
-      <PoweredBy theme="system" />
+      <PoweredBy />
     </div>
   );
 }

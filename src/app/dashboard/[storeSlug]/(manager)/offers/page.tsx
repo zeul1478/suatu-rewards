@@ -53,7 +53,7 @@ export default async function OffersPage({
       {offers.length === 0 ? (
         <p className="text-ink-muted">{t("empty")}</p>
       ) : (
-        <ul className="flex flex-col divide-y divide-line border-y border-line">
+        <ul className="list-divided">
           {offers.map((offer) => (
             <li key={offer.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 py-3">
               <Link

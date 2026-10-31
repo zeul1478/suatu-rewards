@@ -3,6 +3,7 @@
 import { useRef, useState, type ClipboardEvent, type DragEvent } from "react";
 import { Icon } from "./icons/Icon";
 import { RequiredMark } from "./RequiredMark";
+import { FieldError } from "./FieldError";
 
 type PasswordFieldProps = {
   name: string;
@@ -105,11 +106,7 @@ export function PasswordField({
           <span className="sr-only">{visible ? hideLabel : showLabel}</span>
         </button>
       </div>
-      {error ? (
-        <p id={errorId} className="text-sm font-semibold text-danger">
-          {error}
-        </p>
-      ) : null}
+      <FieldError id={errorId ?? ""} message={error} />
     </div>
   );
 }

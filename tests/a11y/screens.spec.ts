@@ -160,6 +160,7 @@ test.describe("owner dashboard", () => {
       "/offers",
       "/offers/new",
       `/offers/${offers[0].id}`,
+      "/messages",
       "/staff",
       "/settings",
       "/sign",
