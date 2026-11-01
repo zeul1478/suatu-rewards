@@ -12,7 +12,7 @@ export async function exportCustomerData(customer: CurrentCustomer) {
   const [profile, memberships, ledger, redemptions, consents] = await Promise.all([
     admin
       .from("customers")
-      .select("phone_e164, email, first_name, last_name, email_verified_at, created_at")
+      .select("phone_e164, email, first_name, last_name, birthday, email_verified_at, created_at")
       .eq("id", customer.id)
       .single(),
     admin

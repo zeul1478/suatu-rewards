@@ -7,6 +7,7 @@ import { Icon } from "@/components/ui/icons/Icon";
 import { SubmitButton } from "@/components/ui/SubmitButton";
 import type { PendingRedemption } from "@/server/rewards/redemptions";
 import { usePolling } from "./usePolling";
+import { refreshWhenLeaving } from "@/components/layout/useWarmRoutes";
 
 type RedeemCodeProps = {
   redemption: PendingRedemption;
@@ -40,7 +41,11 @@ export function RedeemCode({ redemption, statusUrl, homeHref, newCodeAction }: R
   }, [redemption.secondsLeft]);
 
   usePolling<StatusResponse>(`${statusUrl}?redemption=${redemption.id}`, 3000, (data) => {
-    if (data.redeemed) setRedeemedBalance(data.progress.balance);
+    if (data.redeemed) {
+      setRedeemedBalance(data.progress.balance);
+      // Home, Rewards and History change; refreshed once the customer leaves this confirmation.
+      refreshWhenLeaving();
+    }
   });
 
   useScreenAwake(redeemedBalance === null && !expired);
@@ -78,7 +83,7 @@ export function RedeemCode({ redemption, statusUrl, homeHref, newCodeAction }: R
           <span
             key={index}
             aria-hidden="true"
-            className="price-digits grid h-20 flex-1 place-items-center rounded-[var(--radius-md)] border border-line-strong bg-sunken text-5xl text-accent"
+            className="digit-tile price-digits grid h-20 flex-1 place-items-center rounded-[var(--radius-md)] border border-line-strong bg-sunken text-5xl text-accent"
           >
             {digit}
           </span>

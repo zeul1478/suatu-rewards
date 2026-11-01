@@ -70,14 +70,8 @@ export default async function AdminStorePage({
 
       {created ? <FormAlert tone="success">{t("created")}</FormAlert> : null}
 
-      <section
-        aria-labelledby="details-heading"
-        className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-line bg-raised p-5"
-      >
-        <h2
-          id="details-heading"
-          className="font-display text-xl font-semibold tracking-wide uppercase"
-        >
+      <section aria-labelledby="details-heading" className="panel panel-pad flex flex-col gap-4">
+        <h2 id="details-heading" className="section-heading">
           {t("detailsTitle")}
         </h2>
         <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
@@ -121,10 +115,7 @@ export default async function AdminStorePage({
           aria-labelledby={`${group.id}-heading`}
           className="flex flex-col gap-3"
         >
-          <h2
-            id={`${group.id}-heading`}
-            className="font-display text-xl font-semibold tracking-wide uppercase"
-          >
+          <h2 id={`${group.id}-heading`} className="section-heading">
             {group.title}
           </h2>
           {group.intro ? <p className="text-ink-muted">{group.intro}</p> : null}
@@ -136,7 +127,7 @@ export default async function AdminStorePage({
                 <li key={person.id}>
                   <section
                     aria-label={person.displayName}
-                    className={`flex flex-col gap-3 rounded-[var(--radius-lg)] border border-line p-5 ${person.active ? "bg-raised" : "bg-sunken"}`}
+                    className={`panel panel-pad flex flex-col gap-3 ${person.active ? "" : "bg-sunken"}`}
                   >
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
                       <h3 className="font-display text-2xl font-bold">{person.displayName}</h3>
@@ -187,10 +178,7 @@ export default async function AdminStorePage({
         aria-labelledby="add-staff-heading"
         className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-dashed border-line-strong p-5"
       >
-        <h2
-          id="add-staff-heading"
-          className="font-display text-xl font-semibold tracking-wide uppercase"
-        >
+        <h2 id="add-staff-heading" className="section-heading">
           {t("addTitle")}
         </h2>
         <AddStaffForm action={adminAddStaffAction.bind(null, store.id)} defaultRole="manager" />

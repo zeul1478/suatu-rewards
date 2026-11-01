@@ -13,6 +13,7 @@ import { TextField } from "@/components/ui/TextField";
 import { useFocusFirstError } from "@/components/ui/useFocusFirstError";
 import { useFormText } from "@/components/ui/useFormText";
 import { idleForm, type FormState } from "@/lib/forms";
+import { latestAdultBirthday } from "@/lib/validation/customer";
 
 type LegalDoc = { title: string; html: string };
 
@@ -103,6 +104,18 @@ export function SignupForm({ action, storeName, loginHref, legal }: SignupFormPr
         required
         defaultValue={values.email}
       />
+      {/* Optional, so no "*"; the phone's own date picker (calendar and year). */}
+      <TextField
+        name="birthday"
+        label={t("birthday")}
+        hint={t("birthdayHint")}
+        error={text.fieldError("birthday")}
+        type="date"
+        autoComplete="bday"
+        min="1900-01-01"
+        max={latestAdultBirthday()}
+        defaultValue={values.birthday}
+      />
       <PasswordField
         name="password"
         label={t("password")}
@@ -140,6 +153,13 @@ export function SignupForm({ action, storeName, loginHref, legal }: SignupFormPr
         <Checkbox name="marketingEmail" defaultChecked={values.marketingEmail === "on"}>
           {t("marketingEmail", { store: storeName })}
         </Checkbox>
+        <Checkbox name="smsUpdates" defaultChecked={values.smsUpdates === "on"}>
+          {t("smsUpdates")}
+        </Checkbox>
+        <Checkbox name="smsMarketing" defaultChecked={values.smsMarketing === "on"}>
+          {t("smsMarketing", { store: storeName })}
+        </Checkbox>
+        <p className="pl-9 text-sm text-ink-muted">{t("smsLegal")}</p>
       </fieldset>
 
       <SubmitButton pendingLabel={t("submitting")}>{t("submit")}</SubmitButton>

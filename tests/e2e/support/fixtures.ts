@@ -1,4 +1,11 @@
-import { test as base, expect, type Locator, type Page } from "@playwright/test";
+import {
+  test as base,
+  expect,
+  type Browser,
+  type BrowserContext,
+  type Locator,
+  type Page,
+} from "@playwright/test";
 import { testCustomer, testIp } from "../../support/data";
 import { TEST_ADMIN, TEST_STORE } from "../../support/testStore";
 
@@ -10,6 +17,15 @@ import { TEST_ADMIN, TEST_STORE } from "../../support/testStore";
  * On CI's slow machines the development server can leave seconds between the HTML arriving and
  * the page responding, and a tap in that gap was lost.
  */
+/**
+ * A second device in the same test (a customer's phone next to the counter, another login):
+ * a fresh browser with its own fake client IP, like the test's own page. Without it every such
+ * device shared one address, and a long run tripped the per-IP sign-up limit.
+ */
+export function newDevice(browser: Browser): Promise<BrowserContext> {
+  return browser.newContext({ extraHTTPHeaders: { "x-forwarded-for": testIp() } });
+}
+
 export const test = base.extend({
   context: async ({ context }, provide) => {
     await context.setExtraHTTPHeaders({ "x-forwarded-for": testIp() });
@@ -58,7 +74,11 @@ export async function submitSignup(
   await page.getByRole("button", { name: "Create account" }).click();
 }
 
-export async function signUp(page: Page, customer: TestCustomer, options: { store?: string } = {}) {
+export async function signUp(
+  page: Page,
+  customer: TestCustomer,
+  options: { store?: string; marketing?: boolean } = {},
+) {
   await submitSignup(page, customer, options);
   await expect(page.getByRole("heading", { name: `Hi, ${customer.firstName}` })).toBeVisible();
 }

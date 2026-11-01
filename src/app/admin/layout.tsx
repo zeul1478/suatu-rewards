@@ -18,7 +18,7 @@ export default function AdminLayout({ children }: LayoutProps<"/admin">) {
       className="flex min-h-dvh flex-col bg-page text-ink"
     >
       <div className="flex flex-1 flex-col">{children}</div>
-      <PoweredBy theme="light" />
+      <PoweredBy />
     </div>
   );
 }

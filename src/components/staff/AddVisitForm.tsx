@@ -36,7 +36,9 @@ export function AddVisitForm({ action, initialKey, pointsPerVisit }: AddVisitFor
         name="phone"
         label={t("phone")}
         hint={t("phoneHint")}
-        error={state.status === "error" && state.error ? tAll(state.error) : undefined}
+        error={
+          state.status === "error" && state.error ? tAll(state.error, state.errorValues) : undefined
+        }
         type="tel"
         inputMode="tel"
         autoComplete="off"

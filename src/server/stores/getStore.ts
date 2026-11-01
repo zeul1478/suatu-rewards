@@ -10,13 +10,18 @@ export type Store = {
   timezone: string;
   locale: string;
   pointsPerVisit: number;
+  /** The owner's limits at the counter (D78); null = no limit. */
+  maxVisitsPerDay: number | null;
+  minMinutesBetweenVisits: number | null;
 };
 
 /** Active store by URL slug, once per request. Unknown or closed stores are a 404. */
 export const getStoreOr404 = cache(async (slug: string): Promise<Store> => {
   const { data, error } = await supabaseAdmin()
     .from("stores")
-    .select("id, slug, name, timezone, locale, points_per_visit")
+    .select(
+      "id, slug, name, timezone, locale, points_per_visit, max_visits_per_day, min_minutes_between_visits",
+    )
     .eq("slug", slug)
     .eq("status", "active")
     .maybeSingle();
@@ -29,6 +34,8 @@ export const getStoreOr404 = cache(async (slug: string): Promise<Store> => {
     timezone: data.timezone,
     locale: data.locale,
     pointsPerVisit: data.points_per_visit,
+    maxVisitsPerDay: data.max_visits_per_day,
+    minMinutesBetweenVisits: data.min_minutes_between_visits,
   };
 });
 

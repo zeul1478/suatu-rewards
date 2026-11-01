@@ -3,7 +3,7 @@
 
 insert into public.stores
   (slug, name, country, timezone, currency, locale, reward_mode, points_per_visit,
-   daily_earn_cap, repeat_entry_warning_seconds, address, branding)
+   max_visits_per_day, repeat_entry_warning_seconds, address, branding)
 values
   ('suatu', 'Suatu', 'US', 'America/New_York',
    'USD', 'en-US', 'visits', 5, null, null, '[MAILING ADDRESS]',
@@ -21,6 +21,12 @@ insert into public.platform_admins (username, display_name, password_hash)
 values ('0000', 'Admin (dev)',
   '$argon2id$v=19$m=19456,t=2,p=1$NNMgCqOF1rmfLkaR9/w2bA$Pxnqh73ohMyiTIiaO5sVU8UxDKi+GxPbfeUGbUtH+OA');
 
--- The one reward (spec §0): Free coffee at 100 points = 20 visits.
-insert into public.rewards (store_id, name, cost_points)
-select id, 'Free coffee', 100 from public.stores where slug = 'suatu';
+-- Rewards named after what Suatu really sells (suatu.ro: the station's coffee shop and snacks,
+-- the restaurant's wood-fired pizza). The coffee at 100 points = 20 visits (spec §0).
+insert into public.rewards (store_id, name, cost_points, sort_order)
+select id, reward.name, reward.cost, reward.sort
+from public.stores,
+  (values ('Free Suatu coffee', 100, 0),
+          ('Snack and drink from our shop', 150, 1),
+          ('Wood-fired pizza at our restaurant', 300, 3)) as reward (name, cost, sort)
+where slug = 'suatu';

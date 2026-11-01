@@ -183,10 +183,7 @@ export function OfferForm({ action, offer, locale }: OfferFormProps) {
       </form>
 
       <section aria-labelledby="preview-heading" className="flex flex-col gap-3">
-        <h2
-          id="preview-heading"
-          className="font-display text-xl font-semibold tracking-wide uppercase"
-        >
+        <h2 id="preview-heading" className="section-heading">
           {t("preview")}
         </h2>
         <p className="text-sm text-ink-muted">{t("previewHint")}</p>

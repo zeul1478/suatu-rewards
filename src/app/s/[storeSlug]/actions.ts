@@ -17,7 +17,7 @@ import { requireCustomer } from "@/server/customers/currentCustomer";
 import { deleteAccount } from "@/server/customers/deleteAccount";
 import { logInCustomer, logOutCustomer } from "@/server/customers/login";
 import { requestPasswordReset, resetPassword } from "@/server/customers/passwordReset";
-import { setMarketingConsent, updateProfile } from "@/server/customers/profile";
+import { setMarketingConsent, setSmsConsent, updateProfile } from "@/server/customers/profile";
 import { signUpCustomer } from "@/server/customers/signup";
 import { startRedemption } from "@/server/rewards/redemptions";
 import { clientIp, requestOrigin } from "@/server/request";
@@ -34,9 +34,12 @@ const SIGNUP_ECHO = [
   "firstName",
   "lastName",
   "email",
+  "birthday",
   "acceptTerms",
   "confirmAdult",
   "marketingEmail",
+  "smsUpdates",
+  "smsMarketing",
 ];
 
 export async function signupAction(
@@ -196,7 +199,7 @@ export async function updateProfileAction(
 ): Promise<FormState> {
   const store = await getStoreOr404(storeSlug);
   const customer = await requireCustomer(store.slug);
-  const values = safeValues(formData, ["firstName", "lastName", "email"]);
+  const values = safeValues(formData, ["firstName", "lastName", "email", "birthday"]);
   const parsed = profileSchema.safeParse(formDataObject(formData));
   if (!parsed.success) {
     return { status: "error", fieldErrors: fieldErrorsFrom(parsed.error), values };
@@ -221,6 +224,18 @@ export async function marketingConsentAction(storeSlug: string, granted: boolean
   const store = await getStoreOr404(storeSlug);
   const customer = await requireCustomer(store.slug);
   await setMarketingConsent(store, customer, granted);
+  redirect(storeUrl(store.slug, "/account"));
+}
+
+/** Account → point texts or offer texts on/off (D84). */
+export async function smsConsentAction(
+  storeSlug: string,
+  kind: "sms_updates" | "sms_marketing",
+  granted: boolean,
+): Promise<void> {
+  const store = await getStoreOr404(storeSlug);
+  const customer = await requireCustomer(store.slug);
+  await setSmsConsent(store, customer, kind, granted);
   redirect(storeUrl(store.slug, "/account"));
 }
 

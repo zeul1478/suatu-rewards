@@ -2,12 +2,19 @@ import type { Metadata, Viewport } from "next";
 import { brandFor, brandThemeStyle } from "@/brands";
 import { brandMetadata } from "@/brands/metadata";
 import { PoweredBy } from "@/components/brand/PoweredBy";
+import { storeUrl } from "@/lib/storeUrl";
 import { getStoreOr404 } from "@/server/stores/getStore";
 
 export async function generateMetadata({
   params,
 }: LayoutProps<"/staff/[storeSlug]">): Promise<Metadata> {
-  return brandMetadata(brandFor((await params).storeSlug));
+  const { storeSlug } = await params;
+  const brand = brandFor(storeSlug);
+  return brandMetadata(brand, {
+    manifest: storeUrl(storeSlug, "/manifest.webmanifest", "staff"),
+    appleTitle: `${brand.shortName} Counter`,
+    statusBar: "default",
+  });
 }
 
 export async function generateViewport({
@@ -27,7 +34,7 @@ export default async function StaffLayout({ children, params }: LayoutProps<"/st
       className="flex min-h-dvh flex-col bg-page text-ink"
     >
       <div className="flex flex-1 flex-col">{children}</div>
-      <PoweredBy theme="light" />
+      <PoweredBy />
     </div>
   );
 }

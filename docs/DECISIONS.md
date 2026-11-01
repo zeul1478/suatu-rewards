@@ -158,7 +158,7 @@ Chosen by the owner to match the brand kit: the SUATU wordmark is drawn in Space
 ### D33. Brand settings live in the app; brand/ keeps the originals
 
 - `brand/` is the owner's folder of original files. The app never moves or edits it.
-- `pnpm brand:sync` copies what's served into `public/stores/<slug>/` (logo, icons, OG image) and `public/platform/behappy/` (badges). The copies are committed so a deploy needs no extra step.
+- `pnpm brand:sync` copies what's served into `public/stores/<slug>/` (logo, icons, OG image) (the company credit is text only, D85). The copies are committed so a deploy needs no extra step.
 - Each store's look is one typed file, `src/brands/<slug>.ts`: names, both colour palettes, fonts, logo and icon paths. Colours reach the screens only through CSS variables (`brandThemeStyle` → `src/styles/tokens.css`), so a new store, or another app built from this code, is a new brand file, not new components.
 - `tests/unit/brands.test.ts` fails if a brand points at a missing file or a colour pair drops below WCAG AA.
 
@@ -350,3 +350,145 @@ Suatu's logo is now the white "Suatu · complex turistic" script with a deer (`b
 ### D75. CI: all devices on pull requests, Safari one at a time
 
 The first CI run showed WebKit (Safari's engine) on Linux is much heavier than on macOS: with two browsers at once on GitHub's 2-core machines the dev server starved, form submissions took over 10 s and tests timed out (the same tests pass on macOS WebKit and on CI's Chrome and Firefox). WebKit jobs now run one browser at a time, and CI allows 20 s per check (90 s per test). The 9-device run happens on pull requests; a push to `main` (already checked in its pull request) re-runs on Desktop Chrome only. Lighthouse's Chrome runs without its sandbox on CI only (Ubuntu's AppArmor blocks it; it only opens our own app there).
+
+### D76. Clean and fast pass (after M9)
+
+What was measured before changing anything: no unused libraries or source files; the customer home sends 143 KB of JavaScript (gzipped), of which about 125 KB is React and Next.js themselves, so there is little left to cut; offer photos are already shrunk in the browser before upload; with 10,000 customers and 200,000 visits the owner's Overview takes about 0.2 s and customer search under 0.01 s (checked inside a rolled-back transaction), so no new indexes yet. What changed: screens load the logo as a WebP sized for the largest place it's shown (25 KB instead of 55 KB; it was what the signup page's first paint waited on), and the Home screen's points check slows from every 3 s to every 15 s after 2 minutes with no change; any change, or coming back to the app, returns to 3 s. The redeem screen keeps polling every 3 s. Lighthouse thresholds stay at 0.9: GitHub's machines vary by up to 15 points between runs of the same page, so a higher bar would fail at random. Browser tests wait for `<html data-hydrated>` (set by the root layout) before tapping, since on CI's development server a tap before React woke up could be lost.
+
+### D77. The customer app feels like a phone app (depth)
+
+On the user's request the customer app (only; the counter, dashboard and admin stay flat) gets depth, all in `src/styles/depth.css` under `.app-3d` on the customer layout, from per-theme tokens (`--shadow-color`, `--shadow-soft`, `--bevel-top`, `--sheen` in `tokens.css`):
+
+- **Cards** (points, offers, rewards) sit above the page.
+- **Buttons** are raised and sink when pressed, springing back.
+- **The fuel gauge** is a recessed track with a glossy fill, and the balance glows like lit price digits.
+- **Code digits** sit in recessed windows.
+- **The tab bar** is a floating pill with a raised chip behind the current tab, plus a short vibration on Android (iPhones don't allow it from websites).
+- **Switching tabs** crossfades in 160 ms (React `<ViewTransition>`).
+
+Shadows only (no extra blur), so long lists stay smooth. Reduced motion turns the movement off but keeps the depth. The rules are unlayered so they can refine Tailwind utilities.
+
+### D78. Stopping points cheating at the counter
+
+The research's top complaint from store owners is staff typing their own number on other customers' purchases (one Toast restaurant found an account with ~50,000 points). The counter still never asks for proof, so the defences are limits and visibility, all off until the owner sets them:
+
+- **Settings → Limits at the counter.** "Most visits per customer per day" (1–50) and "Minutes between two visits of the same customer" (1–1440). Leave a box empty for no limit, which is the default, so §0 step 6 still works out of the box. `stores.daily_earn_cap` counted points, which breaks when points per visit change, so it became `max_visits_per_day`. Voided visits don't count towards either limit. The counter says why a visit was refused, and for the time limit, when the next one counts.
+- **A staff member's own phone number** (Staff page, optional; masked everywhere, never in the audit log). The counter refuses to credit it while that person is active, whoever is at the register.
+- **Overview → Unusual activity (last 7 days):** numbers credited 3+ times on one day (up to 10, linked to the customer), and cashiers with 10+ entries where more than half went to the same three numbers. Counted in Postgres (`dashboard_unusual_activity`), like the other overview numbers (D60).
+
+The research also suggested texting a receipt after each credit, so wrong credits get noticed. That needs SMS, which the user postponed to just before launch.
+
+### D79. Owner insights: is the program working?
+
+Every competitor gives owners more than counts. The Overview now also shows, all counted in Postgres (`dashboard_insights`, D60):
+
+- **Chart:** visits per day for the last 30 days. Thin bars in the brand colour, plain HTML and CSS with no chart library. Hover shows the day; screen readers get a one-line summary; "Show as a table" lists the numbers.
+- **Come back:** the share of the last 30 days' customers who came on 2+ days. It replaces the "Returning" count, whose number now appears in the detail line.
+- **Visits each:** average visits per customer.
+- **Who hasn't been back:** customers last seen 30–60, 60–90 and 90+ days ago.
+- **Rewards waiting:** a reminder when customers have enough points but haven't used their reward. The research found unused rewards are the main sign a program isn't working.
+- **Visits per cashier:** for the last 7 days.
+
+Voided visits never count. Sending "we miss you" offers to the lapsed groups is Phase 4.
+
+### D80. Optional birthday, for birthday rewards
+
+Every competitor rewards birthdays (Phase 4). The app now asks for it, never requiring it:
+
+- **Sign-up:** "Birthday" with no `*` and a small "Optional — for birthday rewards." The phone's own date picker (wheels on iPhone, calendar with years on Android). Saved after the account is created; if that fails, sign-up still succeeds and the customer can add it later.
+- **Account → Your details:** the birthday can be added or changed. While it's empty, a ★ box says "Add your birthday to get a birthday reward."
+- **Rules:** a real date from 1900, and 18 or older (matching the sign-up checkbox). Only month and day will matter for the reward; the picker asks for the year anyway.
+- **Privacy:** erased with the other details when the account is deleted (`anonymize_customer`), included in "Download my data". The Privacy Policy must mention it before launch (legal review).
+
+The reward itself (what, and when it's given) is Phase 4.
+
+### D81. Suatu feel: round fuel gauge, raised logos, "Visit us", real rewards
+
+From the user's feedback on their phones and suatu.ro (the owner's complex next to the station):
+
+- **Points as a round fuel gauge:** a 240° dial from E to F with a tick per visit; the needle swings and the arc fills behind it; the balance sits in the dial's open bottom. Coordinates are rounded to hundredths so the server's HTML and the phone match (a hydration warning otherwise).
+- **Logos look raised:** every store logo gets a two-layer drop shadow in the theme's shadow colour (flat when printed).
+- **Tagline** "Un colțișor de rai la 30 minute de Cluj" under the logo on sign-up and login (from suatu.ro; kept in Romanian as a slogan).
+- **Bambi:** the deer from the logo hops in when a reward is unlocked (the complex's resident deer).
+- **"Visit us" on Home:** the gas station (06:30–23:00) and the restaurant (10:00–22:00, wood-fired pizza, ciorbă de burtă, goulash) with Directions, Waze, Call and WhatsApp. From an optional `places` in the brand file, so other stores show nothing until they fill it in. suatu.ro also says the station isn't open yet: confirm with the owner before launch.
+- **Rewards named after real products** (seed and local data): Free Suatu coffee (100), Snack and drink from our shop (150), Wood-fired pizza at our restaurant (300). Owners can rename them in Dashboard → Rewards.
+
+### D82. Screens: one header, menu in a box, instant taps
+
+- **Counter, dashboard and admin share one header** (`AppHeader`): the logo always centred; on a phone, logo, name and buttons stack; on wider screens, name left, logo centre, buttons right.
+- **Dashboard menu in a rounded box:** on a phone it swipes sideways inside the box only (the page stays still) and the current section scrolls into view.
+- **Tab bar no longer blinks** when switching tabs: only the page content takes part in the crossfade; the bar is its own still layer (a snapshot can't show its backdrop blur).
+- **Loading placeholder** (`loading.tsx` for signed-in customer screens): grey shapes appear the moment a tab is tapped. It also lets production prefetch the tabs (dynamic routes aren't prefetched without one).
+
+### D83. One set of building blocks for every screen
+
+The user asked for every screen to line up the same way on phone, tablet and desktop, built from one shared template. Each screen used to set its own width, margins and heading styles, so they drifted apart. Now `src/components/layout/` (imported from `@/components/layout`) holds the pieces every screen is made of:
+
+- **Screen:** the page frame. Same gutters and top/bottom space everywhere. One width for single-column screens (customer app and every login), one for wide screens (counter, dashboard, admin), one for reading (legal pages).
+- **BrandHeader:** centred logo, lane stripe, title and intro, with an optional back link (customer screens, logins, legal pages; ScreenHeader and AuthScreen are thin wrappers).
+- **AppHeader** (top bar) and **SidebarLayout** (top bar + section menu + page) for the counter, dashboard and admin.
+- **PageTitle:** a dashboard/admin page's title with its buttons on the same line (after the explanation on a phone).
+- **Section:** a titled block with one heading style.
+- **ColumnSkeleton / PageSkeleton:** the grey loading shapes (customer tabs; dashboard and admin sections).
+- **Shared styles** in `globals.css`: `.section-heading`, `.panel` / `.panel-pad`, `.list-divided`, `.data-table` (with `.num` for number columns).
+- **Small shared parts:** `BackLink`, `FieldError`.
+
+The dashboard menu marks a clicked section at once, presses in, and its focus ring sits inside the box. Changing section crossfades only the page area. Settings and the counter sign now follow the same width and left edge as the other pages (the sign is centred only on paper, in the brand's light colours).
+
+Still to share later (found in the same audit): date formatting helpers (`lib/format.ts`) and a `parseForm` helper for server actions. They change behaviour-sensitive code (time zones, form errors), so they get their own step with tests.
+
+### D84. Messages: automatic texts and emails, special messages, reward rules
+
+The user wants the app to really talk to customers. Every message is the owner's choice and the customer's choice.
+
+- **Owner, Dashboard → Messages:**
+  - **Automatic messages.** For welcome, visit added, reward ready, reward used, birthday, we miss you (30/60/90 days) and points expiring, a Text and an Email switch each. Wording uses blanks ({first_name} {points} {reward} {points_to_go} {link}…), with a live preview on a sample customer, the text length and parts, and "send a test" to a phone or email.
+  - **Send a message.** A one-off to everyone who agreed to offers, people not seen in 30+ days, people with a reward waiting, or birthdays this month. It shows how many it will reach, needs a "Yes, send it" tick, and clears itself after sending.
+  - **Sent log.** Shows when, what, channel, recipient masked, and status ("not sent: turned off / already texted today / no account").
+  - All events start off.
+- **Owner, Settings → Rewards rules:** welcome bonus, birthday bonus, double-points days (2–5×, between two dates, applied in `earn_points`), and points expiry after 3–36 months without a visit, with a reminder 14 days before. All off by default. Bonuses are `adjust` entries with a note, so they never count as visits.
+- **Customer:** two text opt-ins, at sign-up and in Account: "Text me about my points" and "Text me offers". Each is recorded as a consent event. Sign-up carries the US carrier disclosure ("up to 1 text a day… Reply STOP… HELP"). Offer emails keep their existing opt-in. Offers (birthday, we miss you, special messages) need the marketing opt-in; news about the customer's own points needs the updates opt-in for texts, and nothing extra for email.
+- **Rules for texts:**
+  - only 9:00–20:00 store time (otherwise they wait for the morning);
+  - one automatic text per customer per day;
+  - offers end with "Reply STOP to opt out." (Twilio handles STOP and HELP).
+- **How it works:**
+  - **Queuing.** Database triggers (balance and visit changes, completed redemptions), `customer_joined` after sign-up, and an hourly `run_daily_messages` (each store's 9 o'clock hour) put "intents" in `messages`.
+  - **Sending.** The app writes the words at send time from the current template, so a change applies to anything still waiting and nothing is sent to a deleted account. It sends by email (existing SMTP, Resend in production) or text (Twilio over HTTPS, no SDK), and records the result, keeping the recipient only masked.
+  - **When it runs.** Right after the action that queued it, when the owner opens Messages, and from a secret-protected `/api/cron/outbox`.
+  - **Without Twilio settings** texts stay on the laptop (`/dev/texts`, development only).
+- **Counter:** "Ask every customer: Do you have Suatu Rewards?" under Add a visit. Staff forgetting to ask is the main reason programs fade.
+
+### D85. Company credit: text only, "Powered by BeHappy"
+
+The user wants the company to stay in the background: no BeHappy logo anywhere in the app.
+
+- Every screen's footer (customer app, counter, dashboard, admin) shows one small line, "Powered by BeHappy", from the shared `PoweredBy` component.
+- "BeHappy" is set in its own serif italic (Instrument Serif, self-hosted by next/font, not preloaded), different from every store's fonts so it never reads as the store's brand. It uses the screen's muted ink, so it suits light and dark screens.
+- The badge images are no longer served: `public/platform/` is gone and `pnpm brand:sync` no longer copies `brand/behappy/` (the originals there stay untouched).
+- Supersedes the badge part of §5 and D-notes that mention `powered-by-dark.svg` / `powered-by-light.svg`.
+
+### D86. Dashboard and counter install like apps
+
+Added to an iPhone home screen, the customer app opened full screen but the owner dashboard opened in Safari with the address bar.
+
+- The dashboard and the counter now have web app manifests of their own (`/dashboard/<slug>/manifest.webmanifest`, `/staff/<slug>/manifest.webmanifest`), built with the customer app's by one helper, `storeManifest` (src/brands/manifest.ts).
+- Names under the icon: "Suatu Owner" and "Suatu Counter" (the customer app stays "Suatu"). They use the same store icon and the light theme colour.
+- Scope "/", so the dashboard's "Counter screen" button stays inside the app.
+- On these light screens the iPhone status bar is "default" (dark clock); the dark customer app keeps "black-translucent".
+- A home-screen app keeps its own login, separate from Safari, so it asks to log in once. An icon added before this change must be removed and added again.
+
+### D87. Instant screens: other tabs ready in memory
+
+The user found changing tabs slow (about 0.8 s: the server prepares the screen, then the phone fetches its code, then draws it) and asked for screens to be ready before the tap, kept fresh, without storing data in the app.
+
+- `useWarmRoutes` (src/components/layout) is used by the customer tab bar and the dashboard menu. It fetches every other screen in full in the background (`router.prefetch`, kind "full"), into the page's memory only: nothing is written to the phone.
+- **When it fetches:**
+  - 2 s after the app opens, when the phone is idle, so the first screen isn't slowed (performance budget);
+  - again after every screen change;
+  - every 15 s for copies older than 30 s (`staleTimes.static: 30` in next.config.ts);
+  - straight away when Home sees the points change or a code is redeemed (`announceDataChanged`).
+- Paused while the app is in the background; coming back refreshes everything.
+- The menu links don't prefetch on their own (`prefetch={false}`), so nothing is fetched twice.
+- **Measured on a production build:** a tab tap went from about 820 ms to 65–115 ms. A visit added at the counter showed in History as soon as Home noticed it (within 3 s). `tests/prod/performance.spec.ts` checks that a tab tap sends no request to the server.
+- Development mode doesn't prefetch, so the laptop's Wi-Fi version still waits; the online version is instant.

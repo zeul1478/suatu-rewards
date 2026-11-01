@@ -3,13 +3,14 @@ import { expect, staffLogIn, STORE, test } from "./support/fixtures";
 /* The brand kit wired into the app (brand/suatu/README.md, spec §5/§9). */
 
 test.describe("branding", () => {
-  test("customer screens: logo, favicon, home-screen icon, link preview, behappy credit", async ({
+  test("customer screens: logo, favicon, home-screen icon, link preview, the company credit", async ({
     page,
     request,
   }) => {
     await page.goto(`/s/${STORE}/login`);
     await expect(page.getByRole("img", { name: "Suatu" }).first()).toBeVisible();
-    await expect(page.getByRole("img", { name: "Powered by behappy" })).toBeVisible();
+    await expect(page.getByText("Powered by BeHappy")).toBeVisible();
+    await expect(page.getByRole("img", { name: /behappy/i })).toHaveCount(0);
 
     const head = page.locator("head");
     await expect(head.locator('link[rel="icon"][type="image/png"]')).toHaveAttribute(
@@ -57,7 +58,40 @@ test.describe("branding", () => {
     }
   });
 
-  test("staff screen: the green logo for light screens and the light behappy credit", async ({
+  test("dashboard and counter install as apps of their own (D86)", async ({ page, request }) => {
+    for (const [area, name, shortName] of [
+      ["dashboard", "Suatu Dashboard", "Suatu Owner"],
+      ["staff", "Suatu Counter", "Suatu Counter"],
+    ] as const) {
+      const url = `/${area}/${STORE}/manifest.webmanifest`;
+      const response = await request.get(url);
+      expect(response.headers()["content-type"]).toContain("application/manifest+json");
+      const manifest = await response.json();
+      expect(manifest).toMatchObject({
+        name,
+        short_name: shortName,
+        start_url: `/${area}/${STORE}`,
+        scope: "/",
+        display: "standalone",
+      });
+      for (const icon of manifest.icons) {
+        expect((await request.get(icon.src)).status(), icon.src).toBe(200);
+      }
+
+      // The page links it, and on an iPhone the clock stays readable on the light screen.
+      await page.goto(`/${area}/${STORE}/login`);
+      await expect(page.locator('head link[rel="manifest"]')).toHaveAttribute("href", url);
+      await expect(
+        page.locator('head meta[name="apple-mobile-web-app-status-bar-style"]'),
+      ).toHaveAttribute("content", "default");
+      await expect(page.locator('head meta[name="apple-mobile-web-app-title"]')).toHaveAttribute(
+        "content",
+        shortName,
+      );
+    }
+  });
+
+  test("staff screen: the green logo for light screens and the text-only company credit", async ({
     page,
   }) => {
     await staffLogIn(page, "0000", "0000");
@@ -66,10 +100,7 @@ test.describe("branding", () => {
       "src",
       "/stores/suatu/png/complex-turistic/logo-on-light.webp",
     );
-    await expect(page.getByRole("img", { name: "Powered by behappy" })).toHaveAttribute(
-      "src",
-      "/platform/behappy/powered-by-light.svg",
-    );
+    await expect(page.getByText("Powered by BeHappy")).toBeVisible();
   });
 
   test("brand icons follow the theme: lime details on dark", async ({ page }) => {

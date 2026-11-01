@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
-import { brandFor } from "@/brands";
-import { ScreenHeader } from "@/components/customer/ScreenHeader";
+import { TabPage } from "@/components/layout";
 import { Icon } from "@/components/ui/icons/Icon";
 import { SubmitButton } from "@/components/ui/SubmitButton";
 import { storeUrl } from "@/lib/storeUrl";
@@ -30,8 +29,7 @@ export default async function RewardsPage({ params }: PageProps<"/s/[storeSlug]/
   const balance = status.progress.balance;
 
   return (
-    <main className="screen-gutter mx-auto flex w-full max-w-md flex-col gap-6 pt-[max(var(--space-8),env(safe-area-inset-top))] pb-[var(--space-8)]">
-      <ScreenHeader brand={brandFor(store.slug)} title={t("title")} />
+    <TabPage title={t("title")}>
       <p className="text-ink-muted">{t("balance", { balance })}</p>
 
       {rewards.length === 0 ? (
@@ -42,10 +40,7 @@ export default async function RewardsPage({ params }: PageProps<"/s/[storeSlug]/
             const affordable = balance >= reward.costPoints;
             const pointsShort = reward.costPoints - balance;
             return (
-              <li
-                key={reward.id}
-                className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-line bg-raised p-5"
-              >
+              <li key={reward.id} className="card panel panel-pad flex flex-col gap-4">
                 <div className="flex items-center gap-3">
                   <Icon
                     name="coffee"
@@ -85,6 +80,6 @@ export default async function RewardsPage({ params }: PageProps<"/s/[storeSlug]/
           })}
         </ul>
       )}
-    </main>
+    </TabPage>
   );
 }

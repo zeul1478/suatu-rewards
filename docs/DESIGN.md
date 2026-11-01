@@ -28,13 +28,13 @@ Sizes: base 16 px; inputs never below 16 px (stops iOS zoom). Headings scale 20 
 
 ## Brand system (reuse for other stores and apps)
 
-| What                                                        | Where                                                                  |
-| ----------------------------------------------------------- | ---------------------------------------------------------------------- |
-| Original logo, icons, badges (owner's files, never edited)  | `brand/suatu/`, `brand/suatu/icons/`, `brand/behappy/`                 |
-| Copies the app serves                                       | `public/stores/suatu/`, `public/platform/behappy/` (`pnpm brand:sync`) |
-| Store look: names, two palettes, fonts, which file is which | `src/brands/suatu.ts`                                                  |
-| Icons as a component                                        | `<Icon name="gauge" />` (`pnpm icons` regenerates from the kit)        |
-| Logo                                                        | `<BrandLogo kind="wordmark"                                            | "lockup" | "mark" />`, dark/light picked by theme |
+| What                                                        | Where                                                           |
+| ----------------------------------------------------------- | --------------------------------------------------------------- |
+| Original logo, icons, badges (owner's files, never edited)  | `brand/suatu/`, `brand/suatu/icons/`, `brand/behappy/`          |
+| Copies the app serves                                       | `public/stores/suatu/` (`pnpm brand:sync`)                      |
+| Store look: names, two palettes, fonts, which file is which | `src/brands/suatu.ts`                                           |
+| Icons as a component                                        | `<Icon name="gauge" />` (`pnpm icons` regenerates from the kit) |
+| Logo                                                        | `<BrandLogo kind="wordmark"                                     | "lockup" | "mark" />`, dark/light picked by theme |
 
 Logo use (brand/suatu/README.md): **lockup** on sign-up, login and password screens; **wordmark** in every other header (light version on the staff screen); never redrawn. Icons per the icons README: gauge on the points card, coffee for the reward, timer on the countdown, user/phone/mail/lock on Account, add-visit/ticket/user/logout at the counter, eye/eye-off in password fields.
 

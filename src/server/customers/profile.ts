@@ -7,7 +7,13 @@ import type { CurrentCustomer } from "./currentCustomer";
 import { sendEmailVerification } from "./emailVerification";
 import { redactPii } from "@/lib/mask";
 
-export type ProfileInput = { firstName: string; lastName: string; email: string };
+export type ProfileInput = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  /** "YYYY-MM-DD", or null when not given. */
+  birthday: string | null;
+};
 
 export type ProfileResult =
   { ok: true; emailChanged: boolean } | { ok: false; error: "emailTaken" };
@@ -16,6 +22,7 @@ export type ProfileResult =
  * Edit name and email (spec §4.4). A new email must be unique, is marked unconfirmed, and gets
  * a confirmation link; the login (Supabase Auth) gets the new email too, so password resets go
  * there. The phone number can't be changed here: it identifies the customer at the counter.
+ * The optional birthday (for birthday rewards) is saved with the rest.
  */
 export async function updateProfile(input: {
   store: Store;
@@ -52,6 +59,7 @@ export async function updateProfile(input: {
       first_name: profile.firstName,
       last_name: profile.lastName,
       email: profile.email,
+      birthday: profile.birthday,
       ...(emailChanged ? { email_verified_at: null } : {}),
     })
     .eq("id", customer.id);
@@ -65,7 +73,10 @@ export async function updateProfile(input: {
     actorType: "customer",
     actorId: customer.id,
     action: "customer.profile_updated",
-    details: { email_changed: emailChanged },
+    details: {
+      email_changed: emailChanged,
+      birthday_changed: profile.birthday !== customer.birthday,
+    },
   });
 
   if (emailChanged) {
@@ -115,4 +126,40 @@ export async function setMarketingConsent(
     p_source: "account",
   });
   if (error) throw new Error(`Consent update failed: ${error.message}`);
+}
+
+export type SmsConsents = { updates: boolean; marketing: boolean };
+
+/** The customer's two text opt-ins at this store (D84). */
+export async function getSmsConsents(
+  store: Store,
+  customer: CurrentCustomer,
+): Promise<SmsConsents> {
+  const { data } = await supabaseAdmin()
+    .from("store_customers")
+    .select("sms_updates_consent, sms_marketing_consent")
+    .eq("store_id", store.id)
+    .eq("customer_id", customer.id)
+    .maybeSingle();
+  return {
+    updates: data?.sms_updates_consent ?? false,
+    marketing: data?.sms_marketing_consent ?? false,
+  };
+}
+
+/** Point texts or offer texts on/off; recorded as a consent event from the Account screen. */
+export async function setSmsConsent(
+  store: Store,
+  customer: CurrentCustomer,
+  kind: "sms_updates" | "sms_marketing",
+  granted: boolean,
+): Promise<void> {
+  const { error } = await supabaseAdmin().rpc("set_sms_consent", {
+    p_store_id: store.id,
+    p_customer_id: customer.id,
+    p_kind: kind,
+    p_granted: granted,
+    p_source: "account",
+  });
+  if (error) throw new Error(`Text consent update failed: ${error.message}`);
 }

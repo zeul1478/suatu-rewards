@@ -35,12 +35,13 @@ export default async function CustomerLayout({ children, params }: LayoutProps<"
     <div
       data-theme="system"
       style={brandThemeStyle(brandFor(store.slug))}
-      // With a tab bar on screen, leave room for it so the last content and footer stay visible.
-      className="app-backdrop flex min-h-dvh flex-col text-ink has-[.bottom-nav]:pb-[calc(3.5rem+env(safe-area-inset-bottom))]"
+      // With a tab bar on screen, leave room for it (it floats 8px up, depth.css) so the last
+      // content and footer stay visible. app-3d: the customer app's depth (depth.css).
+      className="app-backdrop app-3d flex min-h-dvh flex-col text-ink has-[.bottom-nav]:pb-[calc(4.5rem+env(safe-area-inset-bottom))]"
     >
       <ServiceWorker storeSlug={store.slug} scope={storeUrl(store.slug)} />
       <div className="flex-1">{children}</div>
-      <PoweredBy theme="system" />
+      <PoweredBy />
     </div>
   );
 }

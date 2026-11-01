@@ -22,6 +22,9 @@ const nextConfig: NextConfig = {
   // Lets a phone on the same Wi-Fi load dev assets from http://<laptop-ip>:3000.
   allowedDevOrigins: [...lanAddresses(), ...shareHosts],
   experimental: {
+    // Screens preloaded in the background (useWarmRoutes, D87) count as fresh for 30 s; then
+    // they're fetched again, so a tab never shows data more than half a minute old.
+    staleTimes: { static: 30 },
     serverActions: {
       // Forms (server actions) only accept their own address unless the share link is listed.
       allowedOrigins: shareHosts,

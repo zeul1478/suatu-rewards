@@ -79,31 +79,25 @@ export default async function CustomersPage({
           <p className="text-sm text-ink-muted" aria-live="polite">
             {t("showing", { from: (pageNumber - 1) * CUSTOMERS_PAGE_SIZE + 1, to: shownTo, total })}
           </p>
-          <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-line bg-raised">
-            <table className="w-full min-w-[36rem] text-left">
-              <thead className="border-b border-line text-sm text-ink-muted">
+          <div className="panel overflow-x-auto">
+            <table className="data-table min-w-[36rem]">
+              <thead>
                 <tr>
-                  <th scope="col" className="px-4 py-3 font-semibold">
-                    {t("colCustomer")}
-                  </th>
-                  <th scope="col" className="px-4 py-3 font-semibold">
-                    {t("colPhone")}
-                  </th>
-                  <th scope="col" className="px-4 py-3 text-right font-semibold">
+                  <th scope="col">{t("colCustomer")}</th>
+                  <th scope="col">{t("colPhone")}</th>
+                  <th scope="col" className="num">
                     {t("colPoints")}
                   </th>
-                  <th scope="col" className="px-4 py-3 text-right font-semibold">
+                  <th scope="col" className="num">
                     {t("colVisits")}
                   </th>
-                  <th scope="col" className="px-4 py-3 font-semibold">
-                    {t("colLastVisit")}
-                  </th>
+                  <th scope="col">{t("colLastVisit")}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-line">
+              <tbody>
                 {rows.map((row) => (
                   <tr key={row.id}>
-                    <td className="px-4 py-2">
+                    <td>
                       <Link
                         href={storeUrl(store.slug, `/customers/${row.id}`, "dashboard")}
                         className="flex min-h-[var(--target-min)] items-center font-semibold text-accent underline-offset-4 hover:underline"
@@ -111,12 +105,10 @@ export default async function CustomersPage({
                         {row.name ?? t("notSignedUp")}
                       </Link>
                     </td>
-                    <td className="price-digits px-4 py-2 whitespace-nowrap">{row.phone}</td>
-                    <td className="price-digits px-4 py-2 text-right">{row.points}</td>
-                    <td className="price-digits px-4 py-2 text-right">{row.visits}</td>
-                    <td className="px-4 py-2 whitespace-nowrap text-ink-muted">
-                      {row.lastVisit ?? "—"}
-                    </td>
+                    <td className="price-digits whitespace-nowrap">{row.phone}</td>
+                    <td className="price-digits num">{row.points}</td>
+                    <td className="price-digits num">{row.visits}</td>
+                    <td className="whitespace-nowrap text-ink-muted">{row.lastVisit ?? "—"}</td>
                   </tr>
                 ))}
               </tbody>

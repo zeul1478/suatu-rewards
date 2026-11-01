@@ -62,7 +62,7 @@ export async function getStoreForAdmin(storeId: string): Promise<AdminStore | nu
   const { data, error } = await supabaseAdmin()
     .from("stores")
     .select(
-      "id, slug, name, timezone, locale, points_per_visit, status, country, currency, created_at",
+      "id, slug, name, timezone, locale, points_per_visit, max_visits_per_day, min_minutes_between_visits, status, country, currency, created_at",
     )
     .eq("id", storeId)
     .maybeSingle();
@@ -75,6 +75,8 @@ export async function getStoreForAdmin(storeId: string): Promise<AdminStore | nu
     timezone: data.timezone,
     locale: data.locale,
     pointsPerVisit: data.points_per_visit,
+    maxVisitsPerDay: data.max_visits_per_day,
+    minMinutesBetweenVisits: data.min_minutes_between_visits,
     status: data.status as StoreStatus,
     country: data.country,
     currency: data.currency,

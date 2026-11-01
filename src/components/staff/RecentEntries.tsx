@@ -14,7 +14,7 @@ export async function RecentEntries({ entries, voidAction }: RecentEntriesProps)
   if (entries.length === 0) return <p className="text-ink-muted">{t("recentEmpty")}</p>;
 
   return (
-    <ul className="flex flex-col divide-y divide-line border-y border-line">
+    <ul className="list-divided">
       {entries.map((entry) => (
         <li key={entry.id} className="flex min-h-14 items-center gap-3 py-2">
           <span className="price-digits shrink-0 whitespace-nowrap text-ink-muted">

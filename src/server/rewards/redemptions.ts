@@ -4,6 +4,7 @@ import type { StaffMember } from "@/server/staff/session";
 import type { Store } from "@/server/stores/getStore";
 import { supabaseAdmin } from "@/server/supabase/admin";
 import { clearFailures, lockedUntil, minutesLeft, recordFailure } from "@/server/throttle";
+import { sendQueuedSoon } from "@/server/messages/outbox";
 
 /*
  * Redemption (§0 steps 7–9): the customer taps Redeem and gets a 6-digit code valid 5 minutes;
@@ -106,6 +107,7 @@ export async function redeemCode(input: {
   if (error || !data) throw new Error(`complete_redemption failed: ${error?.message}`);
 
   await clearFailures("redeem_code", input.staff.id);
+  sendQueuedSoon();
   const row = data as unknown as {
     reward_name: string;
     phone_e164: string | null;

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { brandFor } from "@/brands";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { OfferCard } from "@/components/customer/OfferCard";
+import { PlaceCard } from "@/components/customer/PlaceCard";
 import { PointsCard } from "@/components/customer/PointsCard";
-import { ScreenHeader } from "@/components/customer/ScreenHeader";
+import { Section, TabPage } from "@/components/layout";
 import { FormAlert } from "@/components/ui/FormAlert";
 import { storeUrl } from "@/lib/storeUrl";
 import { requireCustomer } from "@/server/customers/currentCustomer";
@@ -17,7 +19,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("metaTitle") };
 }
 
-// Customer home (§11): greeting, live points card, Redeem when a reward is unlocked, offers.
+// Customer home (§11): greeting, live points card, Redeem when a reward is unlocked, offers, and
+// the brand's "Visit us" cards (station, restaurant) when its brand file has them.
 export default async function CustomerHomePage({
   params,
   searchParams,
@@ -26,6 +29,7 @@ export default async function CustomerHomePage({
   const { passwordChanged } = await searchParams;
   const store = await getStoreOr404(storeSlug);
   const customer = await requireCustomer(store.slug);
+  const brand = brandFor(store.slug);
   const [status, offers, t, tLogin] = await Promise.all([
     getCustomerStatus(store, customer),
     getCurrentOffers(store),
@@ -41,12 +45,7 @@ export default async function CustomerHomePage({
   });
 
   return (
-    <main className="screen-gutter mx-auto flex w-full max-w-md flex-col gap-6 pt-[max(var(--space-8),env(safe-area-inset-top))] pb-[var(--space-8)]">
-      <ScreenHeader
-        brand={brandFor(store.slug)}
-        title={t("greeting", { name: customer.firstName })}
-      />
-
+    <TabPage title={t("greeting", { name: customer.firstName })}>
       {passwordChanged ? <FormAlert tone="success">{tLogin("passwordChanged")}</FormAlert> : null}
 
       <PointsCard
@@ -55,16 +54,11 @@ export default async function CustomerHomePage({
         redeemHref={storeUrl(store.slug, "/redeem")}
         pointsPerVisit={store.pointsPerVisit}
         redeemAction={redeemAction.bind(null, store.slug)}
+        mascot={<BrandLogo brand={brand} kind="mark" theme="system" height={56} />}
       />
 
       {offers.length > 0 ? (
-        <section aria-labelledby="offers-heading" className="flex flex-col gap-3">
-          <h2
-            id="offers-heading"
-            className="font-display text-lg font-semibold tracking-[0.18em] text-ink-muted uppercase"
-          >
-            {t("offersTitle")}
-          </h2>
+        <Section id="offers" title={t("offersTitle")}>
           {offers.map((offer) => (
             <OfferCard
               key={offer.id}
@@ -80,8 +74,38 @@ export default async function CustomerHomePage({
               }
             />
           ))}
-        </section>
+        </Section>
       ) : null}
-    </main>
+
+      {brand.places ? (
+        <Section id="visit" title={t("visitTitle")}>
+          {(
+            [
+              ["station", brand.places.station, "fuel"],
+              ["restaurant", brand.places.restaurant, "coffee"],
+            ] as const
+          ).map(([kind, place, icon]) =>
+            place ? (
+              <PlaceCard
+                key={kind}
+                place={place}
+                title={t(kind === "station" ? "stationTitle" : "restaurantTitle")}
+                icon={icon}
+                labels={{
+                  openDaily: t("openDaily", { hours: place.hours }),
+                  tryHere: place.highlights?.length
+                    ? t("tryHere", { items: place.highlights.join(" · ") })
+                    : null,
+                  directions: t("directions"),
+                  waze: t("waze"),
+                  call: t("call"),
+                  whatsapp: t("whatsapp"),
+                }}
+              />
+            ) : null,
+          )}
+        </Section>
+      ) : null}
+    </TabPage>
   );
 }

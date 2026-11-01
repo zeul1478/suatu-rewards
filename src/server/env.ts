@@ -19,6 +19,15 @@ const schema = z.object({
     .default("false")
     .transform((value) => value === "true"),
   EMAIL_FROM: z.string().default("Suatu Rewards <no-reply@suatu.test>"),
+  /**
+   * Twilio, for texts (D84). Without these, texts are only recorded (the dev "texts" page shows
+   * them), which is how local runs and tests work. TWILIO_FROM: the Twilio phone number, +1….
+   */
+  TWILIO_ACCOUNT_SID: z.string().optional(),
+  TWILIO_AUTH_TOKEN: z.string().optional(),
+  TWILIO_FROM: z.string().optional(),
+  /** Protects /api/cron/outbox, which a scheduled job calls to send queued messages. */
+  CRON_SECRET: z.string().min(24).optional(),
   /** Failed logins allowed per IP address in 15 minutes before that IP is paused (§4.2). */
   LOGIN_MAX_FAILURES_PER_IP: z.coerce.number().int().positive().default(30),
 });

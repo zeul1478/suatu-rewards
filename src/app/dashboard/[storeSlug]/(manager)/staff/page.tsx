@@ -5,10 +5,16 @@ import {
   AddStaffForm,
   ResetStaffPasswordForm,
   StaffActiveButton,
+  StaffPhoneForm,
 } from "@/components/dashboard/StaffForms";
 import { requireManager } from "@/server/dashboard/access";
 import { listStaff } from "@/server/dashboard/staffAdmin";
-import { addStaffAction, resetStaffPasswordAction, setStaffActiveAction } from "../../actions";
+import {
+  addStaffAction,
+  resetStaffPasswordAction,
+  setStaffActiveAction,
+  setStaffPhoneAction,
+} from "../../actions";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("dashboard.staff");
@@ -33,7 +39,7 @@ export default async function StaffPage({ params }: PageProps<"/dashboard/[store
           <li key={person.id}>
             <section
               aria-label={person.displayName}
-              className={`flex flex-col gap-3 rounded-[var(--radius-lg)] border border-line p-5 ${person.active ? "bg-raised" : "bg-sunken"}`}
+              className={`panel panel-pad flex flex-col gap-3 ${person.active ? "" : "bg-sunken"}`}
             >
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h2 className="font-display text-2xl font-bold">
@@ -55,6 +61,12 @@ export default async function StaffPage({ params }: PageProps<"/dashboard/[store
                       ? t("lastLogin", { when: person.lastLogin })
                       : t("neverLoggedIn")}
               </p>
+              <StaffPhoneForm
+                action={setStaffPhoneAction.bind(null, store.slug, person.id)}
+                name={person.displayName}
+                phone={person.phone}
+                idPrefix={`phone-${person.id.slice(0, 8)}`}
+              />
               {person.isYou ? null : (
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   {person.active ? (
@@ -87,10 +99,7 @@ export default async function StaffPage({ params }: PageProps<"/dashboard/[store
         aria-labelledby="add-staff-heading"
         className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-dashed border-line-strong p-5"
       >
-        <h2
-          id="add-staff-heading"
-          className="font-display text-xl font-semibold tracking-wide uppercase"
-        >
+        <h2 id="add-staff-heading" className="section-heading">
           {t("addTitle")}
         </h2>
         <AddStaffForm action={addStaffAction.bind(null, store.slug)} />

@@ -12,7 +12,8 @@ export const suatu: Brand = {
   name: "Suatu",
   programName: "Suatu Rewards",
   shortName: "Suatu",
-  tagline: "Fuel · Shop · Rewards",
+  // From suatu.ro ("A little corner of paradise 30 minutes from Cluj").
+  tagline: "Un colțișor de rai la 30 minute de Cluj",
   fonts: { display: "space-grotesk", body: "inter" },
   colors: {
     dark: {
@@ -69,4 +70,22 @@ export const suatu: Brand = {
     maskable512: logo("icon-maskable-512.png"),
   },
   socialImage: logo("og-image.png"),
+  // From suatu.ro (October 2026). The site lists the station's hours but elsewhere says it isn't
+  // open yet: confirm with the owner before launch.
+  places: {
+    station: {
+      hours: "06:30–23:00",
+      address: "Suatu nr. 3, DN16, județul Cluj",
+      mapsQuery: "Complex Turistic Suatu",
+      phone: "+40770781826",
+    },
+    restaurant: {
+      hours: "10:00–22:00",
+      address: "Suatu nr. 3, DN16, județul Cluj",
+      mapsQuery: "Complex Turistic Suatu",
+      phone: "+40770781826",
+      whatsapp: true,
+      highlights: ["Pizza pe vatră", "Ciorbă de burtă", "Gulaș transilvănean"],
+    },
+  },
 };

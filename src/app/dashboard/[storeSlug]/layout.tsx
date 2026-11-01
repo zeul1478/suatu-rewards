@@ -2,13 +2,20 @@ import type { Metadata, Viewport } from "next";
 import { brandFor, brandThemeStyle } from "@/brands";
 import { brandMetadata } from "@/brands/metadata";
 import { PoweredBy } from "@/components/brand/PoweredBy";
+import { storeUrl } from "@/lib/storeUrl";
 import { getStoreOr404 } from "@/server/stores/getStore";
 
 export async function generateMetadata({
   params,
 }: LayoutProps<"/dashboard/[storeSlug]">): Promise<Metadata> {
+  const { storeSlug } = await params;
+  const brand = brandFor(storeSlug);
   return {
-    ...brandMetadata(brandFor((await params).storeSlug)),
+    ...brandMetadata(brand, {
+      manifest: storeUrl(storeSlug, "/manifest.webmanifest", "dashboard"),
+      appleTitle: `${brand.shortName} Owner`,
+      statusBar: "default",
+    }),
     robots: { index: false, follow: false },
   };
 }
@@ -34,7 +41,7 @@ export default async function DashboardLayout({
     >
       <div className="flex flex-1 flex-col">{children}</div>
       <div className="print:hidden">
-        <PoweredBy theme="light" />
+        <PoweredBy />
       </div>
     </div>
   );

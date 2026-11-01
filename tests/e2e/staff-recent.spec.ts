@@ -1,7 +1,7 @@
 import { randomInt } from "node:crypto";
 import { testCustomer, testPhone } from "../support/data";
 import { closeDb, createTempStaff, db } from "../support/db";
-import { expect, signUp, STORE, staffLogIn, test } from "./support/fixtures";
+import { expect, newDevice, signUp, staffLogIn, STORE, test } from "./support/fixtures";
 
 /* Milestone 6: recent entries and Void at the counter (spec §6, §11). */
 
@@ -44,7 +44,7 @@ test("recent entries list this cashier's visits, newest first, phones masked", a
 
 test("Void undoes a mistaken visit; the customer's phone shows it", async ({ page, browser }) => {
   const customer = testCustomer();
-  const customerPage = await (await browser.newContext()).newPage();
+  const customerPage = await (await newDevice(browser)).newPage();
   await signUp(customerPage, customer);
 
   await counterAs(page);
@@ -59,7 +59,11 @@ test("Void undoes a mistaken visit; the customer's phone shows it", async ({ pag
   await expect(row.getByRole("button")).toHaveCount(0);
 
   await expect(customerPage.getByTestId("points-balance")).toHaveText("5", { timeout: 10_000 });
-  await customerPage.goto(`/s/${STORE}/history`);
+  // Through the tab, as a customer would: the preloaded History is refreshed by the change.
+  await customerPage
+    .getByRole("navigation")
+    .getByRole("link", { name: "History", exact: true })
+    .click();
   await expect(customerPage.getByText("Visit cancelled by the store")).toBeVisible();
   await customerPage.context().close();
 });
@@ -84,7 +88,7 @@ test("another cashier's entries aren't listed", async ({ page, browser }) => {
   await counterAs(page);
   await addVisit(page, testPhone().typed);
 
-  const other = await (await browser.newContext()).newPage();
+  const other = await (await newDevice(browser)).newPage();
   await counterAs(other);
   await expect(other.getByText(/No visits added yet/)).toBeVisible();
   await other.context().close();

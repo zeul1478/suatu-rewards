@@ -8,7 +8,7 @@ export function ScreenList() {
       title="All screens"
       note="Every screen of the app. Each one becomes a link once its milestone is built."
     >
-      <ul className="flex flex-col divide-y divide-line border-y border-line">
+      <ul className="list-divided">
         {devScreens.map((screen) => {
           const ready = screen.milestone <= CURRENT_MILESTONE;
           return (

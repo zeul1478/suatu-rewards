@@ -1,0 +1,80 @@
+/*
+ * The owner's visits chart (VisitsChart, D79): thin bars in the brand colour, a 2px gap
+ * between them, rounded tops on a shared baseline, a recessive baseline and top value.
+ */
+
+@layer components {
+  .visits-chart {
+    position: relative;
+    height: 8rem;
+    padding-top: 1.25rem;
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  .visits-chart-max {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  .visits-chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 100%;
+  }
+
+  .visits-chart-bar {
+    position: relative;
+    flex: 1;
+    height: 100%;
+  }
+
+  /* The bar itself; the whole column is the hover target, so thin bars are easy to hit. */
+  .visits-chart-bar::before {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: max(var(--h), 2px);
+    border-radius: 4px 4px 0 0;
+    background: var(--brand);
+  }
+
+  .visits-chart-bar:hover::before {
+    background: var(--text-accent);
+  }
+
+  .visits-chart-bar:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    z-index: 1;
+    transform: translateX(-50%);
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface-raised);
+    color: var(--text-primary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+}
+
+/* Labels near the edges open inwards so they stay on screen. */
+@layer components {
+  .visits-chart-bar:nth-child(-n + 6):hover::after {
+    left: 0;
+    transform: none;
+  }
+
+  .visits-chart-bar:nth-last-child(-n + 6):hover::after {
+    right: 0;
+    left: auto;
+    transform: none;
+  }
+}

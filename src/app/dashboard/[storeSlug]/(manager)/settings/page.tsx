@@ -4,12 +4,14 @@ import Link from "next/link";
 import { brandFor } from "@/brands";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { PageTitle } from "@/components/dashboard/PageTitle";
+import { RewardRulesForm } from "@/components/dashboard/RewardRulesForm";
 import { SettingsForm } from "@/components/dashboard/SettingsForm";
 import { Icon } from "@/components/ui/icons/Icon";
 import { storeUrl } from "@/lib/storeUrl";
 import { requireManager } from "@/server/dashboard/access";
+import { getRewardRules } from "@/server/dashboard/rewardRules";
 import { listRewards } from "@/server/dashboard/rewards";
-import { saveSettingsAction } from "../../actions";
+import { saveRewardRulesAction, saveSettingsAction } from "../../actions";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("dashboard.settings");
@@ -17,7 +19,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * Settings (§11): points per visit, reward costs (edited on Rewards), branding preview. The look
+ * Settings (§11): points per visit, limits at the counter (D78), reward costs (edited on
+ * Rewards), branding preview. The look
  * itself lives in code (src/brands/<store>.ts, DECISIONS D33), so here it's shown, not edited.
  */
 export default async function SettingsPage({
@@ -25,8 +28,9 @@ export default async function SettingsPage({
 }: PageProps<"/dashboard/[storeSlug]/settings">) {
   const { storeSlug } = await params;
   const { store } = await requireManager(storeSlug);
-  const [rewards, t] = await Promise.all([
+  const [rewards, rules, t] = await Promise.all([
     listRewards(store),
+    getRewardRules(store),
     getTranslations("dashboard.settings"),
   ]);
   const brand = brandFor(store.slug);
@@ -42,30 +46,27 @@ export default async function SettingsPage({
     <>
       <PageTitle title={t("title")} />
 
-      <section
-        aria-labelledby="points-heading"
-        className="flex max-w-xl flex-col gap-4 rounded-[var(--radius-lg)] border border-line bg-raised p-5"
-      >
-        <h2
-          id="points-heading"
-          className="font-display text-xl font-semibold tracking-wide uppercase"
-        >
+      <section aria-labelledby="points-heading" className="panel panel-pad flex flex-col gap-4">
+        <h2 id="points-heading" className="section-heading">
           {t("pointsTitle")}
         </h2>
         <SettingsForm
           action={saveSettingsAction.bind(null, store.slug)}
           pointsPerVisit={store.pointsPerVisit}
+          maxVisitsPerDay={store.maxVisitsPerDay}
+          minMinutesBetweenVisits={store.minMinutesBetweenVisits}
         />
       </section>
 
-      <section
-        aria-labelledby="costs-heading"
-        className="flex max-w-xl flex-col gap-3 rounded-[var(--radius-lg)] border border-line bg-raised p-5"
-      >
-        <h2
-          id="costs-heading"
-          className="font-display text-xl font-semibold tracking-wide uppercase"
-        >
+      <section aria-labelledby="rules-heading" className="panel panel-pad flex flex-col gap-4">
+        <h2 id="rules-heading" className="section-heading">
+          {t("rulesTitle")}
+        </h2>
+        <RewardRulesForm action={saveRewardRulesAction.bind(null, store.slug)} rules={rules} />
+      </section>
+
+      <section aria-labelledby="costs-heading" className="panel panel-pad flex flex-col gap-3">
+        <h2 id="costs-heading" className="section-heading">
           {t("costsTitle")}
         </h2>
         <ul className="flex flex-col gap-1">
@@ -87,14 +88,8 @@ export default async function SettingsPage({
         </Link>
       </section>
 
-      <section
-        aria-labelledby="brand-heading"
-        className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-line bg-raised p-5"
-      >
-        <h2
-          id="brand-heading"
-          className="font-display text-xl font-semibold tracking-wide uppercase"
-        >
+      <section aria-labelledby="brand-heading" className="panel panel-pad flex flex-col gap-4">
+        <h2 id="brand-heading" className="section-heading">
           {t("brandTitle")}
         </h2>
         <p className="text-ink-muted">{t("brandIntro", { program: brand.programName })}</p>

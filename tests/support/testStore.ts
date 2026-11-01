@@ -72,6 +72,10 @@ export async function cleanUpTestData(): Promise<void> {
            or (c.email like 'test-%@example.test');
     `);
     await client.query(`
+      delete from public.messages where store_id in (select id from test_stores)
+        or customer_id in (select id from test_customers);
+      delete from public.broadcasts where store_id in (select id from test_stores);
+      delete from public.message_templates where store_id in (select id from test_stores);
       delete from public.redemptions where store_id in (select id from test_stores)
         or customer_id in (select id from test_customers);
       delete from public.point_transactions where store_id in (select id from test_stores)

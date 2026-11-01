@@ -1,5 +1,6 @@
 import "server-only";
 import { hash } from "@node-rs/argon2";
+import { maskPhone } from "@/lib/phone";
 import { recordAudit } from "@/server/audit";
 import { checkNewStaffPassword, type StaffPasswordIssue } from "@/server/staff/passwordPolicy";
 import type { Store } from "@/server/stores/getStore";
@@ -24,12 +25,16 @@ export type StaffRow = {
   mustChangePassword: boolean;
   lastLogin: string | null;
   isYou: boolean;
+  /** Their own number, masked ("••• 0142"); the counter won't credit it (D78). */
+  phone: string | null;
 };
 
 export async function listStaff(store: Store, viewerId: string | null): Promise<StaffRow[]> {
   const { data, error } = await supabaseAdmin()
     .from("staff")
-    .select("id, staff_code, display_name, role, active, must_change_password, last_login_at")
+    .select(
+      "id, staff_code, display_name, role, active, must_change_password, last_login_at, phone_e164",
+    )
     .eq("store_id", store.id)
     .order("active", { ascending: false })
     .order("display_name");
@@ -48,6 +53,7 @@ export async function listStaff(store: Store, viewerId: string | null): Promise<
     mustChangePassword: row.must_change_password,
     lastLogin: row.last_login_at ? format.format(new Date(row.last_login_at)) : null,
     isYou: row.id === viewerId,
+    phone: row.phone_e164 ? maskPhone(row.phone_e164) : null,
   }));
 }
 
@@ -136,10 +142,32 @@ export async function resetStaffPassword(
   return { ok: true };
 }
 
+/**
+ * A staff member's own phone number (null removes it). The counter refuses to credit it, so a
+ * cashier can't collect points on other people's purchases (D78). Applies to anyone, yourself
+ * included. The number itself never goes in the audit log.
+ */
+export async function setStaffPhone(
+  store: Store,
+  actor: StaffActor,
+  staffId: string,
+  phoneE164: string | null,
+): Promise<StaffChangeResult> {
+  const changed = await updateStaff(store, staffId, { phone_e164: phoneE164 });
+  if (!changed) return { ok: false, error: "notFound" };
+  await audit(store, actor, phoneE164 ? "staff.phone_set" : "staff.phone_removed", staffId);
+  return { ok: true };
+}
+
 async function updateStaff(
   store: Store,
   staffId: string,
-  values: { active?: boolean; password_hash?: string; must_change_password?: boolean },
+  values: {
+    active?: boolean;
+    password_hash?: string;
+    must_change_password?: boolean;
+    phone_e164?: string | null;
+  },
 ): Promise<boolean> {
   if (!isUuid(staffId)) return false;
   const { data, error } = await supabaseAdmin()

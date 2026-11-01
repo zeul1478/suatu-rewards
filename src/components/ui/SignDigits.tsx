@@ -14,7 +14,7 @@ export function SignDigits({ value, label }: SignDigitsProps) {
         <span
           key={index}
           aria-hidden="true"
-          className="price-digits grid h-12 w-9 place-items-center rounded-[var(--radius-sm)] border border-line bg-sunken text-3xl text-accent"
+          className="digit-tile price-digits grid h-12 w-9 place-items-center rounded-[var(--radius-sm)] border border-line bg-sunken text-3xl text-accent"
         >
           {char}
         </span>

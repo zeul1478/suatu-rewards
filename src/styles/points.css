@@ -1,25 +1,37 @@
-/* Points display: fuel gauge and the redemption code. */
+/* Points display: round fuel gauge and the redemption code. */
 
 @layer components {
-  .fuel-gauge {
-    background: var(--surface-sunken);
-    box-shadow: inset 0 0 0 1px var(--line-strong);
+  /* Round fuel gauge: recessed track, brand-coloured fill, accent needle on a dark hub. */
+  .fuel-dial-edge {
+    stroke: var(--line-strong);
   }
 
-  .fuel-gauge-fill {
-    background: var(--brand);
-    transform-origin: left center;
+  .fuel-dial-track {
+    stroke: var(--surface-sunken);
+  }
+
+  .fuel-dial-fill {
+    stroke: var(--brand);
+    transition: stroke-dashoffset var(--duration-fill) var(--ease-out);
+  }
+
+  .fuel-dial-tick {
+    stroke: var(--text-secondary);
+  }
+
+  .fuel-dial-needle {
+    fill: var(--text-accent);
+    transform-box: view-box;
+    transform-origin: 100px 100px;
     transition: transform var(--duration-fill) var(--ease-out);
   }
 
-  /* One notch per 5% — a visit's worth at Suatu — like the segments on a pump display.
-     The element is 2px wider than the track so the notch after the last segment is clipped. */
-  .fuel-gauge-ticks {
-    background: repeating-linear-gradient(
-      90deg,
-      transparent 0 calc(5% - 2px),
-      var(--surface-raised) calc(5% - 2px) 5%
-    );
+  .fuel-dial-hub {
+    fill: var(--text-primary);
+  }
+
+  .fuel-dial-hub-cap {
+    fill: var(--text-accent);
   }
 
   /* The code is read off the screen, never copied (§4.3b). */
@@ -47,13 +59,35 @@
 @layer components {
   .points-bump {
     display: inline-block;
-    transform-origin: left bottom;
+    transform-origin: center bottom;
     animation: points-bump var(--duration-fill) var(--ease-out);
   }
 
   /* Staff result banner slides in so a new result is noticeable even when the text is similar. */
   .banner-in {
     animation: banner-in 200ms var(--ease-out);
+  }
+}
+
+/* Reward unlocked: the mascot hops in once (transform only; off with reduced motion). */
+@keyframes mascot-hop {
+  0% {
+    transform: translateY(12px) scale(0.8);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(-6px) scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@layer components {
+  .mascot-hop {
+    display: inline-block;
+    animation: mascot-hop 500ms var(--ease-out);
   }
 }
 

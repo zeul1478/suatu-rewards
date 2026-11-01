@@ -1,10 +1,11 @@
 import { brandFor } from "@/brands";
+import { manifestResponse, storeManifest } from "@/brands/manifest";
 import { storeUrl } from "@/lib/storeUrl";
 import { getStoreOr404 } from "@/server/stores/getStore";
 
 /**
  * Per-store web app manifest (brand/suatu/README.md "Manifest snippet"): the store's name and
- * icons when the customer adds the app to their home screen. The service worker comes in M5.
+ * icons when the customer adds the app to their home screen.
  */
 export async function GET(
   _request: Request,
@@ -13,23 +14,13 @@ export async function GET(
   const store = await getStoreOr404((await params).storeSlug);
   const brand = brandFor(store.slug);
   const home = storeUrl(store.slug);
-
-  return Response.json(
-    {
+  return manifestResponse(
+    storeManifest(brand, {
       name: brand.programName,
-      short_name: brand.shortName,
-      start_url: home,
+      shortName: brand.shortName,
+      startUrl: home,
       scope: home,
-      display: "standalone",
-      background_color: brand.colors.dark.page,
-      theme_color: brand.colors.dark.page,
-      icons: [
-        { src: brand.icons.app192, sizes: "192x192", type: "image/png", purpose: "any" },
-        { src: brand.icons.app512, sizes: "512x512", type: "image/png", purpose: "any" },
-        { src: brand.icons.maskable192, sizes: "192x192", type: "image/png", purpose: "maskable" },
-        { src: brand.icons.maskable512, sizes: "512x512", type: "image/png", purpose: "maskable" },
-      ],
-    },
-    { headers: { "Content-Type": "application/manifest+json" } },
+      color: brand.colors.dark.page,
+    }),
   );
 }

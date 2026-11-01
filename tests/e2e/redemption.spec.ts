@@ -5,6 +5,7 @@ import { closeDb, createTempStaff, db, expireLock } from "../support/db";
 import {
   expect,
   fastForwardUntil,
+  newDevice,
   signUp,
   staffLogIn,
   test,
@@ -75,7 +76,7 @@ test.describe("redemption codes (§4.3b)", () => {
     const { code } = await customerWithCode(page);
     const staffCode = `T${randomInt(100_000, 999_999)}`;
     await createTempStaff(staffCode, "counter password 9");
-    const staff = await (await browser.newContext()).newPage();
+    const staff = await (await newDevice(browser)).newPage();
     await staffLogIn(staff, staffCode, "counter password 9");
     await expect(staff.getByRole("heading", { name: "Add a visit" })).toBeVisible();
 

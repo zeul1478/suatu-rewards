@@ -1,0 +1,152 @@
+/*
+ * Depth for the customer app only (the element with .app-3d, set by the customer layout): cards
+ * that sit above the page, buttons that press in, a round fuel gauge, digit windows, and a
+ * floating tab bar. The staff screen, dashboard and admin keep the flat look.
+ *
+ * Not in a cascade layer on purpose: these refine Tailwind utilities (rounded-*, bg-*), and
+ * unlayered rules win over every layer. Shadows only (no blur), so long lists stay smooth. The
+ * global reduced-motion rule turns the movement off; the depth itself stays.
+ */
+
+/* Cards: lit top edge, soft sheen, a shadow that lifts them off the page. */
+.app-3d .card {
+  border-radius: var(--radius-xl);
+  background-image: linear-gradient(180deg, var(--sheen), transparent 7rem);
+  box-shadow:
+    inset 0 1px 0 var(--bevel-top),
+    0 1px 2px var(--shadow-soft),
+    0 14px 32px -14px var(--shadow-color);
+}
+
+/* Buttons: raised, and they sink when pressed, springing back on release. */
+.app-3d .glass {
+  background-image: linear-gradient(180deg, var(--sheen), transparent 70%);
+  box-shadow:
+    inset 0 1px 0 var(--bevel-top),
+    0 1px 1px var(--shadow-soft),
+    0 6px 14px -6px var(--shadow-color);
+  transition:
+    transform 180ms var(--ease-spring),
+    box-shadow 120ms var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.app-3d .glass:active:not(:disabled) {
+  transform: translateY(1px) scale(0.97);
+  box-shadow:
+    inset 0 1px 3px var(--shadow-soft),
+    0 1px 2px -1px var(--shadow-color);
+}
+
+/* Fuel gauge: the needle and hub cast a small shadow on the dial face. */
+.app-3d .fuel-dial-needle,
+.app-3d .fuel-dial-hub {
+  filter: drop-shadow(0 2px 2px var(--shadow-color));
+}
+
+/* The balance glows softly, like lit digits on a price sign. */
+.app-3d .card .price-digits {
+  text-shadow: 0 0 18px color-mix(in srgb, currentColor 30%, transparent);
+}
+
+/* Digit windows (redeem code, price-sign tiles): set into the surface. */
+.app-3d .digit-tile {
+  background-image: linear-gradient(180deg, var(--shadow-soft), transparent 45%);
+  box-shadow:
+    inset 0 2px 5px var(--shadow-color),
+    0 1px 0 var(--bevel-top);
+}
+
+/* Tab bar: a floating pill above the home indicator. */
+.app-3d .bottom-nav {
+  left: var(--space-3);
+  right: var(--space-3);
+  bottom: calc(env(safe-area-inset-bottom) + var(--space-2));
+  max-width: 28rem;
+  margin-inline: auto;
+  padding-bottom: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background-image: linear-gradient(180deg, var(--sheen), transparent);
+  box-shadow:
+    inset 0 1px 0 var(--bevel-top),
+    0 12px 28px -10px var(--shadow-color);
+}
+
+.app-3d .tab-chip {
+  border-radius: 999px;
+  transition:
+    transform 180ms var(--ease-spring),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.app-3d .bottom-nav a:active .tab-chip {
+  transform: scale(0.9);
+}
+
+/* The current tab's icon sits on a raised chip. */
+.app-3d .bottom-nav [data-lit] .tab-chip {
+  background-color: var(--glass-primary-fill);
+  box-shadow:
+    inset 0 1px 0 var(--bevel-top),
+    0 4px 10px -4px var(--shadow-color);
+}
+
+/* Switching tabs: a short crossfade (React <ViewTransition> in the signed-in layout). */
+::view-transition-group(*) {
+  animation-duration: 160ms;
+}
+
+/*
+ * Nothing moves: the old page goes at once and the new one fades in where it will stay. By
+ * default the browser morphs the old page's box into the new one and crossfades the two, so
+ * titles, cards and shadows of two different layouts showed in two places for a moment (and
+ * shrank and slid in Safari).
+ */
+::view-transition-group(*) {
+  animation-name: none;
+}
+
+/* Invisible rather than display: none, which crashes WebKit (Safari). */
+::view-transition-old(*) {
+  animation-name: none;
+  opacity: 0;
+}
+
+::view-transition-new(*) {
+  inline-size: 100%;
+  block-size: auto;
+  object-fit: none;
+  object-position: left top;
+}
+
+/*
+ * Only the page content fades. By default the browser also snapshots the whole screen, tab bar
+ * included, and a snapshot can't show the bar's backdrop blur, so the bar blinked out for a
+ * moment. The screen is not snapshotted; the bar is its own still layer above the content.
+ */
+html:has(.app-3d) {
+  view-transition-name: none;
+}
+
+.app-3d .bottom-nav {
+  view-transition-name: bottom-nav;
+}
+
+::view-transition-group(bottom-nav),
+::view-transition-old(bottom-nav),
+::view-transition-new(bottom-nav) {
+  animation: none;
+}
+
+::view-transition-old(bottom-nav) {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

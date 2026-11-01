@@ -8,7 +8,8 @@
     "loggingOut": "Se iese din cont…",
     "fixFields": "Corectează câmpurile marcate.",
     "somethingWentWrong": "Ceva n-a mers bine la noi. Te rugăm să încerci din nou.",
-    "demoBanner": "Aplicație demo — doar date fictive"
+    "demoBanner": "Aplicație demo — doar date fictive",
+    "loading": "Se încarcă…"
   },
   "errors": {
     "phone": {
@@ -118,6 +119,12 @@
     "pointsPerVisit": {
       "invalid": "Introdu un număr întreg între 1 și 100."
     },
+    "maxVisitsPerDay": {
+      "invalid": "Introdu un număr întreg între 1 și 50 sau lasă gol pentru nicio limită."
+    },
+    "minMinutesBetweenVisits": {
+      "invalid": "Introdu minute între 1 și 1440 (o zi) sau lasă gol pentru nicio limită."
+    },
     "storeName": {
       "required": "Scrie numele magazinului.",
       "tooLong": "Folosește cel mult 60 de caractere."
@@ -129,6 +136,32 @@
     },
     "timezone": {
       "required": "Alege unde se află magazinul."
+    },
+    "birthday": {
+      "invalid": "Introdu o dată reală sau lasă câmpul gol.",
+      "tooYoung": "Această dată arată că ai sub 18 ani. Programul este pentru adulți."
+    },
+    "bonusPoints": {
+      "invalid": "Introdu un număr întreg între 1 și 10.000 sau lasă gol."
+    },
+    "doubleMultiplier": {
+      "invalid": "Introdu 2, 3, 4 sau 5 sau lasă gol."
+    },
+    "doubleDates": {
+      "invalid": "Alege o dată de început și una de sfârșit (sfârșitul după început)."
+    },
+    "expireMonths": {
+      "invalid": "Introdu un număr de luni între 3 și 36 sau lasă gol."
+    },
+    "messageBody": {
+      "required": "Scrie mesajul.",
+      "tooLong": "Sub 1.000 de caractere, te rog."
+    },
+    "subject": {
+      "tooLong": "Subiectul trebuie să aibă sub 120 de caractere."
+    },
+    "confirmSend": {
+      "required": "Bifează „Da, trimite-l” ca să confirmi."
     }
   },
   "signup": {
@@ -153,7 +186,12 @@
     "createdButNotSignedIn": "Contul a fost creat. Te rugăm să intri în cont.",
     "readTerms": "Citește-i mai întâi:",
     "accountDeleted": "Contul tău a fost șters. Poți crea unul nou oricând.",
-    "tooMany": "Prea multe înscrieri din această rețea. Încearcă din nou peste {minutes, plural, one {# minut} few {# minute} other {# de minute}}."
+    "tooMany": "Prea multe înscrieri din această rețea. Încearcă din nou peste {minutes, plural, one {# minut} few {# minute} other {# de minute}}.",
+    "birthday": "Ziua de naștere",
+    "birthdayHint": "Opțional — pentru recompense de ziua ta.",
+    "smsUpdates": "Trimite-mi SMS despre punctele mele (vizite și recompense)",
+    "smsMarketing": "Trimite-mi SMS cu oferte {store} (opțional)",
+    "smsLegal": "Cel mult 1 SMS pe zi. Se pot aplica tarife. Răspunde STOP pentru dezabonare, HELP pentru ajutor."
   },
   "login": {
     "metaTitle": "Intră în cont",
@@ -213,7 +251,16 @@
     "lastVisit": "Ultima vizită: {date}",
     "noVisitsYet": "Spune-ți numărul de telefon la casă: {points} puncte la fiecare vizită.",
     "offersTitle": "Oferte",
-    "offerUntil": "Până la {date}"
+    "offerUntil": "Până la {date}",
+    "visitTitle": "Vizitează-ne",
+    "stationTitle": "Benzinărie",
+    "restaurantTitle": "Restaurant",
+    "openDaily": "Deschis zilnic {hours}",
+    "tryHere": "Încearcă: {items}",
+    "directions": "Traseu",
+    "waze": "Waze",
+    "call": "Sună",
+    "whatsapp": "WhatsApp"
   },
   "account": {
     "metaTitle": "Cont",
@@ -252,7 +299,19 @@
     "deleteExplain": "Îți șterge numele, numărul de telefon și emailul și te scoate din cont peste tot. Punctele nu mai pot fi recuperate. Istoricul punctelor rămâne doar ca cifre anonime pentru evidența magazinului.",
     "deletePassword": "Parola ta, pentru confirmare",
     "deleteConfirm": "Șterge contul definitiv",
-    "deleting": "Se șterge…"
+    "deleting": "Se șterge…",
+    "birthdayHint": "Pentru recompense de ziua ta.",
+    "birthdayPrompt": "Adaugă ziua ta de naștere ca să primești o recompensă de ziua ta.",
+    "textsTitle": "Mesaje SMS",
+    "textsExplain": "Alege ce SMS-uri îți poate trimite {store}. Răspunde STOP la orice SMS ca să le oprești pe toate.",
+    "smsUpdatesOn": "Primești SMS despre punctele tale.",
+    "smsUpdatesOff": "Nu primești SMS despre punctele tale.",
+    "smsUpdatesTurnOn": "Trimite-mi SMS despre puncte",
+    "smsUpdatesTurnOff": "Oprește SMS-urile despre puncte",
+    "smsMarketingOn": "Primești SMS cu oferte.",
+    "smsMarketingOff": "Nu primești SMS cu oferte.",
+    "smsMarketingTurnOn": "Trimite-mi SMS cu oferte",
+    "smsMarketingTurnOff": "Oprește SMS-urile cu oferte"
   },
   "legal": {
     "programTerms": "Termenii programului",
@@ -297,7 +356,9 @@
     "visitsToGo": "Încă {visits, plural, one {# vizită} few {# vizite} other {# de vizite}} până la {reward}",
     "rewardAvailable": "Recompensă disponibilă: {reward}",
     "duplicate": "Deja înregistrat — vizita a fost adăugată o singură dată.",
-    "dailyCapReached": "Clientul a atins limita de puncte pentru azi.",
+    "dailyCapReached": "Clientul a atins limita de vizite pentru azi.",
+    "tooSoon": "Vizita a fost înregistrată adineauri. Următoarea vizită pentru acest număr contează peste {minutes, plural, one {# minut} few {# minute} other {# de minute}}.",
+    "staffOwnNumber": "Acesta este numărul unui angajat. Cereți unui manager să adauge vizita dacă e o cumpărătură reală.",
     "redeeming": "Se validează…",
     "redeemed": "{reward} validat pentru ••• {last4}",
     "codeFormat": "Introdu cele 6 cifre de pe telefonul clientului.",
@@ -316,7 +377,8 @@
       "alreadyVoided": "Deja anulat.",
       "pointsAlreadyUsed": "Nu se poate anula: clientul a folosit deja aceste puncte pentru o recompensă. Întreabă managerul."
     },
-    "dashboardLink": "Panoul proprietarului"
+    "dashboardLink": "Panoul proprietarului",
+    "askReminder": "Întreabă fiecare client: „Aveți {program}?”"
   },
   "redeem": {
     "title": "Codul tău",
@@ -388,7 +450,8 @@
       "offers": "Oferte",
       "staff": "Personal",
       "settings": "Setări",
-      "sign": "Afiș casă"
+      "sign": "Afiș casă",
+      "messages": "Mesaje"
     },
     "overview": {
       "metaTitle": "Rezumat",
@@ -403,10 +466,33 @@
       "customersTitle": "Clienți",
       "members": "Membri",
       "membersDetail": "{signedUp} înscriși · restul adăugați la casă",
-      "returning": "Revin",
-      "returningDetail": "au venit în 2 sau mai multe zile, din {visitors} vizitatori în ultimele 30 de zile",
       "redeemed": "Recompense folosite",
-      "redeemedDetail": "{last30} în ultimele 30 de zile"
+      "redeemedDetail": "{last30} în ultimele 30 de zile",
+      "unusualTitle": "Activitate neobișnuită (ultimele 7 zile)",
+      "unusualNone": "Nimic neobișnuit: niciun număr nu a primit 3 sau mai multe vizite într-o zi și niciun casier nu adaugă mereu vizite acelorași câteva numere.",
+      "unusualIntro": "Pot fi clienți fideli cinstiți sau cineva care strânge puncte din cumpărăturile altora. Merită verificat.",
+      "unusualNumber": "a primit {most} vizite într-o zi{days, plural, one {} few { (în # zile)} other { (în # de zile)}}.",
+      "unusualCashier": "a adăugat {visits} vizite; {topThree} au mers la aceleași 3 numere.",
+      "unusualWhatToDo": "Pentru a opri asta, setează limite în <settings>Setări</settings> sau adaugă numerele angajaților pe pagina Personal.",
+      "chartTitle": "Vizite pe zi, ultimele 30 de zile",
+      "chartSummary": "{total, plural, one {# vizită} few {# vizite} other {# de vizite}} în ultimele 30 de zile. Cea mai aglomerată zi: {day}, cu {most}.",
+      "chartEmpty": "Nicio vizită în ultimele 30 de zile.",
+      "chartTable": "Arată ca tabel",
+      "chartDay": "Ziua",
+      "chartVisits": "Vizite",
+      "chartBar": "{visits, plural, one {# vizită} few {# vizite} other {# de vizite}}",
+      "comeBack": "Revin",
+      "comeBackDetail": "{returning} din {visitors} clienți din ultimele 30 de zile au venit în 2 sau mai multe zile",
+      "visitsEach": "Vizite de client",
+      "visitsEachDetail": "medie pe client, ultimele 30 de zile",
+      "backTitle": "Cine nu a mai revenit",
+      "backIntro": "Clienți care veneau, dar nu au mai venit în ultima vreme. Ofertele și o vorbă bună la casă îi aduc înapoi pe mulți.",
+      "lapsed30": "30–60 de zile",
+      "lapsed60": "60–90 de zile",
+      "lapsed90": "Peste 90 de zile",
+      "rewardsWaiting": "{count, plural, one {# client are} few {# clienți au} other {# de clienți au}} destule puncte pentru o recompensă, dar nu au folosit-o. O amintire la casă ajută: recompensele folosite îi fac pe oameni să revină.",
+      "cashiersTitle": "Vizite pe casier, ultimele 7 zile",
+      "cashierVisits": "{visits, plural, one {# vizită} few {# vizite} other {# de vizite}}"
     },
     "customers": {
       "metaTitle": "Clienți",
@@ -575,6 +661,13 @@
       "resetHint": "Va fi scos din cont și își va alege o parolă nouă la următoarea autentificare.",
       "resetSubmit": "Setează parola temporară",
       "resetDone": "Gata. Dă-i lui {name} parola temporară.",
+      "phoneTitle": "Adaugă numărul de telefon al lui {name}",
+      "phoneOnFile": "Telefonul lui {name}: {phone}",
+      "phoneLabel": "Numărul lor de telefon",
+      "phoneHint": "Casa nu va adăuga vizite pe acest număr, așa că nimeni nu poate strânge puncte din cumpărăturile altora. Lasă gol pentru a-l șterge.",
+      "phoneSave": "Salvează numărul",
+      "phoneSaved": "Salvat. Vizitele pe numărul lui {name} sunt acum refuzate la casă.",
+      "phoneRemoved": "Numărul lui {name} a fost șters.",
       "addTitle": "Adaugă o persoană",
       "displayName": "Nume",
       "displayNameHint": "Apare pe ecranul casei, de ex. „Maria”.",
@@ -598,7 +691,13 @@
       "pointsPerVisitHint": "Se aplică de la următoarea vizită. Punctele deja câștigate nu se schimbă.",
       "save": "Salvează",
       "saving": "Se salvează…",
-      "saved": "Salvat. Vizitele noi primesc noua valoare.",
+      "saved": "Salvat. Schimbările contează de la următoarea vizită.",
+      "limitsTitle": "Limite la casă",
+      "limitsIntro": "Împiedică adăugarea prea deasă a punctelor pe același număr, de exemplu de cineva care își introduce propriul număr. Lasă o căsuță goală pentru nicio limită.",
+      "maxVisitsPerDay": "Cele mai multe vizite pe client pe zi",
+      "maxVisitsPerDayHint": "De exemplu 2. Vizitele anulate nu se numără.",
+      "minMinutesBetweenVisits": "Minute între două vizite ale aceluiași client",
+      "minMinutesBetweenVisitsHint": "De exemplu 30. Casa arată când poate conta următoarea vizită.",
       "costsTitle": "Costul recompenselor",
       "cost": "{points} pct · {visits, plural, one {# vizită} few {# vizite} other {# de vizite}}",
       "editRewards": "Editează recompensele",
@@ -611,7 +710,24 @@
         "text": "Text",
         "lightBrand": "Verde pe luminos"
       },
-      "brandHowToChange": "Logoul, culorile și fonturile sunt configurate de behappy pentru fiecare magazin. Cere-ne să le schimbăm."
+      "brandHowToChange": "Logoul, culorile și fonturile sunt configurate de behappy pentru fiecare magazin. Cere-ne să le schimbăm.",
+      "rulesTitle": "Reguli pentru recompense",
+      "rulesIntro": "Moduri în plus de a câștiga și păstra puncte. Lasă un câmp gol ca să oprești regula.",
+      "welcomeBonus": "Bonus de bun venit (puncte)",
+      "welcomeBonusHint": "Se dă o singură dată, la înscriere.",
+      "birthdayBonus": "Bonus de ziua de naștere (puncte)",
+      "birthdayBonusHint": "Se dă de ziua clientului, dacă a completat-o.",
+      "doubleTitle": "Zile cu puncte duble",
+      "doubleIntro": "Fiecare vizită valorează mai mult între două date, de exemplu într-o promoție.",
+      "doubleMultiplier": "De câte ori punctele",
+      "doubleMultiplierHint": "Între 2 și 5. 2 = dublu.",
+      "doubleFrom": "De la",
+      "doubleTo": "Până la (inclusiv)",
+      "expiryTitle": "Expirarea punctelor",
+      "expiryIntro": "Punctele expiră după mult timp fără vizită. Clienții primesc o amintire cu 14 zile înainte, dacă au mesajele pornite.",
+      "expireAfterMonths": "Luni fără vizită",
+      "expireAfterMonthsHint": "Între 3 și 36. Gol = punctele nu expiră.",
+      "saveRules": "Salvează regulile"
     },
     "sign": {
       "metaTitle": "Afiș casă",
@@ -626,6 +742,102 @@
       "step2": "2. La casă, spune-i casierului numărul de telefon.",
       "step3": "3. Primești {points} puncte la fiecare vizită. Le vezi pe telefon.",
       "notice": "Când îți spui numărul de telefon la casă, {store} îl salvează împreună cu punctele tale, chiar înainte să te înscrii. Punctele nu au valoare în bani. Termenii programului și confidențialitate: {terms}"
+    },
+    "messages": {
+      "metaTitle": "Mesaje",
+      "title": "Mesaje",
+      "intro": "Ce primesc clienții prin SMS și email, plus mesaje speciale pentru un grup. Clienții primesc doar ce au acceptat; SMS-urile pleacă între 9:00 și 20:00, cel mult un SMS automat pe zi.",
+      "automaticTitle": "Mesaje automate",
+      "automaticIntro": "Deschide unul ca să-l pornești și să schimbi textul. '{first_name}' și celelalte cuvinte în acolade se completează pentru fiecare client.",
+      "events": {
+        "welcome": {
+          "name": "Bun venit",
+          "when": "Imediat după înscriere."
+        },
+        "visit_added": {
+          "name": "Vizită adăugată",
+          "when": "De fiecare dată când casa adaugă o vizită."
+        },
+        "reward_unlocked": {
+          "name": "Recompensă disponibilă",
+          "when": "Când punctele ajung la o recompensă."
+        },
+        "reward_used": {
+          "name": "Recompensă folosită",
+          "when": "Când casa acceptă codul."
+        },
+        "birthday": {
+          "name": "Zi de naștere",
+          "when": "De ziua lor, la 9:00 (ofertă: cere acordul lor)."
+        },
+        "we_miss_you": {
+          "name": "Ne lipsești",
+          "when": "La 30, 60 și 90 de zile după ultima vizită (ofertă: cere acordul lor)."
+        },
+        "points_expiring": {
+          "name": "Puncte care expiră",
+          "when": "Cu 14 zile înainte să expire punctele (doar dacă expirarea e pornită)."
+        }
+      },
+      "textOn": "SMS pornit",
+      "textOff": "SMS oprit",
+      "emailOn": "Email pornit",
+      "emailOff": "Email oprit",
+      "byText": "Prin SMS",
+      "byEmail": "Prin email",
+      "sendText": "Trimite acest SMS",
+      "sendEmail": "Trimite acest email",
+      "subject": "Subiectul emailului",
+      "wording": "Mesaj",
+      "blanksHint": "Câmpuri disponibile: '{first_name} {store} {points} {points_added} {reward} {points_to_go} {bonus} {days} {link}'",
+      "preview": "Previzualizare (client exemplu)",
+      "smsLength": "{characters} caractere · {parts, plural, one {1 SMS} few {# SMS-uri} other {# de SMS-uri}} per client",
+      "saving": "Se salvează…",
+      "save": "Salvează",
+      "saved": "Salvat.",
+      "testTitle": "Trimite un test",
+      "testPhone": "Trimite un test la acest telefon",
+      "testEmail": "Trimite un test la acest email",
+      "sendTest": "Trimite testul",
+      "testQueued": "Testul e pe drum. Apare mai jos, la „Trimise”.",
+      "fixWording": "Corectează mesajul, apoi trimite testul.",
+      "specialTitle": "Trimite un mesaj",
+      "specialIntro": "Un mesaj o singură dată către un grup, de exemplu o promoție sau o noutate. Îl primesc doar clienții care au acceptat oferte.",
+      "audience": "Cine îl primește",
+      "audiences": {
+        "all": "Toți cei care au acceptat oferte",
+        "lapsed_30": "Nevăzuți de 30+ zile",
+        "reward_waiting": "Au o recompensă disponibilă",
+        "birthday_month": "Au ziua în luna asta"
+      },
+      "channel": "Cum",
+      "channels": {
+        "sms": "SMS",
+        "email": "Email"
+      },
+      "reach": "{count, plural, =0 {Nimeni din acest grup nu a acceptat încă.} one {Îl va primi 1 persoană.} few {Îl vor primi # persoane.} other {Îl vor primi # de persoane.}}",
+      "confirmSend": "{count, plural, one {Da, trimite-l la 1 persoană} few {Da, trimite-l la # persoane} other {Da, trimite-l la # de persoane}}",
+      "send": "Trimite mesajul",
+      "sending": "Se trimite…",
+      "broadcastSent": "{count, plural, =0 {Nu are cine să-l primească.} one {Pe drum spre 1 persoană.} few {Pe drum spre # persoane.} other {Pe drum spre # de persoane.}}",
+      "sentTitle": "Trimise",
+      "sentEmpty": "Nimic trimis încă.",
+      "specialMessage": "Mesaj special",
+      "testMessage": "Test",
+      "status": {
+        "queued": "În așteptare",
+        "sending": "Se trimite",
+        "sent": "Trimis",
+        "failed": "Eșuat",
+        "skipped": "Netrimis"
+      },
+      "skipped": {
+        "noAccount": "fără cont",
+        "noAddress": "fără telefon sau email",
+        "turnedOff": "oprit",
+        "oneADay": "a primit deja un SMS azi",
+        "removed": "șters"
+      }
     }
   },
   "adminLogin": {

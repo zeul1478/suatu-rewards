@@ -3,6 +3,8 @@
 @import "../styles/glass.css";
 @import "../styles/forms.css";
 @import "../styles/points.css";
+@import "../styles/depth.css";
+@import "../styles/charts.css";
 
 @theme inline {
   --color-page: var(--surface-page);
@@ -27,6 +29,9 @@
   html {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    /* Room for the scrollbar on every page (computers with a mouse), so short pages and the
+       loading shapes don't shift everything sideways when it comes and goes. */
+    scrollbar-gutter: stable;
   }
 
   body {
@@ -60,6 +65,98 @@
     font-variant-numeric: tabular-nums lining-nums;
     font-weight: 600;
     letter-spacing: -0.01em;
+  }
+
+  /*
+   * Shared layout looks (src/components/layout/). Every screen uses these, so spacing and
+   * alignment change in one place for the customer app, counter, dashboard and admin alike.
+   */
+
+  /* A small heading over a block of content: "VISITS", "YOUR DETAILS", "RECENT ENTRIES"… */
+  .section-heading {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--brand-font-display), system-ui, sans-serif;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+  }
+
+  /* A list with a line between rows and above and below it (history, recent entries, offers…). */
+  .list-divided {
+    display: flex;
+    flex-direction: column;
+    border-block: 1px solid var(--line);
+  }
+
+  .list-divided > * + * {
+    border-top: 1px solid var(--line);
+  }
+
+  /* Tables of rows (customers, stores, audit log): same cell spacing, header and row lines.
+     .num right-aligns a number column. Put the table in a .panel with overflow-x-auto. */
+  .data-table {
+    width: 100%;
+    text-align: left;
+  }
+
+  .data-table th {
+    padding: var(--space-3) var(--space-4);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .data-table td {
+    padding: var(--space-2) var(--space-4);
+  }
+
+  .data-table tbody tr + tr {
+    border-top: 1px solid var(--line);
+  }
+
+  .data-table .num {
+    text-align: right;
+  }
+
+  /* The rounded panel content sits in. panel-pad: the standard inner space (16px, 20px wider). */
+  .panel {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--line);
+    background-color: var(--surface-raised);
+  }
+
+  .panel-pad {
+    padding: var(--space-4);
+  }
+
+  @media (min-width: 40rem) {
+    .panel-pad {
+      padding: 1.25rem;
+    }
+  }
+
+  /* Dashboard and admin: only the page area takes part in the section crossfade, not the
+     whole screen (the top bar and menu stay still). */
+  html:has(.sidebar-layout) {
+    view-transition-name: none;
+  }
+
+  /* Store logos sit slightly raised: a tight shadow for the edge, a soft one for the lift.
+     Shadow colour follows the theme (tokens.css). Flat on paper (the printed counter sign). */
+  .brand-logo {
+    filter: drop-shadow(0 2px 1px var(--shadow-color)) drop-shadow(0 3px 2px var(--shadow-color))
+      drop-shadow(0 8px 10px var(--shadow-color));
+  }
+
+  @media print {
+    .brand-logo {
+      filter: none;
+    }
   }
 
   /* Brand icons keep a 2px line at every size (icons README). */
