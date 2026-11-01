@@ -32,8 +32,8 @@ jobs:
       app: ${{ steps.filter.outputs.app }}
       devices: ${{ steps.devices.outputs.devices }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v3
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v4
         id: filter
         with:
           # Only docs changed → skip the slow jobs (they count as passed).
@@ -74,10 +74,10 @@ jobs:
     name: No keys or passwords
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # the whole history, not just the latest commit
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
       - name: Files in this commit (scripts/check-secrets.mjs)
@@ -90,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
       - run: pnpm lint
       - run: pnpm typecheck
@@ -105,7 +105,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
         with:
           supabase: "true"
@@ -130,7 +130,7 @@ jobs:
       matrix:
         include: ${{ fromJSON(needs.changes.outputs.devices) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
         with:
           supabase: "true"
@@ -140,7 +140,7 @@ jobs:
         run: pnpm exec playwright test --project="${{ matrix.project }}" --workers=${{ matrix.workers }}
       - name: Keep the report when something fails
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-${{ strategy.job-index }}
           path: |
@@ -155,7 +155,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
         with:
           supabase: "true"
@@ -166,7 +166,7 @@ jobs:
         run: pnpm lighthouse
       - name: Keep the Lighthouse reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: lighthouse
           path: .lighthouseci/
